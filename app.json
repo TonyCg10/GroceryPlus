@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "Grocery Plus",
+    "slug": "GroceryPlus",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/GroceryPlus.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/GroceryPlus.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/GroceryPlus.png"
+    }
+  }
+}
