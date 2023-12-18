@@ -22,6 +22,7 @@ const Grids = ({ display, navigation }: Pops) => {
             key={key}
             onPress={() => {
               navigation.navigate('ProductDetails', {
+                id: data.id,
                 description: data.description,
                 images: data.images,
                 title: data.title,
@@ -31,7 +32,6 @@ const Grids = ({ display, navigation }: Pops) => {
                 discountPercentage: data.discountPercentage,
                 thumbnail: data.thumbnail,
                 category: data.category,
-                position: key,
               })
             }}
             style={baseGridsStyle.gridsContainer}

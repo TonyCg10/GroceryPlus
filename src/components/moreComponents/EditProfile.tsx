@@ -14,14 +14,23 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { useState } from 'react'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Feather from 'react-native-vector-icons/Feather'
+import { useAuthStore, AuthState } from '../../../store/authStore.store'
 
 const EditProfile = ({ navigation }) => {
-  const avatar = ''
   const [showPassword, setShowPassword] = useState(false)
 
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword)
-  }
+  const { userName, userEmail, userPassword, userPhone } = useAuthStore(
+    (state: AuthState) => state,
+  )
+  const avatar = ''
+  const formatName = userName.split(' ')
+  let firstName =
+    formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
+  let lastName =
+    formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
+  let avatarName =
+    formatName[0].charAt(0).toLocaleUpperCase() +
+    formatName[1].charAt(0).toLocaleUpperCase()
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -33,7 +42,7 @@ const EditProfile = ({ navigation }) => {
       <View>
         <View style={styles.avatar}>
           {avatar == '' ? (
-            <Text style={styles.avatarText}>AC</Text>
+            <Text style={styles.avatarText}>{avatarName}</Text>
           ) : (
             <Image source={avatar} style={styles.avatarImage} />
           )}
@@ -45,7 +54,16 @@ const EditProfile = ({ navigation }) => {
             </View>
             <View>
               <Text>Full Name</Text>
-              <TextInput value="Antonio Corcoba" />
+              <TextInput value={firstName + ' ' + lastName} />
+            </View>
+          </View>
+          <View style={styles.texInput}>
+            <View style={styles.icon}>
+              <MaterialCommunityIcons name="email-outline" size={22} />
+            </View>
+            <View>
+              <Text>Email</Text>
+              <TextInput value={userEmail} />
             </View>
           </View>
           <View style={styles.texInput}>
@@ -56,13 +74,15 @@ const EditProfile = ({ navigation }) => {
               <Text>Password</Text>
               <View style={styles.texInputPassw}>
                 <TextInput
-                  value="ToNy54Cg19V"
+                  value={userPassword}
                   secureTextEntry={!showPassword}
                 />
                 <MaterialCommunityIcons
                   name={showPassword ? 'eye-off' : 'eye'}
                   size={24}
-                  onPress={toggleShowPassword}
+                  onPress={() => {
+                    setShowPassword(!showPassword)
+                  }}
                 />
               </View>
             </View>
@@ -73,7 +93,7 @@ const EditProfile = ({ navigation }) => {
             </View>
             <View>
               <Text>Phone Number</Text>
-              <TextInput value="8102873196" inputMode="numeric" />
+              <TextInput value={userPhone} inputMode="numeric" />
             </View>
           </View>
         </View>
@@ -100,6 +120,8 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     alignSelf: 'center',
+    marginTop: '35%',
+    fontSize: 28,
   },
   texInput: {
     backgroundColor: 'silver',

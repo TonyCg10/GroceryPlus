@@ -9,6 +9,10 @@ import {
 } from 'react-native'
 import { DataType } from '../../share/utils/GroceryData'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
+import {
+  ProductState,
+  useProductStore,
+} from '../../../store/productStore.store'
 
 import Feather from 'react-native-vector-icons/Feather'
 
@@ -20,6 +24,8 @@ type Prop = {
 }
 
 const Results = ({ navigation, look, groceryData, rate }: Prop) => {
+  const { setProductId } = useProductStore((state: ProductState) => state)
+
   return (
     <>
       <View>
@@ -34,6 +40,7 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('ProductDetails', {
+                      id: data.id,
                       description: data.description,
                       images: data.images,
                       title: data.title,
@@ -75,6 +82,7 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                   key={data.id}
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
+                      id: data.id,
                       description: data.description,
                       images: data.images,
                       title: data.title,
@@ -107,7 +115,10 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                         </View>
 
                         <View style={resultSyles.buttonContainer}>
-                          <Pressable style={resultSyles.pressable}>
+                          <Pressable
+                            style={resultSyles.pressable}
+                            onPress={() => setProductId([data.id])}
+                          >
                             <View style={resultSyles.insideButton}>
                               <Feather
                                 color={'white'}

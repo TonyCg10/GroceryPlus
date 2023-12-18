@@ -1,12 +1,13 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
-// import WelcomeLogo from '../components/WelcomePage'
+import LoginPage from '../components/authComponents/LoginPage'
 import Notifications from '../share/Notification'
 import BottomRoutes from './BottomRoutes'
 import ProductDetails from '../share/ProductDetails'
 import Search from '../components/searchComponents/Search'
 import MoreStack from '../components/moreComponents/MoreStack'
 import CategoryLists from '../share/CategoryLists'
+import AuthStack from '../components/authComponents/authStack'
 
 const Stack = createStackNavigator()
 
@@ -16,7 +17,7 @@ const GlobalRoutes = () => {
       <Stack.Navigator
         screenOptions={{ headerShown: false, gestureEnabled: true }}
       >
-        {/* <Stack.Screen name="WelcomeLogo" component={WelcomeLogo} /> */}
+        <Stack.Screen name="AuthStack" component={AuthStack} />
         <Stack.Screen name="BottomRoutes" component={BottomRoutes} />
         <Stack.Screen name="MoreStack" component={MoreStack} />
 

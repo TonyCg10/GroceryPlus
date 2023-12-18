@@ -17,13 +17,17 @@ import { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating-widget'
+import { ProductState, useProductStore } from '../../store/productStore.store'
 
 const ProductDetails = ({ route, navigation }) => {
+  const { setProductId } = useProductStore((state: ProductState) => state)
+
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
   const { groceryData } = useGroceryData()
 
   const {
+    id,
     description,
     images,
     title,
@@ -32,13 +36,14 @@ const ProductDetails = ({ route, navigation }) => {
     stock,
     discountPercentage,
     category,
-    position,
   }: DataType = route.params
+
   const finalPrice = price - discountPercentage
+
   const handleImagePress = (key: number) => {
     setSelectedImageIndex(key)
   }
-  console.log(position)
+
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
       <Header
@@ -163,7 +168,7 @@ const ProductDetails = ({ route, navigation }) => {
               .slice(0, 2)}
           </View>
         </View>
-        <Pressable>
+        <Pressable onPress={() => setProductId([id])}>
           <View style={productDetailsStyle.pressable}>
             <Text style={productDetailsStyle.pressableText}>Add to Bag</Text>
             <Feather

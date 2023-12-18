@@ -25,6 +25,7 @@ const PopularResults = ({ groceryData, navigation }: Prop) => {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('ProductDetails', {
+                    id: data.id,
                     description: data.description,
                     images: data.images,
                     title: data.title,

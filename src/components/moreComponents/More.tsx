@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { AuthState, useAuthStore } from '../../../store/authStore.store'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -20,6 +21,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const More = ({ navigation }) => {
   const avatar = ''
+  const { userName } = useAuthStore((state: AuthState) => state)
+
+  const formatName = userName.split(' ')
+  let firstName =
+    formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
+  let lastName =
+    formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
+  let avatarName =
+    formatName[0].charAt(0).toLocaleUpperCase() +
+    formatName[1].charAt(0).toLocaleUpperCase()
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -31,13 +42,15 @@ const More = ({ navigation }) => {
       <View style={styles.header}>
         <View style={styles.avatar}>
           {avatar == '' ? (
-            <Text style={styles.avatarText}>AC</Text>
+            <Text style={styles.avatarText}>{avatarName}</Text>
           ) : (
             <Image source={avatar} style={styles.avatarImage} />
           )}
         </View>
         <View>
-          <Text style={styles.name}>Antonio Corcoba</Text>
+          <Text style={styles.name}>
+            {firstName} {lastName}
+          </Text>
           <Text style={styles.number}>841294074</Text>
         </View>
       </View>
@@ -93,6 +106,9 @@ const More = ({ navigation }) => {
         <MorePageButtons
           text="Log out"
           icon={<AntDesign name="poweroff" size={20} color={'red'} />}
+          onPress={() =>
+            navigation.navigate('AuthStack', { screen: 'Landing' })
+          }
         />
       </ScrollView>
     </SafeAreaView>
@@ -120,7 +136,8 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     alignSelf: 'center',
-    marginTop: '30%',
+    marginTop: '25%',
+    fontSize: 18,
   },
   name: {
     fontSize: 18,

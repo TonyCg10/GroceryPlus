@@ -12,8 +12,11 @@ import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useGroceryData } from './utils/GroceryData'
 import Feather from 'react-native-vector-icons/Feather'
+import { ProductState, useProductStore } from '../../store/productStore.store'
 
 const CategoryLists = ({ navigation, route }) => {
+  const { setProductId } = useProductStore((state: ProductState) => state)
+
   const { groceryData } = useGroceryData()
   const { category } = route.params
 
@@ -37,7 +40,10 @@ const CategoryLists = ({ navigation, route }) => {
                   />
                   <Text style={baseGridsStyle.text}>{data.title}</Text>
                   <Text style={baseGridsStyle.price}>${data.price}</Text>
-                  <Pressable style={baseGridsStyle.pressable}>
+                  <Pressable
+                    style={baseGridsStyle.pressable}
+                    onPress={() => setProductId([data.id])}
+                  >
                     <View style={baseGridsStyle.pressableView}>
                       <Feather
                         style={baseGridsStyle.pressableIcon}
