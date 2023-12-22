@@ -5,32 +5,45 @@ import {
   StyleSheet,
   Image,
   TextInput,
+  TouchableOpacity,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { useEffect, useId, useState } from 'react'
+import {
+  DatabaseStore,
+  useUserDatabaseStore,
+} from '../../../store/authStore.store'
+import { UserState, useUserStore } from '../../../store/userStore.store'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import { useState } from 'react'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Feather from 'react-native-vector-icons/Feather'
-import { useAuthStore, AuthState } from '../../../store/authStore.store'
 
 const EditProfile = ({ navigation }) => {
+  const { deleteUser, fetchUsers, users } = useUserDatabaseStore(
+    (state: DatabaseStore) => state,
+  )
+  const { user } = useUserStore((state: UserState) => state)
+
+  const userId = users.filter(
+    (u) =>
+      u.name == user.name &&
+      u.email == user.email &&
+      u.password == user.password &&
+      u.phone == user.phone,
+  )
+
   const [showPassword, setShowPassword] = useState(false)
 
-  const { userName, userEmail, userPassword, userPhone } = useAuthStore(
-    (state: AuthState) => state,
-  )
+  useEffect(() => {
+    fetchUsers()
+  }, [fetchUsers])
+
   const avatar = ''
-  const formatName = userName.split(' ')
-  let firstName =
-    formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
-  let lastName =
-    formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
-  let avatarName =
-    formatName[0].charAt(0).toLocaleUpperCase() +
-    formatName[1].charAt(0).toLocaleUpperCase()
+  const formatName = user.name.split(' ')
+  let avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -54,7 +67,7 @@ const EditProfile = ({ navigation }) => {
             </View>
             <View>
               <Text>Full Name</Text>
-              <TextInput value={firstName + ' ' + lastName} />
+              <TextInput value={user.name} />
             </View>
           </View>
           <View style={styles.texInput}>
@@ -63,7 +76,7 @@ const EditProfile = ({ navigation }) => {
             </View>
             <View>
               <Text>Email</Text>
-              <TextInput value={userEmail} />
+              <TextInput value={user.email} />
             </View>
           </View>
           <View style={styles.texInput}>
@@ -74,7 +87,7 @@ const EditProfile = ({ navigation }) => {
               <Text>Password</Text>
               <View style={styles.texInputPassw}>
                 <TextInput
-                  value={userPassword}
+                  value={user.password}
                   secureTextEntry={!showPassword}
                 />
                 <MaterialCommunityIcons
@@ -93,10 +106,21 @@ const EditProfile = ({ navigation }) => {
             </View>
             <View>
               <Text>Phone Number</Text>
-              <TextInput value={userPhone} inputMode="numeric" />
+              <TextInput value={user.phone} inputMode="numeric" />
             </View>
           </View>
         </View>
+      </View>
+      <View>
+        <TouchableOpacity
+          style={styles.delete}
+          onPress={() => {
+            deleteUser(userId[0].id)
+            navigation.navigate('AuthStack', { screen: 'Landing' })
+          }}
+        >
+          <Text style={styles.text}>Delete Account</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
@@ -105,6 +129,18 @@ const EditProfile = ({ navigation }) => {
 export default EditProfile
 
 const styles = StyleSheet.create({
+  delete: {
+    backgroundColor: 'red',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: '10%',
+  },
+  text: {
+    fontWeight: 'bold',
+    color: 'white',
+    fontSize: 16,
+  },
   avatar: {
     backgroundColor: 'silver',
     borderRadius: 100,

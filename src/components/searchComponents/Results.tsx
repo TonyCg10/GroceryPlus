@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Pressable,
   Image,
   TouchableOpacity,
 } from 'react-native'
@@ -78,7 +77,7 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
           .map((data, key) => {
             return (
               <View key={key} style={resultSyles.container}>
-                <Pressable
+                <TouchableOpacity
                   key={data.id}
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
@@ -115,7 +114,7 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                         </View>
 
                         <View style={resultSyles.buttonContainer}>
-                          <Pressable
+                          <TouchableOpacity
                             style={resultSyles.pressable}
                             onPress={() => setProductId([data.id])}
                           >
@@ -128,12 +127,12 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                               />
                               <Text style={resultSyles.add}>Add</Text>
                             </View>
-                          </Pressable>
+                          </TouchableOpacity>
                         </View>
                       </View>
                     </View>
                   </View>
-                </Pressable>
+                </TouchableOpacity>
                 <View style={basePagesStyle.line} />
               </View>
             )
@@ -212,6 +211,5 @@ const resultSyles = StyleSheet.create({
     borderRadius: 10,
     padding: '6%',
     flexDirection: 'row',
-    width: '70%',
   },
 })

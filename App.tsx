@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar'
+import { NavigationContainer } from '@react-navigation/native'
 
 import GlobalRoutes from './src/routes/GlobalRoutes'
-import { NavigationContainer } from '@react-navigation/native'
 
 export default function App() {
   return (

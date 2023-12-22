@@ -5,19 +5,18 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
-  Pressable,
 } from 'react-native'
 import { basePagesStyle } from '../indexStyle/baseStyle'
 import { ScrollView } from 'react-native'
 import { DataType, useGroceryData } from './utils/GroceryData'
+import { ProductState, useProductStore } from '../../store/productStore.store'
+import { useState } from 'react'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating-widget'
-import { ProductState, useProductStore } from '../../store/productStore.store'
 
 const ProductDetails = ({ route, navigation }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
@@ -95,12 +94,7 @@ const ProductDetails = ({ route, navigation }) => {
 
         <View style={productDetailsStyle.rateView}>
           <Text style={productDetailsStyle.rate}>{rating}</Text>
-          <StarRating
-            rating={rating}
-            onChange={function (rating: number): void {
-              throw new Error('Function not implemented.')
-            }}
-          />
+          <StarRating rating={rating} onChange={() => {}} />
         </View>
         <View>
           <View style={productDetailsStyle.productView}>
@@ -122,7 +116,7 @@ const ProductDetails = ({ route, navigation }) => {
               .map((data, key) => {
                 return (
                   <View key={key} style={resultSyles.container}>
-                    <Pressable
+                    <TouchableOpacity
                       key={data.id}
                       onPress={() => {
                         navigation.navigate('ProductDetails', {
@@ -161,14 +155,14 @@ const ProductDetails = ({ route, navigation }) => {
                           </View>
                         </View>
                       </View>
-                    </Pressable>
+                    </TouchableOpacity>
                   </View>
                 )
               })
               .slice(0, 2)}
           </View>
         </View>
-        <Pressable onPress={() => setProductId([id])}>
+        <TouchableOpacity onPress={() => setProductId([id])}>
           <View style={productDetailsStyle.pressable}>
             <Text style={productDetailsStyle.pressableText}>Add to Bag</Text>
             <Feather
@@ -178,7 +172,7 @@ const ProductDetails = ({ route, navigation }) => {
               name="shopping-bag"
             />
           </View>
-        </Pressable>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   )

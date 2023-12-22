@@ -1,4 +1,4 @@
-import { View, Image, Text, Pressable } from 'react-native'
+import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { useGroceryData } from './utils/GroceryData'
 
@@ -18,7 +18,7 @@ const Grids = ({ display, navigation }: Pops) => {
     <View style={baseGridsStyle.gridsScreen}>
       {groceryData.map((data, key) => {
         return (
-          <Pressable
+          <TouchableOpacity
             key={key}
             onPress={() => {
               navigation.navigate('ProductDetails', {
@@ -44,7 +44,7 @@ const Grids = ({ display, navigation }: Pops) => {
             />
 
             <Text style={baseGridsStyle.text}>{data.brand}</Text>
-          </Pressable>
+          </TouchableOpacity>
         )
       })}
     </View>
@@ -56,7 +56,7 @@ const Grids = ({ display, navigation }: Pops) => {
         )
 
         return (
-          <Pressable
+          <TouchableOpacity
             key={categoryIndex}
             onPress={() => {
               navigation.navigate('CategoryLists', {
@@ -74,7 +74,7 @@ const Grids = ({ display, navigation }: Pops) => {
             <Text style={baseGridsStyle.text}>
               {representativeItem.category}
             </Text>
-          </Pressable>
+          </TouchableOpacity>
         )
       })}
     </View>

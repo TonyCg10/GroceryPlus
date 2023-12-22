@@ -1,4 +1,4 @@
-import { SafeAreaView, View, Text, Pressable, Modal } from 'react-native'
+import { SafeAreaView, View, Text, Modal, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useState } from 'react'
 import { useGroceryData } from '../../share/utils/GroceryData'
@@ -38,7 +38,7 @@ const Search = ({ navigation }) => {
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Rating</Text>
-          <Pressable
+          <TouchableOpacity
             style={[styles.button, styles.buttonClose]}
             onPress={() => {
               setModalVisible(!modalVisible)
@@ -46,8 +46,8 @@ const Search = ({ navigation }) => {
             }}
           >
             <Text style={styles.textStyle}>5</Text>
-          </Pressable>
-          <Pressable
+          </TouchableOpacity>
+          <TouchableOpacity
             style={[styles.button, styles.buttonClose]}
             onPress={() => {
               setModalVisible(!modalVisible)
@@ -55,7 +55,7 @@ const Search = ({ navigation }) => {
             }}
           >
             <Text style={styles.textStyle}>4</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
       </View>
     </Modal>
@@ -83,13 +83,13 @@ const Search = ({ navigation }) => {
             <View style={searchPageStyles.headerContainer}>
               <View style={searchPageStyles.resultContainer}>
                 <Text style={searchPageStyles.headerText}>Search Result</Text>
-                <Pressable
+                <TouchableOpacity
                   onPress={() => {
                     setModalVisible(!modalVisible)
                   }}
                 >
                   <Ionicons name="filter-outline" size={24} />
-                </Pressable>
+                </TouchableOpacity>
               </View>
               <Results
                 navigation={navigation}

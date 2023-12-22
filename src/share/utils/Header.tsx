@@ -2,13 +2,13 @@ import {
   TouchableOpacity,
   View,
   Text,
-  Pressable,
   StyleSheet,
   TextInput,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import Feather from 'react-native-vector-icons/Feather'
 import { useState } from 'react'
+
+import Feather from 'react-native-vector-icons/Feather'
 
 type Props = {
   title?: string
@@ -31,14 +31,14 @@ const Header = ({
 
   return (
     <View style={basePagesStyle.header}>
-      <Pressable
+      <TouchableOpacity
         style={actionLeft && basePagesStyle.icon}
         onPress={() => {
           navigation.goBack()
         }}
       >
         {actionLeft}
-      </Pressable>
+      </TouchableOpacity>
       <View>
         {!!searcher && (
           <View style={headerStyle.searcherContainer}>

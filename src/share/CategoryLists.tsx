@@ -5,14 +5,15 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  Pressable,
+  TouchableOpacity,
 } from 'react-native'
+import { ProductState, useProductStore } from '../../store/productStore.store'
+import { useGroceryData } from './utils/GroceryData'
 import { basePagesStyle } from '../indexStyle/baseStyle'
+
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { useGroceryData } from './utils/GroceryData'
 import Feather from 'react-native-vector-icons/Feather'
-import { ProductState, useProductStore } from '../../store/productStore.store'
 
 const CategoryLists = ({ navigation, route }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
@@ -40,7 +41,7 @@ const CategoryLists = ({ navigation, route }) => {
                   />
                   <Text style={baseGridsStyle.text}>{data.title}</Text>
                   <Text style={baseGridsStyle.price}>${data.price}</Text>
-                  <Pressable
+                  <TouchableOpacity
                     style={baseGridsStyle.pressable}
                     onPress={() => setProductId([data.id])}
                   >
@@ -55,7 +56,7 @@ const CategoryLists = ({ navigation, route }) => {
                         Add to Bag
                       </Text>
                     </View>
-                  </Pressable>
+                  </TouchableOpacity>
                 </View>
               )
             })}

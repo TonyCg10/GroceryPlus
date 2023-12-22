@@ -7,7 +7,7 @@ import {
   View,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { AuthState, useAuthStore } from '../../../store/authStore.store'
+import { UserState, useUserStore } from '../../../store/userStore.store'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -20,17 +20,12 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const More = ({ navigation }) => {
-  const avatar = ''
-  const { userName } = useAuthStore((state: AuthState) => state)
+  const { user } = useUserStore((state: UserState) => state)
 
-  const formatName = userName.split(' ')
-  let firstName =
-    formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
-  let lastName =
-    formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
-  let avatarName =
-    formatName[0].charAt(0).toLocaleUpperCase() +
-    formatName[1].charAt(0).toLocaleUpperCase()
+  const avatar = ''
+
+  const formatName = user.name.split(' ')
+  const avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -48,9 +43,7 @@ const More = ({ navigation }) => {
           )}
         </View>
         <View>
-          <Text style={styles.name}>
-            {firstName} {lastName}
-          </Text>
+          <Text style={styles.name}>{user.name}</Text>
           <Text style={styles.number}>841294074</Text>
         </View>
       </View>
@@ -106,9 +99,9 @@ const More = ({ navigation }) => {
         <MorePageButtons
           text="Log out"
           icon={<AntDesign name="poweroff" size={20} color={'red'} />}
-          onPress={() =>
+          onPress={() => {
             navigation.navigate('AuthStack', { screen: 'Landing' })
-          }
+          }}
         />
       </ScrollView>
     </SafeAreaView>

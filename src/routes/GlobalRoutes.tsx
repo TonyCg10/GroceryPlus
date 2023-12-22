@@ -1,6 +1,5 @@
 import { createStackNavigator } from '@react-navigation/stack'
 
-import LoginPage from '../components/authComponents/LoginPage'
 import Notifications from '../share/Notification'
 import BottomRoutes from './BottomRoutes'
 import ProductDetails from '../share/ProductDetails'
