@@ -15,11 +15,14 @@ import {
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
 const Landing = ({ navigation }) => {
-  const { initializeDB } = useUserDatabaseStore((state: DatabaseStore) => state)
+  const { initializeDB, fetchUsers } = useUserDatabaseStore(
+    (state: DatabaseStore) => state,
+  )
 
   useEffect(() => {
     initializeDB()
-  }, [initializeDB])
+    fetchUsers()
+  }, [initializeDB, fetchUsers])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -36,7 +39,9 @@ const Landing = ({ navigation }) => {
           </TouchableOpacity>
           <TouchableOpacity
             style={landingStyles.signUp}
-            onPress={() => navigation.navigate('SignUpPage')}
+            onPress={() => {
+              navigation.navigate('SignUpPage')
+            }}
           >
             <Text style={landingStyles.text}>Sign Up</Text>
           </TouchableOpacity>

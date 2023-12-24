@@ -20,19 +20,27 @@ export const useUserStore = create<UserState>()(
           email: '',
           password: '',
           phone: '',
+          img: '',
         },
 
-        setUser: (user) => {
-          set({ user })
+        setUser: (updatedUser) => {
+          set((state) => ({
+            user: {
+              ...state.user,
+              ...updatedUser,
+            },
+          }))
         },
 
         clearUser: () => {
           set({
             user: {
+              id: 0,
               name: '',
               email: '',
               password: '',
               phone: '',
+              img: '',
             },
           })
         },

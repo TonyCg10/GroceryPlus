@@ -1,12 +1,18 @@
 import { create } from 'zustand'
 import * as SQLite from 'expo-sqlite'
 
+export const useUserDatabase = () => {
+  const { db } = useUserDatabaseStore.getState()
+  return db
+}
+
 export interface User {
-  id?: number
+  id: number
   name: string
   email: string
   password: string
   phone: string
+  img: string
 }
 
 export interface DatabaseStore {
@@ -14,8 +20,9 @@ export interface DatabaseStore {
   users: User[]
 
   initializeDB: () => void
+  insertUser: (user: User) => Promise<number>
   fetchUsers: () => void
-  insertUser: (user: User) => void
+  deleteUsersTable: () => void
   getUserByEmailAndPasswordOrPhone: (
     email: string,
     password?: string,
@@ -23,7 +30,7 @@ export interface DatabaseStore {
   ) => Promise<User | null>
   deleteUser: (id: number) => void
   deleteAllUsers: () => void
-  deleteUsersTable: () => void
+  updateUser: (id: number, updatedUser: Partial<User>) => Promise<void>
 }
 
 export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
@@ -36,7 +43,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, password TEXT, phone TEXT)',
+          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, password TEXT, phone TEXT, img TEXT)',
           [],
           () => {
             console.log(
@@ -85,31 +92,44 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
     })
   },
 
-  insertUser: (user) => {
+  insertUser: (user: User) => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) return
+    if (!db) {
+      console.error('Database not initialized')
+      return Promise.reject(new Error('Database not initialized'))
+    }
+
     return new Promise<number>((resolve, reject) => {
-      db.transaction((tx) => {
-        tx.executeSql(
-          'INSERT INTO users (name, email, password, phone) VALUES (?, ?, ?, ?)',
-          [user.name, user.email, user.password, user.phone],
-          (_, results) => {
-            const { insertId } = results
-            console.log(
-              'INSERT USER #####',
-              'User inserted successfully',
-              results,
-            )
-            useUserDatabaseStore.getState().fetchUsers()
-            resolve(insertId)
-          },
-          (_, error) => {
-            console.error('Error inserting user:', error)
-            reject(error)
-            return false
-          },
-        )
-      })
+      db.transaction(
+        (tx) => {
+          tx.executeSql(
+            'INSERT INTO users (name, email, password, phone, img) VALUES (?, ?, ?, ?, ?)',
+            [user.name, user.email, user.password, user.phone, user.img],
+            (_, results) => {
+              const { insertId } = results
+              if (insertId) {
+                console.log(
+                  'INSERT USER #####',
+                  'User inserted successfully',
+                  results,
+                )
+                resolve(insertId)
+              } else {
+                reject(new Error('Failed to retrieve insertId'))
+              }
+            },
+            (_, error) => {
+              console.error('Error inserting user:', error)
+              reject(error)
+              return false
+            },
+          )
+        },
+        (error) => {
+          console.error('Transaction error:', error)
+          reject(error)
+        },
+      )
     })
   },
 
@@ -169,8 +189,8 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
     })
   },
 
-  deleteUser: (id: number) => {
-    const { db } = useUserDatabaseStore.getState()
+  deleteUser: (id) => {
+    const db = useUserDatabase()
     if (!db) return
 
     db.transaction((tx) => {
@@ -265,6 +285,50 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
           return false
         },
       )
+    })
+  },
+
+  updateUser: (id, updatedUser) => {
+    const { db } = useUserDatabaseStore.getState()
+    if (!db) {
+      console.error('Database not initialized')
+      return Promise.resolve()
+    }
+
+    const { name, email, password, phone, img } = updatedUser
+    const valuesToUpdate = []
+    if (name) valuesToUpdate.push(`name = '${name}'`)
+    if (email) valuesToUpdate.push(`email = '${email}'`)
+    if (password) valuesToUpdate.push(`password = '${password}'`)
+    if (phone) valuesToUpdate.push(`phone = '${phone}'`)
+    if (img !== undefined) valuesToUpdate.push(`img = '${img}'`)
+
+    const updateQuery = `UPDATE users SET ${valuesToUpdate.join(
+      ', ',
+    )} WHERE id = ?`
+    const params = [id]
+
+    return new Promise<void>((resolve, reject) => {
+      db.transaction((tx) => {
+        tx.executeSql(
+          updateQuery,
+          params,
+          (_, results) => {
+            console.log(
+              'UPDATE USER #####',
+              'User updated successfully',
+              results,
+            )
+            useUserDatabaseStore.getState().fetchUsers()
+            resolve()
+          },
+          (_, error) => {
+            console.error('Error updating user:', error)
+            reject(error)
+            return false
+          },
+        )
+      })
     })
   },
 }))

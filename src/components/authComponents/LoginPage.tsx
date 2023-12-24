@@ -1,41 +1,32 @@
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import {
   DatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/authStore.store'
-import { emailRegex, passwordRegex } from './utils/utils'
+import { regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../../share/utils/Header'
+import Octicons from 'react-native-vector-icons/Octicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const LoginPage = ({ navigation }) => {
-  const { fetchUsers, getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
+  const { getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
     (state: DatabaseStore) => state,
   )
   const { setUser } = useUserStore((state: UserState) => state)
 
-  useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
-
-  const [email, setEmail] = useState('')
+  // const [email, setEmail] = useState('')
+  // const [password, setPassword] = useState('')
   // const [email, setEmail] = useState('ac@gmail.com')
-  // const [email, setEmail] = useState('cc@gmail.com')
-  const [password, setPassword] = useState('')
-  // const [password, setPassword] = useState('123$qwe')
-  // const [password, setPassword] = useState('qwe$321')
+  const [email, setEmail] = useState('cc@gmail.com')
+  // const [password, setPassword] = useState('123qwe&')
+  const [password, setPassword] = useState('qwe123&')
 
   const handleOnLogin = async () => {
     const findUser = await getUserByEmailAndPasswordOrPhone(email, password, '')
@@ -56,7 +47,11 @@ const LoginPage = ({ navigation }) => {
   }
 
   const logNotValid = () => {
-    if (emailRegex.test(email) && passwordRegex.test(password)) return true
+    if (
+      regexType.emailRegex.test(email) &&
+      regexType.passwordRegex.test(password)
+    )
+      return true
   }
 
   return (
@@ -66,100 +61,39 @@ const LoginPage = ({ navigation }) => {
         actionLeft={<AntDesign size={22} name="arrowleft" />}
         navigation={navigation}
       />
-      <View style={loginPageStyle.content}>
-        <View style={loginPageStyle.icon}>
+      <View style={authPagesStyles.container}>
+        <View style={authPagesStyles.icon}>
           <GroceryPlus width={160} height={160} />
         </View>
-        <View style={loginPageStyle.inputContent}>
-          <TextInput
-            placeholder="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(value) => setEmail(value)}
-            style={[
-              loginPageStyle.input,
-              !emailRegex.test(email) && loginPageStyle.invalidInput,
-            ]}
+        <View style={authPagesStyles.inputContainer}>
+          <InputUser
+            icon={<MaterialCommunityIcons name="email-outline" size={24} />}
+            label={userInputType.email}
+            input={email}
+            setInput={setEmail}
           />
-          <Text>{!emailRegex.test(email) && 'Bad Email'}</Text>
-          <TextInput
-            placeholder="Password"
-            value={password}
-            onChangeText={(value) => setPassword(value)}
-            style={[
-              loginPageStyle.input,
-              !passwordRegex.test(password) && loginPageStyle.invalidInput,
-            ]}
+          <InputUser
+            icon={<Octicons name="lock" size={22} />}
+            label={userInputType.password}
+            input={password}
+            setInput={setPassword}
           />
-          <Text>{!passwordRegex.test(password) && 'Bad Password'}</Text>
         </View>
-
-        <View style={{ flex: 1, justifyContent: 'flex-end' }}>
-          <TouchableOpacity
-            disabled={!logNotValid()}
-            style={[
-              loginPageStyle.button,
-              !logNotValid() && loginPageStyle.notValid,
-            ]}
-            onPress={() => {
-              handleOnLogin()
-            }}
-          >
-            <Text style={loginPageStyle.inputText}>Continue</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          disabled={!logNotValid()}
+          style={[
+            authPagesStyles.button,
+            !logNotValid() && authPagesStyles.disabledBtn,
+          ]}
+          onPress={() => {
+            handleOnLogin()
+          }}
+        >
+          <Text style={authPagesStyles.btnText}>Continue</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   )
 }
 
 export default LoginPage
-
-const loginPageStyle = StyleSheet.create({
-  icon: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-  },
-  content: {
-    marginBottom: '10%',
-    flex: 1,
-  },
-  button: {
-    flex: 1,
-    backgroundColor: '#5EC401',
-    flexGrow: 1,
-    width: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    borderRadius: 10,
-    maxHeight: '20%',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    width: '80%',
-    marginVertical: '2%',
-    paddingLeft: 10,
-  },
-  invalidInput: {
-    borderColor: 'red',
-  },
-  notValid: {
-    backgroundColor: '#A9CEC2',
-  },
-  inputContent: {
-    alignItems: 'center',
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  inputText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-})

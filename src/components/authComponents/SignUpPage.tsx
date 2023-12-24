@@ -1,26 +1,28 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
-  StyleSheet,
-  TextInput,
   SafeAreaView,
   TouchableOpacity,
   Alert,
   Modal,
+  ScrollView,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { emailRegex, passwordRegex, phoneRegex } from './utils/utils'
+import { regexType, userInputType } from './utils/utils'
 import {
   DatabaseStore,
   User,
   useUserDatabaseStore,
 } from '../../../store/authStore.store'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import Octicons from 'react-native-vector-icons/Octicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const SignUpPage = ({ navigation }) => {
   const { insertUser, getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
@@ -33,9 +35,6 @@ const SignUpPage = ({ navigation }) => {
   const [password, setPassword] = useState('')
   const [phone, setPhone] = useState('')
 
-  const [isValid, setIsValid] = useState(false)
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('')
-
   const handleOnSignUp = async () => {
     const formatName = name.split(' ')
 
@@ -47,15 +46,17 @@ const SignUpPage = ({ navigation }) => {
     if (
       firstName &&
       lastName &&
-      emailRegex.test(email) &&
-      passwordRegex.test(password) &&
-      phone
+      regexType.emailRegex.test(email) &&
+      regexType.passwordRegex.test(password) &&
+      regexType.phoneRegex.test(phone)
     ) {
-      const newUser: User = {
+      const newUser = {
+        id: 0,
         name: firstName + ' ' + lastName,
         email: email,
         password: password,
         phone: phone,
+        img: '',
       }
 
       const findUser = await getUserByEmailAndPasswordOrPhone(
@@ -66,39 +67,28 @@ const SignUpPage = ({ navigation }) => {
 
       if (!findUser) {
         try {
-          console.log('Signed In')
-          await insertUser(newUser)
-          setUser(newUser)
+          const insertedId = await insertUser(newUser)
+          const userWithId = { ...newUser, id: insertedId }
+          setUser(userWithId)
 
-          navigation.navigate('BottomRoutes')
+          console.log('Signed In')
+          navigation.navigate('SelectImage')
         } catch (error) {
           console.error('Error handling new user:', error)
         }
       } else {
+        Alert.alert('User already exist')
         console.log('User already exist')
       }
     }
   }
 
-  const handlePhoneNumberChange = (number: string) => {
-    const numericInput = number.replace(/\D/g, '')
-    const isValidPhoneNumber = phoneRegex.test(numericInput)
-    const formattedNumber = numericInput.replace(
-      /(\d{3})(\d{3})(\d{4})/,
-      '($1) $2-$3',
-    )
-
-    setPhone(numericInput)
-    setFormattedPhoneNumber(formattedNumber)
-    setIsValid(isValidPhoneNumber)
-  }
-
   const signUpNotValid = () => {
     if (
       name &&
-      emailRegex.test(email) &&
-      passwordRegex.test(password) &&
-      isValid
+      regexType.emailRegex.test(email) &&
+      regexType.passwordRegex.test(password) &&
+      regexType.phoneRegex.test(phone)
     )
       return true
   }
@@ -110,66 +100,52 @@ const SignUpPage = ({ navigation }) => {
         actionLeft={<AntDesign size={22} name="arrowleft" />}
         navigation={navigation}
       />
-      <View style={signUpPageStyle.content}>
-        <View style={signUpPageStyle.icon}>
+      <View style={authPagesStyles.container}>
+        <View style={authPagesStyles.icon}>
           <GroceryPlus width={160} height={160} />
         </View>
-        <View style={signUpPageStyle.inputContent}>
-          <TextInput
-            style={[
-              signUpPageStyle.input,
-              !name && signUpPageStyle.invalidInput,
-            ]}
-            placeholder="Full Name"
-            value={name}
-            onChangeText={(value) => setName(value)}
+
+        <ScrollView
+          style={authPagesStyles.scrollInputContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          <InputUser
+            icon={<Octicons name="person" size={24} />}
+            label={userInputType.name}
+            input={name}
+            setInput={setName}
           />
-          <TextInput
-            style={[
-              signUpPageStyle.input,
-              !emailRegex.test(email) && signUpPageStyle.invalidInput,
-            ]}
-            placeholder="Email"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={(value) => setEmail(value)}
+          <InputUser
+            icon={<MaterialCommunityIcons name="email-outline" size={24} />}
+            label={userInputType.email}
+            input={email}
+            setInput={setEmail}
           />
-          <Text>{!emailRegex.test(email) && 'Bad Email'}</Text>
-          <TextInput
-            style={[
-              signUpPageStyle.input,
-              !passwordRegex.test(password) && signUpPageStyle.invalidInput,
-            ]}
-            placeholder="Password"
-            value={password}
-            onChangeText={(value) => setPassword(value)}
+          <InputUser
+            icon={<Octicons name="lock" size={22} />}
+            label={userInputType.password}
+            input={password}
+            setInput={setPassword}
           />
-          <Text>{!passwordRegex.test(password) && 'Bad Password'}</Text>
-          <TextInput
-            style={[
-              signUpPageStyle.input,
-              !phone && signUpPageStyle.invalidInput,
-            ]}
-            placeholder="Phone Number"
-            keyboardType="phone-pad"
-            value={formattedPhoneNumber}
-            onChangeText={(number) => handlePhoneNumberChange(number)}
+          <InputUser
+            icon={<MaterialCommunityIcons name="phone-outline" size={22} />}
+            label={userInputType.phone}
+            input={phone}
+            setInput={setPhone}
           />
-          <Text>{!phoneRegex.test(phone) && 'Bad Phone Number'}</Text>
-        </View>
+        </ScrollView>
 
         <TouchableOpacity
           disabled={!signUpNotValid()}
           style={[
-            signUpPageStyle.button,
-            !signUpNotValid() && signUpPageStyle.notValid,
+            authPagesStyles.button,
+            !signUpNotValid() && authPagesStyles.disabledBtn,
           ]}
           onPress={() => {
             handleOnSignUp()
           }}
         >
-          <Text style={signUpPageStyle.inputText}>Continue</Text>
+          <Text style={authPagesStyles.btnText}>Continue</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -177,54 +153,3 @@ const SignUpPage = ({ navigation }) => {
 }
 
 export default SignUpPage
-
-const signUpPageStyle = StyleSheet.create({
-  container: {
-    height: '100%',
-    backgroundColor: 'white',
-  },
-  icon: {
-    flex: 5,
-    justifyContent: 'flex-end',
-    alignSelf: 'center',
-  },
-  content: {
-    marginBottom: '10%',
-    flex: 1,
-  },
-  inputContent: {
-    alignItems: 'center',
-    flex: 10,
-    justifyContent: 'center',
-  },
-  input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    borderRadius: 10,
-    width: '80%',
-    marginVertical: '2%',
-    paddingLeft: 10,
-  },
-  invalidInput: {
-    borderColor: 'red',
-  },
-  button: {
-    flex: 1,
-    backgroundColor: '#5EC401',
-    flexGrow: 1,
-    width: '80%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    alignSelf: 'center',
-    borderRadius: 10,
-  },
-  notValid: {
-    backgroundColor: '#A9CEC2',
-  },
-  inputText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-})

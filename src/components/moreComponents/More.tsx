@@ -13,7 +13,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Header from '../../share/utils/Header'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import MorePageButtons from '../../share/utils/MorePageButtons'
+import MorePageButtons from './utils/MorePageButtons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -22,10 +22,8 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 const More = ({ navigation }) => {
   const { user } = useUserStore((state: UserState) => state)
 
-  const avatar = ''
-
-  const formatName = user.name.split(' ')
-  const avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  const formatName = user && user.name.split(' ')
+  let avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -36,10 +34,10 @@ const More = ({ navigation }) => {
       />
       <View style={styles.header}>
         <View style={styles.avatar}>
-          {avatar == '' ? (
+          {user.img == '' ? (
             <Text style={styles.avatarText}>{avatarName}</Text>
           ) : (
-            <Image source={avatar} style={styles.avatarImage} />
+            <Image source={{ uri: user.img }} style={styles.avatarImage} />
           )}
         </View>
         <View>
@@ -117,15 +115,17 @@ const styles = StyleSheet.create({
   },
   avatar: {
     backgroundColor: 'silver',
-    borderRadius: 100,
     marginRight: '4%',
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
+    alignSelf: 'center',
+    borderRadius: 30,
   },
   avatarImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
+    width: 60,
+    height: 60,
+    alignSelf: 'center',
+    borderRadius: 30,
   },
   avatarText: {
     alignSelf: 'center',

@@ -3,47 +3,66 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
-  TextInput,
   TouchableOpacity,
+  ScrollView,
+  Alert,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { useEffect, useId, useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
   DatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/authStore.store'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import { userInputType } from '../authComponents/utils/utils'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Octicons from 'react-native-vector-icons/Octicons'
+import InputUser from '../../share/utils/InputUser'
+import ImageComponent from '../../share/utils/ImageComponent'
 import Feather from 'react-native-vector-icons/Feather'
 
 const EditProfile = ({ navigation }) => {
-  const { deleteUser, fetchUsers, users } = useUserDatabaseStore(
+  const { updateUser, deleteUser } = useUserDatabaseStore(
     (state: DatabaseStore) => state,
   )
-  const { user } = useUserStore((state: UserState) => state)
+  const { user, clearUser } = useUserStore((state: UserState) => state)
 
-  const userId = users.filter(
-    (u) =>
-      u.name == user.name &&
-      u.email == user.email &&
-      u.password == user.password &&
-      u.phone == user.phone,
-  )
+  const [name, setName] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [phone, setPhone] = useState('')
+  const [toggleModal, setToggleModal] = useState(false)
 
-  const [showPassword, setShowPassword] = useState(false)
+  const handleOnUpdateUser = () => {
+    const updatedUser = {
+      name: name,
+      email: email,
+      password: password,
+      phone: phone,
+    }
 
-  useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
+    updateUser(user.id, updatedUser)
+  }
 
-  const avatar = ''
-  const formatName = user.name.split(' ')
-  let avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  const handleOnDeleteUser = () => {
+    Alert.alert('Are you sure you want to delete your account?', '', [
+      {
+        text: 'Confirm',
+        onPress: () => {
+          deleteUser(user.id)
+          clearUser()
+          navigation.navigate('AuthStack', { screen: 'Landing' })
+        },
+      },
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+    ])
+  }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -52,76 +71,55 @@ const EditProfile = ({ navigation }) => {
         actionLeft={<AntDesign size={22} name="arrowleft" />}
         navigation={navigation}
       />
-      <View>
-        <View style={styles.avatar}>
-          {avatar == '' ? (
-            <Text style={styles.avatarText}>{avatarName}</Text>
-          ) : (
-            <Image source={avatar} style={styles.avatarImage} />
-          )}
+      <ImageComponent />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <InputUser
+            icon={<Octicons name="person" size={24} />}
+            label={userInputType.name}
+            input={user.name}
+            setInput={setName}
+          />
+          <InputUser
+            icon={<MaterialCommunityIcons name="email-outline" size={24} />}
+            label={userInputType.email}
+            input={user.email}
+            setInput={setEmail}
+          />
+          <InputUser
+            icon={<Octicons name="lock" size={22} />}
+            label={userInputType.password}
+            input={user.password}
+            setInput={setPassword}
+          />
+          <InputUser
+            icon={<MaterialCommunityIcons name="phone-outline" size={22} />}
+            label={userInputType.phone}
+            input={user.phone}
+            setInput={setPhone}
+          />
+        </ScrollView>
+        <View style={{ marginTop: '10%' }}>
+          <TouchableOpacity
+            style={styles.edit}
+            onPress={() => {
+              setToggleModal(true)
+            }}
+          >
+            <AntDesign size={22} color="white" name="edit" />
+            <Text style={styles.text}>Edit Account</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.delete}
+            onPress={() => {
+              handleOnDeleteUser()
+            }}
+          >
+            <Feather size={22} color="white" name="user-minus" />
+            <Text style={styles.text}>Delete Account</Text>
+          </TouchableOpacity>
         </View>
-        <View>
-          <View style={styles.texInput}>
-            <View style={styles.icon}>
-              <Octicons name="person" size={22} />
-            </View>
-            <View>
-              <Text>Full Name</Text>
-              <TextInput value={user.name} />
-            </View>
-          </View>
-          <View style={styles.texInput}>
-            <View style={styles.icon}>
-              <MaterialCommunityIcons name="email-outline" size={22} />
-            </View>
-            <View>
-              <Text>Email</Text>
-              <TextInput value={user.email} />
-            </View>
-          </View>
-          <View style={styles.texInput}>
-            <View style={styles.icon}>
-              <Octicons name="lock" size={20} />
-            </View>
-            <View style={styles.inputPassw}>
-              <Text>Password</Text>
-              <View style={styles.texInputPassw}>
-                <TextInput
-                  value={user.password}
-                  secureTextEntry={!showPassword}
-                />
-                <MaterialCommunityIcons
-                  name={showPassword ? 'eye-off' : 'eye'}
-                  size={24}
-                  onPress={() => {
-                    setShowPassword(!showPassword)
-                  }}
-                />
-              </View>
-            </View>
-          </View>
-          <View style={styles.texInput}>
-            <View style={styles.icon}>
-              <Feather name="phone" size={20} />
-            </View>
-            <View>
-              <Text>Phone Number</Text>
-              <TextInput value={user.phone} inputMode="numeric" />
-            </View>
-          </View>
-        </View>
-      </View>
-      <View>
-        <TouchableOpacity
-          style={styles.delete}
-          onPress={() => {
-            deleteUser(userId[0].id)
-            navigation.navigate('AuthStack', { screen: 'Landing' })
-          }}
-        >
-          <Text style={styles.text}>Delete Account</Text>
-        </TouchableOpacity>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   )
 }
@@ -129,53 +127,27 @@ const EditProfile = ({ navigation }) => {
 export default EditProfile
 
 const styles = StyleSheet.create({
-  delete: {
-    backgroundColor: 'red',
-    padding: 10,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: '10%',
-  },
   text: {
     fontWeight: 'bold',
     color: 'white',
     fontSize: 16,
+    textAlign: 'center',
+    width: '90%',
   },
-  avatar: {
-    backgroundColor: 'silver',
-    borderRadius: 100,
-    width: 150,
-    height: 150,
-    alignSelf: 'center',
-    marginVertical: '10%',
-  },
-  avatarImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 100,
-  },
-  avatarText: {
-    alignSelf: 'center',
-    marginTop: '35%',
-    fontSize: 28,
-  },
-  texInput: {
-    backgroundColor: 'silver',
-    padding: '3%',
+  edit: {
+    backgroundColor: '#5EC401',
+    padding: 10,
     borderRadius: 10,
+    alignItems: 'center',
     marginVertical: '2%',
     flexDirection: 'row',
   },
-  texInputPassw: {
+  delete: {
+    backgroundColor: '#f66',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: '2%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  inputPassw: {
-    flex: 1,
-  },
-  icon: {
-    alignSelf: 'center',
-    marginHorizontal: '2%',
-    marginRight: '5%',
   },
 })
