@@ -104,7 +104,13 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
         (tx) => {
           tx.executeSql(
             'INSERT INTO users (name, email, password, phone, img) VALUES (?, ?, ?, ?, ?)',
-            [user.name, user.email, user.password, user.phone, user.img],
+            [
+              user.name,
+              user.email,
+              user.password,
+              user.phone,
+              user.img,
+            ],
             (_, results) => {
               const { insertId } = results
               if (insertId) {

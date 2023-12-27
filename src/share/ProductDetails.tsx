@@ -20,10 +20,9 @@ import StarRating from 'react-native-star-rating-widget'
 
 const ProductDetails = ({ route, navigation }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
+  const { groceryData } = useGroceryData()
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-
-  const { groceryData } = useGroceryData()
 
   const {
     id,
@@ -120,6 +119,7 @@ const ProductDetails = ({ route, navigation }) => {
                       key={data.id}
                       onPress={() => {
                         navigation.navigate('ProductDetails', {
+                          id: data.id,
                           description: data.description,
                           images: data.images,
                           title: data.title,
@@ -162,7 +162,11 @@ const ProductDetails = ({ route, navigation }) => {
               .slice(0, 2)}
           </View>
         </View>
-        <TouchableOpacity onPress={() => setProductId([id])}>
+        <TouchableOpacity
+          onPress={() => {
+            id && setProductId([id])
+          }}
+        >
           <View style={productDetailsStyle.pressable}>
             <Text style={productDetailsStyle.pressableText}>Add to Bag</Text>
             <Feather

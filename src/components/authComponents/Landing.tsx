@@ -15,7 +15,7 @@ import {
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
 const Landing = ({ navigation }) => {
-  const { initializeDB, fetchUsers } = useUserDatabaseStore(
+  const { initializeDB, fetchUsers, deleteUsersTable } = useUserDatabaseStore(
     (state: DatabaseStore) => state,
   )
 
@@ -40,6 +40,7 @@ const Landing = ({ navigation }) => {
           <TouchableOpacity
             style={landingStyles.signUp}
             onPress={() => {
+              // deleteUsersTable()
               navigation.navigate('SignUpPage')
             }}
           >

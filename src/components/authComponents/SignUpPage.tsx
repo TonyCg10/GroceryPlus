@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import {
   View,
   Text,
@@ -50,7 +50,7 @@ const SignUpPage = ({ navigation }) => {
       regexType.passwordRegex.test(password) &&
       regexType.phoneRegex.test(phone)
     ) {
-      const newUser = {
+      const newUser: User = {
         id: 0,
         name: firstName + ' ' + lastName,
         email: email,

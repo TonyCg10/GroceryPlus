@@ -4,10 +4,12 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const product = {
+  userId: 0,
   productId: [],
 }
 
 export interface ProductState {
+  userId: number
   productId: number[]
 
   setProductId: (productId: number[]) => void
