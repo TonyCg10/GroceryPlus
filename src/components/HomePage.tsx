@@ -44,7 +44,7 @@ const HomePage = ({ navigation }) => {
         actionRight={<Feather name="bell" size={20} />}
         navigation={navigation}
       />
-      <View style={styles.locationView}>
+      <TouchableOpacity style={styles.locationView}>
         <View style={styles.locationLeft}>
           <View style={styles.locationIconBack}>
             <EvilIcons
@@ -61,10 +61,8 @@ const HomePage = ({ navigation }) => {
           </View>
         </View>
 
-        <TouchableOpacity>
-          <Feather size={30} name="chevron-right" />
-        </TouchableOpacity>
-      </View>
+        <Feather size={30} name="chevron-right" />
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.searcher}
@@ -91,7 +89,7 @@ const styles = StyleSheet.create({
   locationView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '4%',
+    marginBottom: '5%',
   },
   locationLeft: {
     flexDirection: 'row',

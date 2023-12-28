@@ -270,7 +270,7 @@ const productDetailsStyle = StyleSheet.create({
     alignSelf: 'flex-end',
     color: '#5EC401',
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 18,
   },
 })
 

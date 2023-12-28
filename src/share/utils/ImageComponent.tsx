@@ -11,7 +11,6 @@ import {
   DatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/authStore.store'
-import { useEffect } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -22,23 +21,16 @@ type Props = {
 }
 
 const ImageComponent = ({ navigation, route }: Props) => {
-  const { updateUser, fetchUsers, users } = useUserDatabaseStore(
-    (state: DatabaseStore) => state,
-  )
-  const { user, setUser } = useUserStore((state: UserState) => state)
+  const { updateUser } = useUserDatabaseStore((state: DatabaseStore) => state)
+  const { user } = useUserStore((state: UserState) => state)
 
-  useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
-
-  useEffect(() => {
-    setUser(users.find((u) => u.id === user.id))
-  }, [users, setUser, user.id])
-
-  const formatName = user && user.name.split(' ')
+  const formatName = user?.name?.split(' ') || []
   let avatarName = ''
-  if (formatName && formatName.length >= 2) {
+
+  if (formatName.length > 1) {
     avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  } else if (formatName.length === 1) {
+    avatarName = formatName[0].charAt(0)
   }
 
   const pickImage = async () => {

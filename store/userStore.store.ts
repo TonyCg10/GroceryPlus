@@ -30,6 +30,7 @@ export const useUserStore = create<UserState>()(
               ...updatedUser,
             },
           }))
+          console.log('userStore ===== ', 'user set successfully')
         },
 
         clearUser: () => {
@@ -43,6 +44,7 @@ export const useUserStore = create<UserState>()(
               img: '',
             },
           })
+          console.log('userStore ===== ', 'store')
         },
       }),
       {
