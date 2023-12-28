@@ -1,11 +1,6 @@
 import { create } from 'zustand'
 import * as SQLite from 'expo-sqlite'
 
-export const useUserDatabase = () => {
-  const { db } = useUserDatabaseStore.getState()
-  return db
-}
-
 export interface User {
   id: number
   name: string
@@ -32,7 +27,6 @@ export interface DatabaseStore {
   deleteAllUsers: () => void
   updateUser: (id: number, updatedUser: Partial<User>) => Promise<void>
 }
-
 export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
   db: null,
   users: [],
@@ -67,10 +61,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
 
   fetchUsers: () => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) {
-      console.error('Database not initialized')
-      return
-    }
+    if (!db) return
 
     db.transaction((tx) => {
       tx.executeSql(
@@ -81,7 +72,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
           for (let i = 0; i < rows.length; i++) {
             users.push(rows.item(i))
           }
-          console.log('FETCHING #####', 'Fetched users:', users)
+          console.log('FETCHING #####', 'Fetched users:', rows)
           set({ users })
         },
         (_, error) => {
@@ -92,25 +83,16 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
     })
   },
 
-  insertUser: (user: User) => {
+  insertUser: (user) => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) {
-      console.error('Database not initialized')
-      return Promise.reject(new Error('Database not initialized'))
-    }
+    if (!db) return
 
     return new Promise<number>((resolve, reject) => {
       db.transaction(
         (tx) => {
           tx.executeSql(
             'INSERT INTO users (name, email, password, phone, img) VALUES (?, ?, ?, ?, ?)',
-            [
-              user.name,
-              user.email,
-              user.password,
-              user.phone,
-              user.img,
-            ],
+            [user.name, user.email, user.password, user.phone, user.img],
             (_, results) => {
               const { insertId } = results
               if (insertId) {
@@ -145,10 +127,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
     phone?: string,
   ): Promise<User | null> => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) {
-      console.error('Database not initialized')
-      return Promise.resolve(null)
-    }
+    if (!db) return
 
     let query = 'SELECT * FROM users WHERE email = ?'
     let params = [email]
@@ -172,7 +151,6 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
             if (rows.length > 0) {
               console.log(
                 'GET BY EMAIL AND PASSWORD OR PHONE #####',
-                `${rows.length}`,
                 'users found',
                 rows,
               )
@@ -196,7 +174,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
   },
 
   deleteUser: (id) => {
-    const db = useUserDatabase()
+    const { db } = useUserDatabaseStore.getState()
     if (!db) return
 
     db.transaction((tx) => {
@@ -270,10 +248,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
 
   deleteUsersTable: () => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) {
-      console.error('Database not initialized')
-      return
-    }
+    if (!db) return
 
     db.transaction((tx) => {
       tx.executeSql(
@@ -296,10 +271,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
 
   updateUser: (id, updatedUser) => {
     const { db } = useUserDatabaseStore.getState()
-    if (!db) {
-      console.error('Database not initialized')
-      return Promise.resolve()
-    }
+    if (!db) return
 
     const { name, email, password, phone, img } = updatedUser
     const valuesToUpdate = []
@@ -325,7 +297,6 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
               'User updated successfully',
               results,
             )
-            useUserDatabaseStore.getState().fetchUsers()
             resolve()
           },
           (_, error) => {

@@ -4,7 +4,7 @@ import { View, StyleSheet } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import HomePage from '../components/HomePage'
 import Category from '../components/Category'
-import MyBag from '../components/MyBag'
+import MyBag from '../components/myBagComponents/MyBag'
 import More from '../components/moreComponents/More'
 
 const Tab = createBottomTabNavigator()

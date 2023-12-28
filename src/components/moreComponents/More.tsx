@@ -20,10 +20,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const More = ({ navigation }) => {
-  const { user } = useUserStore((state: UserState) => state)
+  const { user, clearUser } = useUserStore((state: UserState) => state)
 
-  const formatName = user && user.name.split(' ')
-  let avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  const formatName = user?.name?.split(' ') || []
+  let avatarName = ''
+
+  if (formatName.length > 1) {
+    avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  } else if (formatName.length === 1) {
+    avatarName = formatName[0].charAt(0)
+  }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -65,12 +71,18 @@ const More = ({ navigation }) => {
         <MorePageButtons
           text="My Orders"
           icon={<Feather name="shopping-bag" size={20} />}
+          onPress={() =>
+            navigation.navigate('MoreStack', { screen: 'MyOrders' })
+          }
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="My Wishlist"
           icon={
             <MaterialCommunityIcons name="lightning-bolt-outline" size={20} />
+          }
+          onPress={() =>
+            navigation.navigate('MoreStack', { screen: 'MyWishlist' })
           }
         />
         <View style={basePagesStyle.line} />
@@ -98,6 +110,7 @@ const More = ({ navigation }) => {
           text="Log out"
           icon={<AntDesign name="poweroff" size={20} color={'red'} />}
           onPress={() => {
+            clearUser()
             navigation.navigate('AuthStack', { screen: 'Landing' })
           }}
         />

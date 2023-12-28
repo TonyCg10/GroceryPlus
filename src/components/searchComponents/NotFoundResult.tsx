@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native'
 
-// import NotFound from '../../assets/AddtoBag-rafiki.svg'
+import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 
 const NotFoundResult = () => {
   return (
     <View style={notFoundStyles.notFoundContainer}>
-      {/* <NotFound width={1000} style={notFoundSVG} /> */}
+      <NotFound style={notFoundStyles.notFoundSVG} />
       <Text style={notFoundStyles.notFoundText}>
         Opps! We can't find your product
       </Text>

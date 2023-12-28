@@ -33,6 +33,8 @@ const CategoryLists = ({ navigation, route }) => {
           {groceryData
             .filter((item) => item.category.toUpperCase().includes(category))
             .map((data, key) => {
+              const finalPrice = data.price - data.discountPercentage
+
               return (
                 <View key={key} style={baseGridsStyle.gridsContainer}>
                   <Image
@@ -40,7 +42,9 @@ const CategoryLists = ({ navigation, route }) => {
                     style={baseGridsStyle.image}
                   />
                   <Text style={baseGridsStyle.text}>{data.title}</Text>
-                  <Text style={baseGridsStyle.price}>${data.price}</Text>
+                  <Text style={baseGridsStyle.price}>
+                    ${finalPrice.toFixed(2)}
+                  </Text>
                   <TouchableOpacity
                     style={baseGridsStyle.pressable}
                     onPress={() => setProductId([data.id])}
@@ -111,8 +115,8 @@ const baseGridsStyle = StyleSheet.create({
     minHeight: 60,
   },
   price: {
-    color: '#F37A20',
-    fontSize: 16,
+    color: '#5EC401',
+    fontSize: 18,
     fontWeight: 'bold',
   },
 })
