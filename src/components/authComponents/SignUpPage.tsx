@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Alert,
-  Modal,
   ScrollView,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
@@ -14,7 +13,7 @@ import {
   DatabaseStore,
   User,
   useUserDatabaseStore,
-} from '../../../store/authStore.store'
+} from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 

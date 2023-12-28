@@ -4,7 +4,7 @@ import { basePagesStyle } from '../../indexStyle/baseStyle'
 import {
   DatabaseStore,
   useUserDatabaseStore,
-} from '../../../store/authStore.store'
+} from '../../../store/database/userDatabase'
 import { regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
@@ -23,10 +23,10 @@ const LoginPage = ({ navigation }) => {
 
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
-  const [email, setEmail] = useState('ac@gmail.com')
-  // const [email, setEmail] = useState('cc@gmail.com')
-  const [password, setPassword] = useState('123qwe&')
-  // const [password, setPassword] = useState('qwe123&')
+  // const [email, setEmail] = useState('ac@gmail.com')
+  const [email, setEmail] = useState('cc@gmail.com')
+  // const [password, setPassword] = useState('123qwe&')
+  const [password, setPassword] = useState('qwe123&')
 
   const handleOnLogin = async () => {
     const findUser = await getUserByEmailAndPasswordOrPhone(email, password, '')

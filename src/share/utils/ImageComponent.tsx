@@ -10,8 +10,9 @@ import {
 import {
   DatabaseStore,
   useUserDatabaseStore,
-} from '../../../store/authStore.store'
+} from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import { useEffect } from 'react'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
@@ -21,8 +22,10 @@ type Props = {
 }
 
 const ImageComponent = ({ navigation, route }: Props) => {
-  const { updateUser } = useUserDatabaseStore((state: DatabaseStore) => state)
-  const { user } = useUserStore((state: UserState) => state)
+  const { updateUser, fetchUsers, users } = useUserDatabaseStore(
+    (state: DatabaseStore) => state,
+  )
+  const { user, setUser } = useUserStore((state: UserState) => state)
 
   const formatName = user?.name?.split(' ') || []
   let avatarName = ''
@@ -65,6 +68,14 @@ const ImageComponent = ({ navigation, route }: Props) => {
       },
     ])
   }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [fetchUsers])
+
+  useEffect(() => {
+    setUser(users.find((user) => user.id === user.id))
+  }, [users, setUser, user.id])
 
   return (
     <>

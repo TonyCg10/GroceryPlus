@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react'
 import {
   DatabaseStore,
   useUserDatabaseStore,
-} from '../../../store/authStore.store'
+} from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { userInputType } from '../authComponents/utils/utils'
 

@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { User } from './authStore.store'
+import { User } from './database/userDatabase'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
@@ -44,7 +44,7 @@ export const useUserStore = create<UserState>()(
               img: '',
             },
           })
-          console.log('userStore ===== ', 'store')
+          console.log('userStore ===== ', 'store clear')
         },
       }),
       {

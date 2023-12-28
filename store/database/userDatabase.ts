@@ -98,7 +98,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
               if (insertId) {
                 console.log(
                   'INSERT USER #####',
-                  'User inserted successfully',
+                  'User inserted successfully:',
                   results,
                 )
                 resolve(insertId)
@@ -151,7 +151,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
             if (rows.length > 0) {
               console.log(
                 'GET BY EMAIL AND PASSWORD OR PHONE #####',
-                'users found',
+                'User found:',
                 rows,
               )
 
@@ -181,11 +181,10 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
       tx.executeSql(
         'DELETE FROM users WHERE id = ?',
         [id],
-        (_, results) => {
+        () => {
           console.log(
             'DELETE USER BY ID #####',
-            `User with ID ${id} deleted successfully`,
-            results,
+            `User with ID || ${id} || deleted successfully`,
           )
           useUserDatabaseStore.getState().fetchUsers()
         },
@@ -209,11 +208,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
             [],
             (_, results) => {
               set((state) => ({ ...state, users: [] }))
-              console.log(
-                'DELETE ALL #####',
-                'All users deleted successfully',
-                results,
-              )
+              console.log('DELETE ALL #####', 'All users deleted successfully')
               resolve()
             },
             (_, error) => {
@@ -257,8 +252,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
         (_, results) => {
           console.log(
             'DROP TABLE #####',
-            'Table "users" deleted successfully',
-            results,
+            'Table || users || deleted successfully',
           )
         },
         (_, error) => {
@@ -294,9 +288,10 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
           (_, results) => {
             console.log(
               'UPDATE USER #####',
-              'User updated successfully',
+              'User updated successfully:',
               results,
             )
+            useUserDatabaseStore.getState().fetchUsers()
             resolve()
           },
           (_, error) => {

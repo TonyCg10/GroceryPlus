@@ -10,7 +10,7 @@ import { useEffect } from 'react'
 import {
   DatabaseStore,
   useUserDatabaseStore,
-} from '../../../store/authStore.store'
+} from '../../../store/database/userDatabase'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
