@@ -6,20 +6,20 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { DataType } from '../../share/utils/GroceryData'
+import { Product } from '../../../store/database/GroceryData'
 
 import Feather from 'react-native-vector-icons/Feather'
 
 type Prop = {
-  groceryData: DataType[]
+  productData: Product[]
   navigation: any
 }
 
-const PopularResults = ({ groceryData, navigation }: Prop) => {
+const PopularResults = ({ productData, navigation }: Prop) => {
   return (
     <ScrollView style={popularResultStyles.popularResultContainer}>
       <View style={popularResultStyles.popularResultItem}>
-        {groceryData
+        {productData
           .map((data, key) => {
             return (
               <TouchableOpacity

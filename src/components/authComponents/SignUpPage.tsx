@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   View,
   Text,
@@ -8,9 +8,9 @@ import {
   ScrollView,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { regexType, userInputType } from './utils/utils'
+import { AuthLogic, regexType, userInputType } from './utils/utils'
 import {
-  DatabaseStore,
+  UserDatabaseStore,
   User,
   useUserDatabaseStore,
 } from '../../../store/database/userDatabase'
@@ -25,9 +25,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const SignUpPage = ({ navigation }) => {
   const { insertUser, getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
-    (state: DatabaseStore) => state,
+    (state: UserDatabaseStore) => state,
   )
   const { setUser } = useUserStore((state: UserState) => state)
+  const isKeyboardVisible = AuthLogic()
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -100,9 +101,11 @@ const SignUpPage = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={authPagesStyles.container}>
-        <View style={authPagesStyles.icon}>
-          <GroceryPlus width={160} height={160} />
-        </View>
+        {!isKeyboardVisible && (
+          <View style={authPagesStyles.icon}>
+            <GroceryPlus width={240} height={240} />
+          </View>
+        )}
 
         <ScrollView
           style={authPagesStyles.scrollInputContainer}

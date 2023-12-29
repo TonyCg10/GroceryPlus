@@ -11,6 +11,7 @@ type Props = {
   label?: string
   input?: string
   icon?: any
+  disable?: boolean
 
   setInput?: (value: string) => void
 }
@@ -19,27 +20,18 @@ const InputUser = ({
   label,
   input,
   icon,
+  disable,
 
   setInput,
 }: Props) => {
   const [showPassword, setShowPassword] = useState(false)
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('')
 
   const regex =
+    (label == userInputType.name && regexType.nameRegex.test(input)) ||
+    (label == userInputType.name && regexType.nameRegex.test(input)) ||
     (label == userInputType.email && regexType.emailRegex.test(input)) ||
     (label == userInputType.password && regexType.passwordRegex.test(input)) ||
     (label == userInputType.phone && regexType.phoneRegex.test(input))
-
-  const handlePhoneNumberChange = (number: string) => {
-    const numericInput = number.replace(/\D/g, '')
-    const formattedNumber = numericInput.replace(
-      /(\d{3})(\d{3})(\d{4})/,
-      '($1) $2-$3',
-    )
-
-    setInput(numericInput)
-    setFormattedPhoneNumber(formattedNumber)
-  }
 
   const returnPhoneForm = (): string => {
     const formattedNumber =
@@ -50,18 +42,23 @@ const InputUser = ({
 
   return (
     <View>
-      <View style={userInputStyles.texInputContainer}>
+      <View
+        style={[
+          userInputStyles.texInputContainer,
+          !regex && userInputStyles.textInputBad,
+        ]}
+      >
         <View style={userInputStyles.icon}>{icon}</View>
         <View>
           <View style={userInputStyles.header}>
             <Text>{label}</Text>
-            <Text>
-              {label != userInputType.name && !regex && `Bad ${label}`}
-            </Text>
+            <Text style={userInputStyles.bad}>{!regex && `Bad ${label}`}</Text>
           </View>
 
           <View style={userInputStyles.texInput}>
             <TextInput
+              showSoftInputOnFocus={disable}
+              cursorColor={'#5EC401'}
               autoComplete="off"
               autoCapitalize="none"
               value={label != userInputType.phone ? input : returnPhoneForm()}
@@ -98,11 +95,32 @@ export default InputUser
 
 const userInputStyles = StyleSheet.create({
   texInputContainer: {
-    backgroundColor: 'silver',
+    backgroundColor: '#eeeeee',
     padding: '3%',
     borderRadius: 10,
     marginVertical: '2%',
     flexDirection: 'row',
+
+    shadowColor: '#5EC401',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 2,
+  },
+  textInputBad: {
+    shadowColor: '#f66',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.18,
+    shadowRadius: 1.0,
+
+    elevation: 2,
   },
   icon: {
     alignSelf: 'center',
@@ -117,6 +135,9 @@ const userInputStyles = StyleSheet.create({
   texInput: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  bad: {
+    color: '#f66',
   },
 })
 

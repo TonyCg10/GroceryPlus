@@ -8,21 +8,36 @@ import {
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useEffect } from 'react'
 import {
-  DatabaseStore,
+  UserDatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/database/userDatabase'
+import {
+  useProductDatabaseStore,
+  ProductDatabaseStore,
+} from '../../../store/database/productDatabase'
+import { useGroceryData } from '../../../store/database/GroceryData'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
 const Landing = ({ navigation }) => {
-  const { initializeDB, fetchUsers, deleteUsersTable } = useUserDatabaseStore(
-    (state: DatabaseStore) => state,
+  const { initializeUserDB, deleteUsersTable } = useUserDatabaseStore(
+    (state: UserDatabaseStore) => state,
   )
 
+  const { initializeProductDB, deleteProductTable } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
+
+  const { fetched } = useGroceryData()
+
   useEffect(() => {
-    initializeDB()
-    fetchUsers()
-  }, [initializeDB, fetchUsers])
+    initializeProductDB()
+    initializeUserDB()
+  }, [initializeUserDB, initializeProductDB])
+
+  useEffect(() => {
+    fetched()
+  }, [])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -41,6 +56,7 @@ const Landing = ({ navigation }) => {
             style={landingStyles.signUp}
             onPress={() => {
               // deleteUsersTable()
+              // deleteProductTable()
               navigation.navigate('SignUpPage')
             }}
           >

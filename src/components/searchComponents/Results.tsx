@@ -6,7 +6,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native'
-import { DataType } from '../../share/utils/GroceryData'
+import { Product } from '../../../store/database/GroceryData'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import {
   ProductState,
@@ -17,12 +17,12 @@ import Feather from 'react-native-vector-icons/Feather'
 
 type Prop = {
   look: string
-  groceryData: DataType[]
+  productData: Product[]
   navigation: any
   rate: number
 }
 
-const Results = ({ navigation, look, groceryData, rate }: Prop) => {
+const Results = ({ navigation, look, productData, rate }: Prop) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
 
   return (
@@ -33,22 +33,13 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
           showsHorizontalScrollIndicator={false}
           style={resultSyles.scrollVertical}
         >
-          {groceryData
+          {productData
             .map((data, key) => {
               return (
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('ProductDetails', {
                       id: data.id,
-                      description: data.description,
-                      images: data.images,
-                      title: data.title,
-                      price: data.price,
-                      rating: data.rating,
-                      stock: data.stock,
-                      discountPercentage: data.discountPercentage,
-                      thumbnail: data.thumbnail,
-                      category: data.category,
                     })
                   }
                   key={key}
@@ -67,7 +58,7 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
         showsVerticalScrollIndicator={false}
         style={resultSyles.scrollHorizontal}
       >
-        {groceryData
+        {productData
           .filter(
             (item) =>
               item.title.toLowerCase().trim().includes(look.toLowerCase()) ||
@@ -82,15 +73,6 @@ const Results = ({ navigation, look, groceryData, rate }: Prop) => {
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
                       id: data.id,
-                      description: data.description,
-                      images: data.images,
-                      title: data.title,
-                      price: data.price,
-                      rating: data.rating,
-                      stock: data.stock,
-                      discountPercentage: data.discountPercentage,
-                      thumbnail: data.thumbnail,
-                      category: data.category,
                     })
                   }}
                 >

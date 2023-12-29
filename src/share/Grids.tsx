@@ -1,6 +1,10 @@
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
-import { useGroceryData } from './utils/GroceryData'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from '../../store/database/productDatabase'
+import { useEffect } from 'react'
 
 type Pops = {
   display: boolean
@@ -8,30 +12,27 @@ type Pops = {
 }
 
 const Grids = ({ display, navigation }: Pops) => {
-  const { groceryData } = useGroceryData()
+  const { productsArray, fetchProducts } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
 
   const uniqueCategories = [
-    ...new Set(groceryData.map((item) => item.category.toLowerCase().trim())),
+    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim())),
   ]
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
 
   return display ? (
     <View style={baseGridsStyle.gridsScreen}>
-      {groceryData.map((data, key) => {
+      {productsArray.map((data, key) => {
         return (
           <TouchableOpacity
             key={key}
             onPress={() => {
               navigation.navigate('ProductDetails', {
                 id: data.id,
-                description: data.description,
-                images: data.images,
-                title: data.title,
-                price: data.price,
-                rating: data.rating,
-                stock: data.stock,
-                discountPercentage: data.discountPercentage,
-                thumbnail: data.thumbnail,
-                category: data.category,
               })
             }}
             style={baseGridsStyle.gridsContainer}
@@ -51,7 +52,7 @@ const Grids = ({ display, navigation }: Pops) => {
   ) : (
     <View style={baseGridsStyle.gridsScreen}>
       {uniqueCategories.map((category, categoryIndex) => {
-        const representativeItem = groceryData.find(
+        const representativeItem = productsArray.find(
           (data) => data.category.toLowerCase().trim() === category,
         )
 

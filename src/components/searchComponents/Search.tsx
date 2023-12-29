@@ -1,8 +1,11 @@
 import { SafeAreaView, View, Text, Modal, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useState } from 'react'
-import { useGroceryData } from '../../share/utils/GroceryData'
 import { StyleSheet } from 'react-native'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from '../../../store/database/productDatabase'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -12,12 +15,14 @@ import Results from './Results'
 import NotFoundResult from './NotFoundResult'
 
 const Search = ({ navigation }) => {
+  const { productsArray } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
+
   const [look, setLook] = useState('')
   const [rate, setRate] = useState(0)
 
-  const { groceryData } = useGroceryData()
-
-  const filteredData = groceryData.filter((item) => {
+  const filteredData = productsArray.filter((item) => {
     const matches =
       item.title.toLowerCase().includes(look.toLowerCase()) ||
       item.brand.toLowerCase().includes(look.toLowerCase())
@@ -73,7 +78,7 @@ const Search = ({ navigation }) => {
       {look == '' ? (
         <View style={searchPageStyles.headerContainer}>
           <Text style={searchPageStyles.headerText}>Popular Searches</Text>
-          <PopularResults groceryData={groceryData} navigation={navigation} />
+          <PopularResults productData={productsArray} navigation={navigation} />
         </View>
       ) : (
         <View>
@@ -94,7 +99,7 @@ const Search = ({ navigation }) => {
               <Results
                 navigation={navigation}
                 look={look}
-                groceryData={groceryData}
+                productData={productsArray}
                 rate={rate}
               />
             </View>

@@ -1,22 +1,27 @@
 import { useState, useEffect } from 'react'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from './productDatabase'
 
-export type DataType = {
+export type Product = {
   id: number
   brand: string
   category: string
   description: string
   discountPercentage: number
-  images: string[]
+  images: string
   price: number
   rating: number
   stock: number
   thumbnail: string
   title: string
-  position: number
 }
 
 export const useGroceryData = () => {
-  const [groceryData, setData] = useState<DataType[]>([])
+  const { insertProduct, getProductsById } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
 
   const fetched = async () => {
     try {
@@ -24,13 +29,13 @@ export const useGroceryData = () => {
       const json = await res.json()
       const { products } = json
 
-      const data: DataType[] = products.map((element: DataType) => ({
+      const data: Product[] = products.map((element: Product) => ({
         id: element.id,
         brand: element.brand,
         category: element.category,
         description: element.description,
         discountPercentage: element.discountPercentage,
-        images: element.images,
+        images: JSON.stringify(element.images),
         price: element.price,
         rating: element.rating,
         stock: element.stock,
@@ -38,17 +43,25 @@ export const useGroceryData = () => {
         title: element.title,
       }))
 
-      setData(data)
+      const productsToInsert: Product[] = []
+      for (const product of data) {
+        const existingProduct = await getProductsById(product.id, false)
+        if (!existingProduct) {
+          productsToInsert.push(product)
+        }
+      }
+
+      for (const product of productsToInsert) {
+        try {
+          await insertProduct(product)
+        } catch (error) {
+          console.error('Error inserting product:', error)
+        }
+      }
     } catch (error) {
       console.error('Error fetching data:', error)
     }
   }
 
-  useEffect(() => {
-    fetched()
-  }, [])
-
-  const groceryDataTitle = groceryData.map((data) => data.title)
-
-  return { groceryData, setData, groceryDataTitle }
+  return { fetched }
 }

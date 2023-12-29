@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import * as SQLite from 'expo-sqlite'
 
-export interface User {
+export type User = {
   id: number
   name: string
   email: string
@@ -10,13 +10,13 @@ export interface User {
   img: string
 }
 
-export interface DatabaseStore {
+export interface UserDatabaseStore {
   db: SQLite.SQLiteDatabase | null
   users: User[]
 
-  initializeDB: () => void
-  insertUser: (user: User) => Promise<number>
+  initializeUserDB: () => void
   fetchUsers: () => void
+  insertUser: (user: User) => Promise<number>
   deleteUsersTable: () => void
   getUserByEmailAndPasswordOrPhone: (
     email: string,
@@ -27,12 +27,12 @@ export interface DatabaseStore {
   deleteAllUsers: () => void
   updateUser: (id: number, updatedUser: Partial<User>) => Promise<void>
 }
-export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
+export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
   db: null,
   users: [],
 
-  initializeDB: () => {
-    const db = SQLite.openDatabase('mydatabase.db')
+  initializeUserDB: () => {
+    const db = SQLite.openDatabase('users.db')
 
     db.transaction(
       (tx) => {
@@ -99,7 +99,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
                 console.log(
                   'INSERT USER #####',
                   'User inserted successfully:',
-                  results,
+                  { id: insertId, ...user },
                 )
                 resolve(insertId)
               } else {
@@ -122,9 +122,9 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
   },
 
   getUserByEmailAndPasswordOrPhone: async (
-    email: string,
-    password?: string,
-    phone?: string,
+    email,
+    password?,
+    phone?,
   ): Promise<User | null> => {
     const { db } = useUserDatabaseStore.getState()
     if (!db) return
@@ -152,7 +152,7 @@ export const useUserDatabaseStore = create<DatabaseStore>((set) => ({
               console.log(
                 'GET BY EMAIL AND PASSWORD OR PHONE #####',
                 'User found:',
-                rows,
+                rows._array,
               )
 
               resolve(rows.item(0))

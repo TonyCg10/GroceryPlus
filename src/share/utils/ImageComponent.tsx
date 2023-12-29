@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native'
 import {
-  DatabaseStore,
+  UserDatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
@@ -22,8 +22,8 @@ type Props = {
 }
 
 const ImageComponent = ({ navigation, route }: Props) => {
-  const { updateUser, fetchUsers, users } = useUserDatabaseStore(
-    (state: DatabaseStore) => state,
+  const { updateUser, users } = useUserDatabaseStore(
+    (state: UserDatabaseStore) => state,
   )
   const { user, setUser } = useUserStore((state: UserState) => state)
 
@@ -70,11 +70,12 @@ const ImageComponent = ({ navigation, route }: Props) => {
   }
 
   useEffect(() => {
-    fetchUsers()
-  }, [fetchUsers])
-
-  useEffect(() => {
-    setUser(users.find((user) => user.id === user.id))
+    if (user.id) {
+      const currentUser = users.find((u) => u.id === user.id)
+      if (currentUser) {
+        setUser(currentUser)
+      }
+    }
   }, [users, setUser, user.id])
 
   return (

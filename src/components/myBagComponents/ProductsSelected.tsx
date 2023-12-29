@@ -3,8 +3,11 @@ import {
   ProductState,
   useProductStore,
 } from '../../../store/productStore.store'
-import { useGroceryData } from '../../share/utils/GroceryData'
 import { useState } from 'react'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from '../../../store/database/productDatabase'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
@@ -12,14 +15,16 @@ const ProductsSelected = () => {
   const { productId, removeProductId } = useProductStore(
     (state: ProductState) => state,
   )
-  const { groceryData } = useGroceryData()
+  const { productsArray } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
 
   const [many, setMany] = useState(0)
 
   return (
     <View>
       <Text style={styles.text1}>Products</Text>
-      {groceryData
+      {productsArray
         .filter((item) => productId.includes(item.id))
         .map((data, key) => {
           const handleOnDecrees = () => {

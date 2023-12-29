@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import {
-  DatabaseStore,
+  UserDatabaseStore,
   useUserDatabaseStore,
 } from '../../../store/database/userDatabase'
-import { regexType, userInputType } from './utils/utils'
+import { AuthLogic, regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
@@ -17,9 +17,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const LoginPage = ({ navigation }) => {
   const { getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
-    (state: DatabaseStore) => state,
+    (state: UserDatabaseStore) => state,
   )
   const { setUser } = useUserStore((state: UserState) => state)
+  const isKeyboardVisible = AuthLogic()
 
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
@@ -62,9 +63,12 @@ const LoginPage = ({ navigation }) => {
         navigation={navigation}
       />
       <View style={authPagesStyles.container}>
-        <View style={authPagesStyles.icon}>
-          <GroceryPlus width={160} height={160} />
-        </View>
+        {!isKeyboardVisible && (
+          <View style={authPagesStyles.icon}>
+            <GroceryPlus width={260} height={260} />
+          </View>
+        )}
+
         <View style={authPagesStyles.inputContainer}>
           <InputUser
             icon={<MaterialCommunityIcons name="email-outline" size={24} />}

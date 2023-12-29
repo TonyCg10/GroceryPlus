@@ -8,18 +8,24 @@ import {
   TouchableOpacity,
 } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
-import { useGroceryData } from './utils/GroceryData'
 import { basePagesStyle } from '../indexStyle/baseStyle'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
+import { useEffect } from 'react'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from '../../store/database/productDatabase'
 
 const CategoryLists = ({ navigation, route }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
 
-  const { groceryData } = useGroceryData()
   const { category } = route.params
+  const { productsArray } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -30,7 +36,7 @@ const CategoryLists = ({ navigation, route }) => {
       />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={baseGridsStyle.gridsScreen}>
-          {groceryData
+          {productsArray
             .filter((item) => item.category.toUpperCase().includes(category))
             .map((data, key) => {
               const finalPrice = data.price - data.discountPercentage

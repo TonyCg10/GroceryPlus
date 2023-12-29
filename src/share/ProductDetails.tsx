@@ -8,9 +8,12 @@ import {
 } from 'react-native'
 import { basePagesStyle } from '../indexStyle/baseStyle'
 import { ScrollView } from 'react-native'
-import { DataType, useGroceryData } from './utils/GroceryData'
 import { ProductState, useProductStore } from '../../store/productStore.store'
-import { useState } from 'react'
+import {
+  ProductDatabaseStore,
+  useProductDatabaseStore,
+} from '../../store/database/productDatabase'
+import { useEffect, useState } from 'react'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -20,27 +23,17 @@ import StarRating from 'react-native-star-rating-widget'
 
 const ProductDetails = ({ route, navigation }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
-  const { groceryData } = useGroceryData()
+  const { productsArray } = useProductDatabaseStore(
+    (state: ProductDatabaseStore) => state,
+  )
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
 
-  const {
-    id,
-    description,
-    images,
-    title,
-    price,
-    rating,
-    stock,
-    discountPercentage,
-    category,
-  }: DataType = route.params
-
-  const finalPrice = price - discountPercentage
-
-  const handleImagePress = (key: number) => {
-    setSelectedImageIndex(key)
-  }
+  const { id } = route.params
+  const product = productsArray.find((product) => product.id === id)
+  const parts = product.images.split(/[\\",]+/)
+  const images = parts.filter((part) => part.trim() !== '').slice(1)
+  const finalPrice = product.price - product.discountPercentage
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -61,7 +54,7 @@ const ProductDetails = ({ route, navigation }) => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  handleImagePress(key)
+                  setSelectedImageIndex(key)
                 }}
                 activeOpacity={0.5}
                 key={key}
@@ -82,36 +75,40 @@ const ProductDetails = ({ route, navigation }) => {
             )
           })}
         </ScrollView>
-        <Text style={productDetailsStyle.description}>{description}</Text>
+        <Text style={productDetailsStyle.description}>
+          {product.description}
+        </Text>
         <View style={productDetailsStyle.pricesContainer}>
-          <Text style={productDetailsStyle.title}>{title}</Text>
+          <Text style={productDetailsStyle.title}>{product.title}</Text>
           <Text style={productDetailsStyle.price}>
             ${finalPrice.toFixed(2)}
           </Text>
         </View>
-        <Text>There is {stock} in stock</Text>
+        <Text>There is {product.stock} in stock</Text>
 
         <View style={productDetailsStyle.rateView}>
-          <Text style={productDetailsStyle.rate}>{rating}</Text>
-          <StarRating rating={rating} onChange={() => {}} />
+          <Text style={productDetailsStyle.rate}>{product.rating}</Text>
+          <StarRating rating={product.rating} onChange={() => {}} />
         </View>
         <View>
           <View style={productDetailsStyle.productView}>
             <Feather name="align-left" size={20} />
-            <Text style={productDetailsStyle.product}>{category} products</Text>
+            <Text style={productDetailsStyle.product}>
+              {product.category} products
+            </Text>
           </View>
           <View style={productDetailsStyle.descriptionView}>
             <Ionicons name="reorder-three-outline" size={24} />
             <Text style={productDetailsStyle.secondDescription}>
-              {description}
+              {product.description}
             </Text>
           </View>
         </View>
         <View style={productDetailsStyle.else}>
           <Text>You can alse see</Text>
           <View>
-            {groceryData
-              .filter((item) => item.category.includes(category))
+            {productsArray
+              .filter((item) => item.category.includes(product.category))
               .map((data, key) => {
                 return (
                   <View key={key} style={resultSyles.container}>
@@ -120,15 +117,6 @@ const ProductDetails = ({ route, navigation }) => {
                       onPress={() => {
                         navigation.navigate('ProductDetails', {
                           id: data.id,
-                          description: data.description,
-                          images: data.images,
-                          title: data.title,
-                          price: data.price,
-                          rating: data.rating,
-                          stock: data.stock,
-                          discountPercentage: data.discountPercentage,
-                          thumbnail: data.thumbnail,
-                          category: data.category,
                         })
                       }}
                     >
