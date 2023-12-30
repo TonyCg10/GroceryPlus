@@ -44,7 +44,12 @@ const HomePage = ({ navigation }) => {
         actionRight={<Feather name="bell" size={20} />}
         navigation={navigation}
       />
-      <TouchableOpacity style={styles.locationView}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate('MoreStack', { screen: 'MyAddress' })
+        }
+        style={styles.locationView}
+      >
         <View style={styles.locationLeft}>
           <View style={styles.locationIconBack}>
             <EvilIcons

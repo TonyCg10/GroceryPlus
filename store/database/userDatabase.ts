@@ -285,12 +285,10 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
         tx.executeSql(
           updateQuery,
           params,
-          (_, results) => {
-            console.log(
-              'UPDATE USER #####',
-              'User updated successfully:',
-              results,
-            )
+          (_) => {
+            console.log('UPDATE USER #####', 'User updated successfully:', {
+              ...updatedUser,
+            })
             useUserDatabaseStore.getState().fetchUsers()
             resolve()
           },

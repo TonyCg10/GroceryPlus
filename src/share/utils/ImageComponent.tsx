@@ -147,12 +147,15 @@ export default ImageComponent
 
 const styles = StyleSheet.create({
   avatar: {
-    backgroundColor: 'silver',
+    backgroundColor: '#eeeeee',
     width: 250,
     height: 250,
     borderRadius: 125,
     alignSelf: 'center',
     marginVertical: '10%',
+
+    shadowColor: '#5EC401',
+    elevation: 4,
   },
   avatarImage: {
     width: 250,
@@ -163,7 +166,7 @@ const styles = StyleSheet.create({
   avatarText: {
     alignSelf: 'center',
     marginTop: '35%',
-    fontSize: 28,
+    fontSize: 48,
   },
   container: {
     flex: 1,

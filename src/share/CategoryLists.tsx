@@ -13,14 +13,16 @@ import { basePagesStyle } from '../indexStyle/baseStyle'
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
-import { useEffect } from 'react'
 import {
   ProductDatabaseStore,
   useProductDatabaseStore,
 } from '../../store/database/productDatabase'
+import { useState } from 'react'
 
 const CategoryLists = ({ navigation, route }) => {
   const { setProductId } = useProductStore((state: ProductState) => state)
+
+  const [wish, setWish] = useState(false)
 
   const { category } = route.params
   const { productsArray } = useProductDatabaseStore(
@@ -48,9 +50,23 @@ const CategoryLists = ({ navigation, route }) => {
                     style={baseGridsStyle.image}
                   />
                   <Text style={baseGridsStyle.text}>{data.title}</Text>
-                  <Text style={baseGridsStyle.price}>
-                    ${finalPrice.toFixed(2)}
-                  </Text>
+                  <View
+                    style={{
+                      justifyContent: 'space-between',
+                      flexDirection: 'row',
+                    }}
+                  >
+                    <Text style={baseGridsStyle.price}>
+                      ${finalPrice.toFixed(2)}
+                    </Text>
+                    <TouchableOpacity onPress={() => setWish(!wish)}>
+                      <AntDesign
+                        size={24}
+                        name={wish ? 'star' : 'staro'}
+                        color="gold"
+                      />
+                    </TouchableOpacity>
+                  </View>
                   <TouchableOpacity
                     style={baseGridsStyle.pressable}
                     onPress={() => setProductId([data.id])}

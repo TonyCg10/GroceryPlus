@@ -13,7 +13,7 @@ const MyAddress = ({ navigation }) => {
         navigation={navigation}
       />
       <View>
-        <Text>dbakdbdka</Text>
+        <Text></Text>
       </View>
     </SafeAreaView>
   )

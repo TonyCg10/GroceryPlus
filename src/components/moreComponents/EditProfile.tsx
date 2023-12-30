@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import {
   UserDatabaseStore,
   useUserDatabaseStore,

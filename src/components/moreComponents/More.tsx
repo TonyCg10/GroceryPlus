@@ -54,7 +54,7 @@ const More = ({ navigation }) => {
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
         <MorePageButtons
           text="Edit Profile"
-          icon={<Octicons name="pencil" size={20} color={'lightblue'} />}
+          icon={<Octicons name="pencil" size={20} color={'#236CD9'} />}
           onPress={() =>
             navigation.navigate('MoreStack', { screen: 'EditProfile' })
           }
@@ -88,12 +88,12 @@ const More = ({ navigation }) => {
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="Chat with us"
-          icon={<Ionicons name="chatbox-outline" size={20} color={'#87DD39'} />}
+          icon={<Ionicons name="chatbox-outline" size={20} color={'#5EC401'} />}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="Talk to our Support"
-          icon={<Feather name="phone" size={20} color={'orange'} />}
+          icon={<Feather name="phone" size={20} color={'#F37A20'} />}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
@@ -103,12 +103,12 @@ const More = ({ navigation }) => {
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="Message to facebook page"
-          icon={<FontAwesome name="facebook-square" size={20} color={'blue'} />}
+          icon={<FontAwesome name="facebook-f" size={20} color={'blue'} />}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="Log out"
-          icon={<AntDesign name="poweroff" size={20} color={'red'} />}
+          icon={<AntDesign name="poweroff" size={20} color={'#f66'} />}
           onPress={() => {
             clearUser()
             navigation.navigate('AuthStack', { screen: 'Landing' })
@@ -127,12 +127,15 @@ const styles = StyleSheet.create({
     marginVertical: '5%',
   },
   avatar: {
-    backgroundColor: 'silver',
+    backgroundColor: '#eeeeee',
     marginRight: '4%',
     width: 60,
     height: 60,
     alignSelf: 'center',
     borderRadius: 30,
+
+    shadowColor: '#5EC401',
+    elevation: 4,
   },
   avatarImage: {
     width: 60,
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     alignSelf: 'center',
-    marginTop: '25%',
+    marginTop: '30%',
     fontSize: 18,
   },
   name: {

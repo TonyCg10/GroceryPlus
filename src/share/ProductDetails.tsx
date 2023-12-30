@@ -13,7 +13,7 @@ import {
   ProductDatabaseStore,
   useProductDatabaseStore,
 } from '../../store/database/productDatabase'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -28,6 +28,7 @@ const ProductDetails = ({ route, navigation }) => {
   )
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
+  const [wish, setWish] = useState(false)
 
   const { id } = route.params
   const product = productsArray.find((product) => product.id === id)
@@ -37,11 +38,23 @@ const ProductDetails = ({ route, navigation }) => {
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
-      <Header
-        title="Product Details"
-        actionLeft={<AntDesign size={22} name="arrowleft" />}
-        navigation={navigation}
-      />
+      <View style={{ flexDirection: 'row' }}>
+        <Header
+          title="Product Details"
+          actionLeft={<AntDesign size={22} name="arrowleft" />}
+          navigation={navigation}
+        />
+        <TouchableOpacity
+          style={{ flex: 1, alignItems: 'flex-end' }}
+          onPress={() => {
+            id && setProductId([id])
+            setWish(!wish)
+          }}
+        >
+          <AntDesign size={24} name={wish ? 'star' : 'staro'} color="gold" />
+        </TouchableOpacity>
+      </View>
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <Image
           source={{
@@ -105,13 +118,13 @@ const ProductDetails = ({ route, navigation }) => {
           </View>
         </View>
         <View style={productDetailsStyle.else}>
-          <Text>You can alse see</Text>
+          <Text>You can also see</Text>
           <View>
             {productsArray
               .filter((item) => item.category.includes(product.category))
               .map((data, key) => {
                 return (
-                  <View key={key} style={resultSyles.container}>
+                  <View key={key} style={resultStyles.container}>
                     <TouchableOpacity
                       key={data.id}
                       onPress={() => {
@@ -120,23 +133,23 @@ const ProductDetails = ({ route, navigation }) => {
                         })
                       }}
                     >
-                      <View style={resultSyles.contentContainer}>
+                      <View style={resultStyles.contentContainer}>
                         <Image
                           source={{
                             uri: data.thumbnail,
                           }}
-                          style={resultSyles.image}
+                          style={resultStyles.image}
                         />
-                        <View style={resultSyles.info}>
-                          <Text style={resultSyles.description}>
+                        <View style={resultStyles.info}>
+                          <Text style={resultStyles.description}>
                             {data.description}
                           </Text>
-                          <View style={resultSyles.textContainer}>
+                          <View style={resultStyles.textContainer}>
                             <View>
-                              <Text style={resultSyles.price}>
+                              <Text style={resultStyles.price}>
                                 ${data.price}
                               </Text>
-                              <Text style={resultSyles.discountPercentage}>
+                              <Text style={resultStyles.discountPercentage}>
                                 off ${data.discountPercentage}
                               </Text>
                             </View>
@@ -262,7 +275,7 @@ const productDetailsStyle = StyleSheet.create({
   },
 })
 
-const resultSyles = StyleSheet.create({
+const resultStyles = StyleSheet.create({
   container: {
     margin: '4%',
   },

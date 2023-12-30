@@ -8,9 +8,9 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons'
 import Header from './utils/Header'
 
 const Notifications = ({ navigation }) => {
-  const notiInfo = (notiType: string, time: string) => {
-    switch (notiType) {
-      case (notiType = 'Delivering'):
+  const notificationInfo = (notificationType: string, time: string) => {
+    switch (notificationType) {
+      case (notificationType = 'Delivering'):
         return (
           <View style={style.box}>
             <View>
@@ -29,7 +29,7 @@ const Notifications = ({ navigation }) => {
             </View>
           </View>
         )
-      case (notiType = 'Confirmed'):
+      case (notificationType = 'Confirmed'):
         return (
           <View style={style.box}>
             <View>
@@ -52,7 +52,7 @@ const Notifications = ({ navigation }) => {
             </View>
           </View>
         )
-      case (notiType = 'Completed'):
+      case (notificationType = 'Completed'):
         return (
           <View style={style.box}>
             <View>
@@ -60,7 +60,7 @@ const Notifications = ({ navigation }) => {
                 Order #{Math.floor(Math.random() * 100)}
               </Text>
               <Text style={style.text}>
-                Your Order is Completed. Please rate the experince
+                Your Order is Completed. Please rate the experience
               </Text>
             </View>
 
@@ -87,8 +87,8 @@ const Notifications = ({ navigation }) => {
         navigation={navigation}
       />
       <View>
-        {/* {fakeData.fakeNotis.map((n, key) => {
-          return <View key={key}>{notiInfo(n.type, n.time)}</View>
+        {/* {fakeData.fakeNotifications.map((n, key) => {
+          return <View key={key}>{notificationInfo(n.type, n.time)}</View>
         })} */}
       </View>
     </SafeAreaView>
