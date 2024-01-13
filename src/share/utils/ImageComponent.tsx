@@ -1,19 +1,8 @@
 import * as ImagePicker from 'expo-image-picker'
-import {
-  Image,
-  TouchableOpacity,
-  View,
-  Text,
-  StyleSheet,
-  Alert,
-} from 'react-native'
-import {
-  UserDatabaseStore,
-  useUserDatabaseStore,
-} from '../../../store/database/userDatabase'
+import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
 import { UserState, useUserStore } from '../../../store/userStore.store'
-import { useEffect } from 'react'
 
+import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
 type Props = {
@@ -22,9 +11,6 @@ type Props = {
 }
 
 const ImageComponent = ({ navigation, route }: Props) => {
-  const { updateUser, users } = useUserDatabaseStore(
-    (state: UserDatabaseStore) => state,
-  )
   const { user, setUser } = useUserStore((state: UserState) => state)
 
   const formatName = user?.name?.split(' ') || []
@@ -37,17 +23,29 @@ const ImageComponent = ({ navigation, route }: Props) => {
   }
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      allowsEditing: true,
-      aspect: [6, 6],
-      quality: 1,
-    })
-    if (!result.canceled) {
-      const updatedUser = {
-        img: result.assets[0].uri,
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.All,
+        allowsEditing: true,
+        aspect: [6, 6],
+        quality: 1
+      })
+
+      if (!result.canceled) {
+        const ip = '10.0.0.139'
+        const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
+          img: result.assets[0].uri
+        })
+
+        if (response.status === 200) {
+          setUser({ img: result.assets[0].uri })
+          console.log('User updated successfully')
+        } else {
+          throw new Error('Failed to update user')
+        }
       }
-      updateUser(user.id, updatedUser)
+    } catch (error) {
+      console.error('Error picking image:', error)
     }
   }
 
@@ -55,28 +53,33 @@ const ImageComponent = ({ navigation, route }: Props) => {
     Alert.alert('Are you sure you want to delete your image?', '', [
       {
         text: 'Confirm',
-        onPress: () => {
-          const updatedUser = {
-            img: '',
+        onPress: async () => {
+          const ip = '10.0.0.139'
+          try {
+            const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
+              img: ''
+            })
+            if (response.status === 200) {
+              const userFetch = {
+                img: ''
+              }
+
+              setUser(userFetch)
+              console.log('User updated successfully')
+            } else {
+              throw new Error('Failed to update user image')
+            }
+          } catch (error) {
+            console.error('Error updating user image:', error)
           }
-          updateUser(user.id, updatedUser)
-        },
+        }
       },
       {
         text: 'Cancel',
-        style: 'cancel',
-      },
+        style: 'cancel'
+      }
     ])
   }
-
-  useEffect(() => {
-    if (user.id) {
-      const currentUser = users.find((u) => u.id === user.id)
-      if (currentUser) {
-        setUser(currentUser)
-      }
-    }
-  }, [users, setUser, user.id])
 
   return (
     <>
@@ -90,8 +93,7 @@ const ImageComponent = ({ navigation, route }: Props) => {
           onPress={() => {
             pickImage()
           }}
-          style={styles.pick}
-        >
+          style={styles.pick}>
           <AntDesign size={28} color="white" name="edit" />
         </TouchableOpacity>
 
@@ -100,8 +102,7 @@ const ImageComponent = ({ navigation, route }: Props) => {
             onPress={() => {
               deleteImage()
             }}
-            style={styles.delete}
-          >
+            style={styles.delete}>
             <AntDesign size={28} color="white" name="delete" />
           </TouchableOpacity>
         )}
@@ -109,9 +110,7 @@ const ImageComponent = ({ navigation, route }: Props) => {
       {route == 'SelectImage' && (
         <View style={styles.container}>
           {!user.img ? (
-            <Text style={styles.text}>
-              This is how will look actual avatar, add a pic!
-            </Text>
+            <Text style={styles.text}>This is how will look actual avatar, add a pic!</Text>
           ) : (
             <Text style={styles.text}>Is fine this pic?</Text>
           )}
@@ -121,8 +120,7 @@ const ImageComponent = ({ navigation, route }: Props) => {
                 style={styles.selectBtn}
                 onPress={() => {
                   pickImage()
-                }}
-              >
+                }}>
                 <Text style={styles.selectText}>Select Image</Text>
               </TouchableOpacity>
             )}
@@ -130,11 +128,8 @@ const ImageComponent = ({ navigation, route }: Props) => {
               style={user.img ? styles.continueBtn : styles.skipBtn}
               onPress={() => {
                 navigation.navigate('BottomRoutes')
-              }}
-            >
-              <Text style={styles.btnText}>
-                {user.img ? 'Continue' : 'Skip'}
-              </Text>
+              }}>
+              <Text style={styles.btnText}>{user.img ? 'Continue' : 'Skip'}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -155,34 +150,34 @@ const styles = StyleSheet.create({
     marginVertical: '10%',
 
     shadowColor: '#5EC401',
-    elevation: 4,
+    elevation: 4
   },
   avatarImage: {
     width: 250,
     height: 250,
     borderRadius: 125,
-    alignSelf: 'center',
+    alignSelf: 'center'
   },
   avatarText: {
     alignSelf: 'center',
     marginTop: '35%',
-    fontSize: 48,
+    fontSize: 48
   },
   container: {
-    flex: 1,
+    flex: 1
   },
   btnContainer: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: '20%',
+    marginBottom: '20%'
   },
   selectBtn: {
     backgroundColor: '#5EC401',
     marginBottom: '5%',
     padding: 10,
     width: '60%',
-    borderRadius: 10,
+    borderRadius: 10
   },
   pick: {
     alignSelf: 'flex-end',
@@ -190,41 +185,41 @@ const styles = StyleSheet.create({
     top: '80%',
     backgroundColor: '#5EC401',
     borderRadius: 100,
-    padding: 6,
+    padding: 6
   },
   delete: {
     position: 'absolute',
     top: '80%',
     backgroundColor: '#f66',
     borderRadius: 100,
-    padding: 6,
+    padding: 6
   },
   skipBtn: {
     backgroundColor: '#f66',
     padding: 10,
     width: '60%',
-    borderRadius: 10,
+    borderRadius: 10
   },
   continueBtn: {
     backgroundColor: '#5EC401',
     padding: 10,
     width: '60%',
-    borderRadius: 10,
+    borderRadius: 10
   },
   text: {
     textAlign: 'center',
     fontSize: 17,
     fontWeight: 'bold',
-    marginTop: '5%',
+    marginTop: '5%'
   },
   selectText: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   btnText: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center',
-  },
+    textAlign: 'center'
+  }
 })

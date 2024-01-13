@@ -1,8 +1,5 @@
-import { useState, useEffect } from 'react'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore,
-} from './productDatabase'
+import { useState } from 'react'
+import { ProductDatabaseStore, useProductDatabaseStore } from './productDatabase'
 
 export type Product = {
   id: number
@@ -20,8 +17,9 @@ export type Product = {
 
 export const useGroceryData = () => {
   const { insertProduct, getProductsById } = useProductDatabaseStore(
-    (state: ProductDatabaseStore) => state,
+    (state: ProductDatabaseStore) => state
   )
+  const [productsToInsert, setProductsToInsert] = useState<Product[]>([])
 
   const fetched = async () => {
     try {
@@ -40,14 +38,13 @@ export const useGroceryData = () => {
         rating: element.rating,
         stock: element.stock,
         thumbnail: element.thumbnail,
-        title: element.title,
+        title: element.title
       }))
 
-      const productsToInsert: Product[] = []
       for (const product of data) {
         const existingProduct = await getProductsById(product.id, false)
         if (!existingProduct) {
-          productsToInsert.push(product)
+          setProductsToInsert(data)
         }
       }
 

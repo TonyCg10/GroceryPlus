@@ -1,9 +1,6 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native'
 import { useState } from 'react'
-import {
-  regexType,
-  userInputType,
-} from '../../components/authComponents/utils/utils'
+import { regexType, userInputType } from '../../components/authComponents/utils/utils'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
@@ -22,7 +19,7 @@ const InputUser = ({
   icon,
   disable,
 
-  setInput,
+  setInput
 }: Props) => {
   const [showPassword, setShowPassword] = useState(false)
 
@@ -35,19 +32,13 @@ const InputUser = ({
 
   const returnPhoneForm = (): string => {
     const formattedNumber =
-      userInputType.phone &&
-      input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
+      userInputType.phone && input.replace(/(\d{3})(\d{3})(\d{4})/, '($1) $2-$3')
     return formattedNumber
   }
 
   return (
     <View>
-      <View
-        style={[
-          userInputStyles.texInputContainer,
-          !regex && userInputStyles.textInputBad,
-        ]}
-      >
+      <View style={[userInputStyles.texInputContainer, !regex && userInputStyles.textInputBad]}>
         <View style={userInputStyles.icon}>{icon}</View>
         <View>
           <View style={userInputStyles.header}>
@@ -104,58 +95,58 @@ const userInputStyles = StyleSheet.create({
     shadowColor: '#5EC401',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 1
     },
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
 
-    elevation: 2,
+    elevation: 2
   },
   textInputBad: {
     shadowColor: '#f66',
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 1
     },
     shadowOpacity: 0.18,
     shadowRadius: 1.0,
 
-    elevation: 2,
+    elevation: 2
   },
   icon: {
     alignSelf: 'center',
     marginHorizontal: '2%',
-    marginRight: '5%',
+    marginRight: '5%'
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '4%',
+    marginBottom: '4%'
   },
   texInput: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   bad: {
-    color: '#f66',
-  },
+    color: '#f66'
+  }
 })
 
 export const authPagesStyles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   icon: {
     alignSelf: 'center',
     justifyContent: 'center',
-    marginVertical: '5%',
+    marginVertical: '5%'
   },
   inputContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   scrollInputContainer: {
-    flex: 1,
+    flex: 1
   },
   button: {
     backgroundColor: '#5EC401',
@@ -163,14 +154,14 @@ export const authPagesStyles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     height: 40,
-    marginVertical: '5%',
+    marginVertical: '5%'
   },
   disabledBtn: {
-    backgroundColor: '#A9CEC2',
+    backgroundColor: '#A9CEC2'
   },
   btnText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 })

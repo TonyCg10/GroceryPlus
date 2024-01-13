@@ -1,14 +1,11 @@
 import React, { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import {
-  UserDatabaseStore,
-  useUserDatabaseStore,
-} from '../../../store/database/userDatabase'
 import { AuthLogic, regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
+import axios from 'axios'
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../../share/utils/Header'
@@ -16,43 +13,52 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const LoginPage = ({ navigation }) => {
-  const { getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
-    (state: UserDatabaseStore) => state,
-  )
   const { setUser } = useUserStore((state: UserState) => state)
   const isKeyboardVisible = AuthLogic()
 
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
-  // const [email, setEmail] = useState('ac@gmail.com')
-  const [email, setEmail] = useState('cc@gmail.com')
-  // const [password, setPassword] = useState('123qwe&')
-  const [password, setPassword] = useState('qwe123&')
+  const [email, setEmail] = useState('ac@gmail.com')
+  // const [email, setEmail] = useState('cc@gmail.com')
+  const [password, setPassword] = useState('123qwe&')
+  // const [password, setPassword] = useState('qwe123&')
 
   const handleOnLogin = async () => {
-    const findUser = await getUserByEmailAndPasswordOrPhone(email, password, '')
+    try {
+      const ip = '10.0.0.139'
+      const response = await axios.post(`http://${ip}:2020/check-user`, {
+        email,
+        password
+      })
 
-    if (findUser) {
-      setUser(findUser)
-      try {
-        console.log('Logged In')
+      if (response.status === 200) {
+        const { data } = response
 
-        navigation.navigate('BottomRoutes')
-      } catch (error) {
-        console.error('Error handling new user:', error)
+        if (data.exists) {
+          setUser({
+            _id: data.user._id,
+            name: data.user.name,
+            email: data.user.email,
+            password: data.user.password,
+            phone: data.user.phone,
+            img: data.user.img,
+            productId: data.user.productId
+          })
+
+          console.log('Logged In')
+          navigation.navigate('BottomRoutes')
+        }
+      } else {
+        console.log('Unexpected response:', response)
+        Alert.alert('Unexpected response')
       }
-    } else {
-      Alert.alert('User doesn`t exist')
-      console.log('User doesn`t exist')
+    } catch (error) {
+      Alert.alert('User not found', ' Please try again.')
     }
   }
 
   const logNotValid = () => {
-    if (
-      regexType.emailRegex.test(email) &&
-      regexType.passwordRegex.test(password)
-    )
-      return true
+    if (regexType.emailRegex.test(email) && regexType.passwordRegex.test(password)) return true
   }
 
   return (
@@ -85,14 +91,10 @@ const LoginPage = ({ navigation }) => {
         </View>
         <TouchableOpacity
           disabled={!logNotValid()}
-          style={[
-            authPagesStyles.button,
-            !logNotValid() && authPagesStyles.disabledBtn,
-          ]}
+          style={[authPagesStyles.button, !logNotValid() && authPagesStyles.disabledBtn]}
           onPress={() => {
             handleOnLogin()
-          }}
-        >
+          }}>
           <Text style={authPagesStyles.btnText}>Continue</Text>
         </TouchableOpacity>
       </View>

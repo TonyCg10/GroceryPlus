@@ -1,19 +1,7 @@
 import { useState } from 'react'
-import {
-  View,
-  Text,
-  SafeAreaView,
-  TouchableOpacity,
-  Alert,
-  ScrollView,
-} from 'react-native'
+import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { AuthLogic, regexType, userInputType } from './utils/utils'
-import {
-  UserDatabaseStore,
-  User,
-  useUserDatabaseStore,
-} from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
@@ -24,62 +12,74 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const SignUpPage = ({ navigation }) => {
-  const { insertUser, getUserByEmailAndPasswordOrPhone } = useUserDatabaseStore(
-    (state: UserDatabaseStore) => state,
-  )
-  const { setUser } = useUserStore((state: UserState) => state)
+  const { setUser, user } = useUserStore((state: UserState) => state)
   const isKeyboardVisible = AuthLogic()
 
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [phone, setPhone] = useState('')
+  const [name, setName] = useState('antonio corcoba')
+  const [email, setEmail] = useState('ac@gmail.com')
+  const [password, setPassword] = useState('123qwe&')
+  const [phone, setPhone] = useState('1234567890')
 
   const handleOnSignUp = async () => {
-    const formatName = name.split(' ')
+    try {
+      const formatName = name.split(' ')
+      const firstName = formatName[0].charAt(0).toUpperCase() + formatName[0].slice(1)
+      const lastName = formatName[1].charAt(0).toUpperCase() + formatName[1].slice(1)
 
-    let firstName =
-      formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
-    let lastName =
-      formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
+      if (
+        firstName &&
+        lastName &&
+        regexType.emailRegex.test(email) &&
+        regexType.passwordRegex.test(password) &&
+        regexType.phoneRegex.test(phone)
+      ) {
+        const ip = '10.0.0.139'
+        const response = await fetch(`http://${ip}:2020/check-user`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password, phone })
+        })
 
-    if (
-      firstName &&
-      lastName &&
-      regexType.emailRegex.test(email) &&
-      regexType.passwordRegex.test(password) &&
-      regexType.phoneRegex.test(phone)
-    ) {
-      const newUser: User = {
-        id: 0,
-        name: firstName + ' ' + lastName,
-        email: email,
-        password: password,
-        phone: phone,
-        img: '',
-      }
+        const data = await response.json()
 
-      const findUser = await getUserByEmailAndPasswordOrPhone(
-        email,
-        password,
-        phone,
-      )
+        if (!data.exists) {
+          const ip = '10.0.0.139'
+          const signUpResponse = await fetch(`http://${ip}:2020/users`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              _id: user._id,
+              name: `${firstName} ${lastName}`,
+              email,
+              password,
+              phone,
+              img: '',
+              productId: []
+            })
+          })
 
-      if (!findUser) {
-        try {
-          const insertedId = await insertUser(newUser)
-          const userWithId = { ...newUser, id: insertedId }
-          setUser(userWithId)
+          if (!signUpResponse.ok) {
+            throw new Error('Sign-up failed')
+          }
 
-          console.log('Signed In')
+          const insertedUser = await signUpResponse.json()
+
+          setUser(insertedUser)
+
+          console.log('Signed Up')
           navigation.navigate('SelectImage')
-        } catch (error) {
-          console.error('Error handling new user:', error)
+        } else {
+          Alert.alert('User already exists')
+          console.log('User already exists')
         }
-      } else {
-        Alert.alert('User already exist')
-        console.log('User already exist')
       }
+    } catch (error) {
+      console.error('Error signing up:', error)
+      Alert.alert('Sign-up failed', 'Failed to sign up. Please try again.')
     }
   }
 
@@ -109,8 +109,7 @@ const SignUpPage = ({ navigation }) => {
 
         <ScrollView
           style={authPagesStyles.scrollInputContainer}
-          showsVerticalScrollIndicator={false}
-        >
+          showsVerticalScrollIndicator={false}>
           <InputUser
             icon={<Octicons name="person" size={24} />}
             label={userInputType.name}
@@ -139,14 +138,10 @@ const SignUpPage = ({ navigation }) => {
 
         <TouchableOpacity
           disabled={!signUpNotValid()}
-          style={[
-            authPagesStyles.button,
-            !signUpNotValid() && authPagesStyles.disabledBtn,
-          ]}
+          style={[authPagesStyles.button, !signUpNotValid() && authPagesStyles.disabledBtn]}
           onPress={() => {
             handleOnSignUp()
-          }}
-        >
+          }}>
           <Text style={authPagesStyles.btnText}>Continue</Text>
         </TouchableOpacity>
       </View>

@@ -1,12 +1,21 @@
 import { create } from 'zustand'
-import { User } from './database/userDatabase'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+
+export type User = {
+  _id: any
+  name: string
+  email: string
+  password: string
+  phone: string
+  img: string
+  productId: number[]
+}
 
 export interface UserState {
   user: User
 
-  setUser: (user: User) => void
+  setUser: (user: Partial<User>) => void
   clearUser: () => void
 }
 
@@ -15,42 +24,44 @@ export const useUserStore = create<UserState>()(
     persist(
       (set) => ({
         user: {
-          id: 0,
+          _id: '',
           name: '',
           email: '',
           password: '',
           phone: '',
           img: '',
+          productId: []
         },
 
-        setUser: (updatedUser) => {
+        setUser: (user) => {
           set((state) => ({
             user: {
               ...state.user,
-              ...updatedUser,
-            },
+              ...user
+            }
           }))
-          console.log('userStore ===== ', 'user set successfully')
+          console.log('userStore ===== ', 'user set successfully', user)
         },
 
         clearUser: () => {
           set({
             user: {
-              id: 0,
+              _id: '',
               name: '',
               email: '',
               password: '',
               phone: '',
               img: '',
-            },
+              productId: []
+            }
           })
           console.log('userStore ===== ', 'store clear')
-        },
+        }
       }),
       {
         name: 'user-storage',
-        storage: createJSONStorage(() => AsyncStorage),
-      },
-    ),
-  ),
+        storage: createJSONStorage(() => AsyncStorage)
+      }
+    )
+  )
 )

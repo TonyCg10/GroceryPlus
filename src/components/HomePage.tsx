@@ -1,11 +1,4 @@
-import {
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { basePagesStyle } from '../indexStyle/baseStyle'
 import { useFocusEffect } from '@react-navigation/native'
 
@@ -34,7 +27,7 @@ const HomePage = ({ navigation }) => {
       return () => {
         navigation.removeListener('beforeRemove', (): void => {})
       }
-    }, [navigation]),
+    }, [navigation])
   )
 
   return (
@@ -45,19 +38,11 @@ const HomePage = ({ navigation }) => {
         navigation={navigation}
       />
       <TouchableOpacity
-        onPress={() =>
-          navigation.navigate('MoreStack', { screen: 'MyAddress' })
-        }
-        style={styles.locationView}
-      >
+        onPress={() => navigation.navigate('MoreStack', { screen: 'MyAddress' })}
+        style={styles.locationView}>
         <View style={styles.locationLeft}>
           <View style={styles.locationIconBack}>
-            <EvilIcons
-              color="white"
-              size={28}
-              name="location"
-              style={styles.locationIcon}
-            />
+            <EvilIcons color="white" size={28} name="location" style={styles.locationIcon} />
           </View>
 
           <View>
@@ -73,15 +58,11 @@ const HomePage = ({ navigation }) => {
         style={styles.searcher}
         onPress={() => {
           navigation.navigate('Searcher')
-        }}
-      >
+        }}>
         <Feather style={styles.searcherIcon} size={24} name="search" />
         <Text style={styles.searcherText}>Search Anything</Text>
       </TouchableOpacity>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={basePagesStyle.gridsScroll}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} style={basePagesStyle.gridsScroll}>
         <Grids display={true} navigation={navigation} />
       </ScrollView>
     </SafeAreaView>
@@ -94,10 +75,10 @@ const styles = StyleSheet.create({
   locationView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '5%',
+    marginBottom: '5%'
   },
   locationLeft: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   locationIconBack: {
     backgroundColor: '#87DD39',
@@ -105,30 +86,30 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     height: 40,
     width: 40,
-    marginRight: '4%',
+    marginRight: '4%'
   },
   locationIcon: {
     alignSelf: 'center',
-    marginTop: 5,
+    marginTop: 5
   },
   locationAddress: {
     fontWeight: '500',
-    fontSize: 16,
+    fontSize: 16
   },
   searcher: {
     backgroundColor: '#dedad9',
     marginBottom: '4%',
     height: '6%',
     flexDirection: 'row',
-    borderRadius: 10,
+    borderRadius: 10
   },
   searcherIcon: {
     alignSelf: 'center',
-    marginHorizontal: '4%',
+    marginHorizontal: '4%'
   },
   searcherText: {
     color: '#37474F',
     alignSelf: 'center',
-    fontWeight: '500',
-  },
+    fontWeight: '500'
+  }
 })

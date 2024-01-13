@@ -8,6 +8,7 @@ export type User = {
   password: string
   phone: string
   img: string
+  productId: string
 }
 
 export interface UserDatabaseStore {
@@ -21,7 +22,7 @@ export interface UserDatabaseStore {
   getUserByEmailAndPasswordOrPhone: (
     email: string,
     password?: string,
-    phone?: string,
+    phone?: string
   ) => Promise<User | null>
   deleteUser: (id: number) => void
   deleteAllUsers: () => void
@@ -37,23 +38,20 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
     db.transaction(
       (tx) => {
         tx.executeSql(
-          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, password TEXT, phone TEXT, img TEXT)',
+          'CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT, productId TEXT,name TEXT, email TEXT, password TEXT, phone TEXT, img TEXT)',
           [],
           () => {
-            console.log(
-              'USER TABLE CREATE #####',
-              'Users table created successfully',
-            )
+            console.log('USER TABLE CREATE #####', 'Users table created successfully')
           },
           (_, error) => {
             console.error('Error creating users table:', error)
             return false
-          },
+          }
         )
       },
       (error) => {
         console.error('Error opening database transaction:', error)
-      },
+      }
     )
 
     set({ db })
@@ -78,7 +76,7 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
         (_, error) => {
           console.error('Error fetching users:', error)
           return false
-        },
+        }
       )
     })
   },
@@ -91,16 +89,22 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
       db.transaction(
         (tx) => {
           tx.executeSql(
-            'INSERT INTO users (name, email, password, phone, img) VALUES (?, ?, ?, ?, ?)',
-            [user.name, user.email, user.password, user.phone, user.img],
+            'INSERT INTO users (name, productId, email, password, phone, img) VALUES (?, ?, ?, ?, ?, ?)',
+            [
+              user.name,
+              JSON.stringify(user.productId),
+              user.email,
+              user.password,
+              user.phone,
+              user.img
+            ],
             (_, results) => {
               const { insertId } = results
               if (insertId) {
-                console.log(
-                  'INSERT USER #####',
-                  'User inserted successfully:',
-                  { id: insertId, ...user },
-                )
+                console.log('INSERT USER #####', 'User inserted successfully:', {
+                  id: insertId,
+                  ...user
+                })
                 resolve(insertId)
               } else {
                 reject(new Error('Failed to retrieve insertId'))
@@ -110,22 +114,18 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
               console.error('Error inserting user:', error)
               reject(error)
               return false
-            },
+            }
           )
         },
         (error) => {
           console.error('Transaction error:', error)
           reject(error)
-        },
+        }
       )
     })
   },
 
-  getUserByEmailAndPasswordOrPhone: async (
-    email,
-    password?,
-    phone?,
-  ): Promise<User | null> => {
+  getUserByEmailAndPasswordOrPhone: async (email, password?, phone?): Promise<User | null> => {
     const { db } = useUserDatabaseStore.getState()
     if (!db) return
 
@@ -149,11 +149,7 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
           params,
           (_, { rows }) => {
             if (rows.length > 0) {
-              console.log(
-                'GET BY EMAIL AND PASSWORD OR PHONE #####',
-                'User found:',
-                rows._array,
-              )
+              console.log('GET BY EMAIL AND PASSWORD OR PHONE #####', 'User found:', rows._array)
 
               resolve(rows.item(0))
             } else {
@@ -161,13 +157,10 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
             }
           },
           (_, error) => {
-            console.error(
-              'Error fetching user by email and password or phone:',
-              error,
-            )
+            console.error('Error fetching user by email and password or phone:', error)
             reject(error)
             return false
-          },
+          }
         )
       })
     })
@@ -182,16 +175,13 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
         'DELETE FROM users WHERE id = ?',
         [id],
         () => {
-          console.log(
-            'DELETE USER BY ID #####',
-            `User with ID || ${id} || deleted successfully`,
-          )
+          console.log('DELETE USER BY ID #####', `User with ID || ${id} || deleted successfully`)
           useUserDatabaseStore.getState().fetchUsers()
         },
         (_, error) => {
           console.error(`Error deleting user with ID ${id}:`, error)
           return false
-        },
+        }
       )
     })
   },
@@ -215,7 +205,7 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
               console.error('Error deleting all users:', error)
               reject(error)
               return false
-            },
+            }
           )
         })
       })
@@ -250,15 +240,12 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
         'DROP TABLE IF EXISTS users',
         [],
         (_, results) => {
-          console.log(
-            'DROP TABLE #####',
-            'Table || users || deleted successfully',
-          )
+          console.log('DROP TABLE #####', 'Table || users || deleted successfully')
         },
         (_, error) => {
           console.error('Error deleting table "users":', error)
           return false
-        },
+        }
       )
     })
   },
@@ -267,17 +254,16 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
     const { db } = useUserDatabaseStore.getState()
     if (!db) return
 
-    const { name, email, password, phone, img } = updatedUser
+    const { name, email, password, phone, img, productId } = updatedUser
     const valuesToUpdate = []
     if (name) valuesToUpdate.push(`name = '${name}'`)
     if (email) valuesToUpdate.push(`email = '${email}'`)
     if (password) valuesToUpdate.push(`password = '${password}'`)
     if (phone) valuesToUpdate.push(`phone = '${phone}'`)
     if (img !== undefined) valuesToUpdate.push(`img = '${img}'`)
+    if (productId !== undefined) valuesToUpdate.push(`productId = '${JSON.stringify(productId)}'`)
 
-    const updateQuery = `UPDATE users SET ${valuesToUpdate.join(
-      ', ',
-    )} WHERE id = ?`
+    const updateQuery = `UPDATE users SET ${valuesToUpdate.join(', ')} WHERE id = ?`
     const params = [id]
 
     return new Promise<void>((resolve, reject) => {
@@ -285,9 +271,9 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
         tx.executeSql(
           updateQuery,
           params,
-          (_) => {
+          (_, results) => {
             console.log('UPDATE USER #####', 'User updated successfully:', {
-              ...updatedUser,
+              ...updatedUser
             })
             useUserDatabaseStore.getState().fetchUsers()
             resolve()
@@ -296,9 +282,9 @@ export const useUserDatabaseStore = create<UserDatabaseStore>((set) => ({
             console.error('Error updating user:', error)
             reject(error)
             return false
-          },
+          }
         )
       })
     })
-  },
+  }
 }))

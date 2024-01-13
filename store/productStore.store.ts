@@ -3,10 +3,6 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-const product = {
-  productId: [],
-}
-
 export interface ProductState {
   productId: number[]
 
@@ -19,27 +15,29 @@ export const useProductStore = create<ProductState>()(
   devtools(
     persist(
       (set) => ({
-        ...product,
+        productId: [],
 
         setProductId(productId) {
           set((state) => ({
-            productId: [...state.productId, ...productId],
+            productId: [...state.productId, ...productId]
           }))
         },
         removeProductId: (productIdToRemove) => {
           set((state) => ({
-            productId: state.productId.filter((id) => id !== productIdToRemove),
+            productId: state.productId.filter((id) => id !== productIdToRemove)
           }))
         },
 
         clearFn: () => {
-          set(product)
-        },
+          set({
+            productId: []
+          })
+        }
       }),
       {
         name: 'product-storage',
-        storage: createJSONStorage(() => AsyncStorage),
-      },
-    ),
-  ),
+        storage: createJSONStorage(() => AsyncStorage)
+      }
+    )
+  )
 )

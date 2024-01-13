@@ -1,9 +1,6 @@
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore,
-} from '../../store/database/productDatabase'
+import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
 import { useEffect } from 'react'
 
 type Pops = {
@@ -13,11 +10,11 @@ type Pops = {
 
 const Grids = ({ display, navigation }: Pops) => {
   const { productsArray, fetchProducts } = useProductDatabaseStore(
-    (state: ProductDatabaseStore) => state,
+    (state: ProductDatabaseStore) => state
   )
 
   const uniqueCategories = [
-    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim())),
+    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim()))
   ]
 
   useEffect(() => {
@@ -32,14 +29,13 @@ const Grids = ({ display, navigation }: Pops) => {
             key={key}
             onPress={() => {
               navigation.navigate('ProductDetails', {
-                id: data.id,
+                id: data.id
               })
             }}
-            style={baseGridsStyle.gridsContainer}
-          >
+            style={baseGridsStyle.gridsContainer}>
             <Image
               source={{
-                uri: data.thumbnail,
+                uri: data.thumbnail
               }}
               style={baseGridsStyle.image}
             />
@@ -53,7 +49,7 @@ const Grids = ({ display, navigation }: Pops) => {
     <View style={baseGridsStyle.gridsScreen}>
       {uniqueCategories.map((category, categoryIndex) => {
         const representativeItem = productsArray.find(
-          (data) => data.category.toLowerCase().trim() === category,
+          (data) => data.category.toLowerCase().trim() === category
         )
 
         return (
@@ -61,20 +57,17 @@ const Grids = ({ display, navigation }: Pops) => {
             key={categoryIndex}
             onPress={() => {
               navigation.navigate('CategoryLists', {
-                category: representativeItem.category.toUpperCase(),
+                category: representativeItem.category.toUpperCase()
               })
             }}
-            style={baseGridsStyle.gridsContainer}
-          >
+            style={baseGridsStyle.gridsContainer}>
             <Image
               source={{
-                uri: representativeItem.thumbnail,
+                uri: representativeItem.thumbnail
               }}
               style={baseGridsStyle.image}
             />
-            <Text style={baseGridsStyle.text}>
-              {representativeItem.category}
-            </Text>
+            <Text style={baseGridsStyle.text}>{representativeItem.category}</Text>
           </TouchableOpacity>
         )
       })}
@@ -88,7 +81,7 @@ const baseGridsStyle = StyleSheet.create({
   gridsScreen: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: '-2%',
+    marginHorizontal: '-2%'
   },
   gridsContainer: {
     backgroundColor: 'white',
@@ -99,7 +92,7 @@ const baseGridsStyle = StyleSheet.create({
     marginHorizontal: '2%',
     height: 160,
     minWidth: 140,
-    borderRadius: 10,
+    borderRadius: 10
   },
   image: {
     alignSelf: 'center',
@@ -107,10 +100,10 @@ const baseGridsStyle = StyleSheet.create({
     width: 120,
     maxHeight: 130,
     borderRadius: 10,
-    marginTop: 15,
+    marginTop: 15
   },
   text: {
     textAlign: 'center',
-    marginTop: '5%',
-  },
+    marginTop: '5%'
+  }
 })

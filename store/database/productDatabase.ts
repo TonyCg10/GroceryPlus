@@ -13,6 +13,7 @@ export interface ProductDatabaseStore {
   deleteProductTable: () => void
   deleteProduct: (id: number) => void
   deleteAllProducts: () => void
+
   //   updateProduct: (id: number, updatedProduct: Partial<ProductType>) => void
 }
 
@@ -29,20 +30,17 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
           'CREATE TABLE IF NOT EXISTS products (id INTEGER PRIMARY KEY, brand TEXT, category TEXT, description TEXT, discountPercentage REAL, images TEXT,price REAL, rating REAL, stock INTEGER, thumbnail TEXT, title TEXT)',
           [],
           () => {
-            console.log(
-              'PRODUCTS TABLE CREATE #####',
-              'Products table created successfully',
-            )
+            console.log('PRODUCTS TABLE CREATE #####', 'Products table created successfully')
           },
           (_, error) => {
             console.error('Error creating users table:', error)
             return false
-          },
+          }
         )
       },
       (error) => {
         console.error('Error opening database transaction:', error)
-      },
+      }
     )
 
     set({ db })
@@ -66,7 +64,7 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
         (_, error) => {
           console.error('Error fetching products:', error)
           return false
-        },
+        }
       )
     })
   },
@@ -90,27 +88,23 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
               product.rating,
               product.stock,
               product.thumbnail,
-              product.title,
+              product.title
             ],
             (_, results) => {
-              console.log(
-                'INSERT Product #####',
-                'Product inserted successfully:',
-                results,
-              )
+              console.log('INSERT Product #####', 'Product inserted successfully:', results)
               resolve()
             },
             (_, error) => {
               console.error('Error inserting product:', error)
               reject(error)
               return false
-            },
+            }
           )
         },
         (error) => {
           console.error('Transaction error:', error)
           reject(error)
-        },
+        }
       )
     })
   },
@@ -136,7 +130,7 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
             console.error('Error executing SQL query:', error)
             reject(error)
             return false
-          },
+          }
         )
       })
     })
@@ -150,15 +144,12 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
         'DROP TABLE IF EXISTS products',
         [],
         (_) => {
-          console.log(
-            'DROP TABLE #####',
-            'Table || products || deleted successfully',
-          )
+          console.log('DROP TABLE #####', 'Table || products || deleted successfully')
         },
         (_, error) => {
           console.error('Error deleting table "products":', error)
           return false
-        },
+        }
       )
     })
   },
@@ -173,14 +164,14 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
         () => {
           console.log(
             'DELETE PRODUCT BY ID #####',
-            `Product with ID || ${id} || deleted successfully`,
+            `Product with ID || ${id} || deleted successfully`
           )
           useProductDatabaseStore.getState().fetchProducts()
         },
         (_, error) => {
           console.error(`Error deleting user with ID ${id}:`, error)
           return false
-        },
+        }
       )
     })
   },
@@ -196,10 +187,7 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
             [],
             (_, results) => {
               set((state) => ({ ...state, productsArray: [] }))
-              console.log(
-                'DELETE ALL #####',
-                'All products deleted successfully',
-              )
+              console.log('DELETE ALL #####', 'All products deleted successfully')
               useProductDatabaseStore.getState().fetchProducts()
               resolve()
             },
@@ -207,7 +195,7 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
               console.error('Error deleting all products:', error)
               reject(error)
               return false
-            },
+            }
           )
         })
       })
@@ -218,5 +206,5 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
     } catch (error) {
       console.error('Error during deleteAllProducts:', error)
     }
-  },
+  }
 }))

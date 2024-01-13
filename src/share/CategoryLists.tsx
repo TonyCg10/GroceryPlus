@@ -5,29 +5,24 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
+  TouchableOpacity
 } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { basePagesStyle } from '../indexStyle/baseStyle'
+import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
+import { useState } from 'react'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore,
-} from '../../store/database/productDatabase'
-import { useState } from 'react'
 
 const CategoryLists = ({ navigation, route }) => {
-  const { setProductId } = useProductStore((state: ProductState) => state)
+  const { setProductId, productId } = useProductStore((state: ProductState) => state)
 
   const [wish, setWish] = useState(false)
 
   const { category } = route.params
-  const { productsArray } = useProductDatabaseStore(
-    (state: ProductDatabaseStore) => state,
-  )
+  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -45,32 +40,21 @@ const CategoryLists = ({ navigation, route }) => {
 
               return (
                 <View key={key} style={baseGridsStyle.gridsContainer}>
-                  <Image
-                    source={{ uri: data.thumbnail }}
-                    style={baseGridsStyle.image}
-                  />
+                  <Image source={{ uri: data.thumbnail }} style={baseGridsStyle.image} />
                   <Text style={baseGridsStyle.text}>{data.title}</Text>
                   <View
                     style={{
                       justifyContent: 'space-between',
-                      flexDirection: 'row',
-                    }}
-                  >
-                    <Text style={baseGridsStyle.price}>
-                      ${finalPrice.toFixed(2)}
-                    </Text>
+                      flexDirection: 'row'
+                    }}>
+                    <Text style={baseGridsStyle.price}>${finalPrice.toFixed(2)}</Text>
                     <TouchableOpacity onPress={() => setWish(!wish)}>
-                      <AntDesign
-                        size={24}
-                        name={wish ? 'star' : 'staro'}
-                        color="gold"
-                      />
+                      <AntDesign size={24} name={wish ? 'star' : 'staro'} color="gold" />
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity
                     style={baseGridsStyle.pressable}
-                    onPress={() => setProductId([data.id])}
-                  >
+                    onPress={() => !productId.includes(data.id) && setProductId([data.id])}>
                     <View style={baseGridsStyle.pressableView}>
                       <Feather
                         style={baseGridsStyle.pressableIcon}
@@ -78,9 +62,7 @@ const CategoryLists = ({ navigation, route }) => {
                         size={20}
                         name="shopping-bag"
                       />
-                      <Text style={baseGridsStyle.pressableText}>
-                        Add to Bag
-                      </Text>
+                      <Text style={baseGridsStyle.pressableText}>Add to Bag</Text>
                     </View>
                   </TouchableOpacity>
                 </View>
@@ -97,48 +79,48 @@ export default CategoryLists
 const baseGridsStyle = StyleSheet.create({
   pressableView: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   pressableIcon: {
     alignSelf: 'center',
-    marginRight: '5%',
+    marginRight: '5%'
   },
   pressableText: {
     color: 'white',
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   pressable: {
     backgroundColor: '#5EC401',
     padding: '3%',
     borderRadius: 10,
     justifyContent: 'flex-end',
-    marginTop: '5%',
+    marginTop: '5%'
   },
   gridsScreen: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginHorizontal: '-2%',
+    marginHorizontal: '-2%'
   },
   gridsContainer: {
     flex: 1,
     marginVertical: '8%',
     marginHorizontal: '2%',
     minWidth: 120,
-    borderRadius: 10,
+    borderRadius: 10
   },
   image: {
     alignSelf: 'center',
     width: 180,
     height: 180,
-    borderRadius: 10,
+    borderRadius: 10
   },
   text: {
     marginTop: '5%',
-    minHeight: 60,
+    minHeight: 60
   },
   price: {
     color: '#5EC401',
     fontSize: 18,
-    fontWeight: 'bold',
-  },
+    fontWeight: 'bold'
+  }
 })

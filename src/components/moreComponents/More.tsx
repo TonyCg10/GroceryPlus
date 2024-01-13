@@ -1,13 +1,7 @@
-import {
-  Image,
-  SafeAreaView,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import { ProductState, useProductStore } from '../../../store/productStore.store'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -21,6 +15,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 
 const More = ({ navigation }) => {
   const { user, clearUser } = useUserStore((state: UserState) => state)
+  const { clearFn } = useProductStore((state: ProductState) => state)
 
   const formatName = user?.name?.split(' ') || []
   let avatarName = ''
@@ -55,35 +50,25 @@ const More = ({ navigation }) => {
         <MorePageButtons
           text="Edit Profile"
           icon={<Octicons name="pencil" size={20} color={'#236CD9'} />}
-          onPress={() =>
-            navigation.navigate('MoreStack', { screen: 'EditProfile' })
-          }
+          onPress={() => navigation.navigate('MoreStack', { screen: 'EditProfile' })}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="My Address"
           icon={<EvilIcons size={20} name="location" />}
-          onPress={() =>
-            navigation.navigate('MoreStack', { screen: 'MyAddress' })
-          }
+          onPress={() => navigation.navigate('MoreStack', { screen: 'MyAddress' })}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="My Orders"
           icon={<Feather name="shopping-bag" size={20} />}
-          onPress={() =>
-            navigation.navigate('MoreStack', { screen: 'MyOrders' })
-          }
+          onPress={() => navigation.navigate('MoreStack', { screen: 'MyOrders' })}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="My Wishlist"
-          icon={
-            <MaterialCommunityIcons name="lightning-bolt-outline" size={20} />
-          }
-          onPress={() =>
-            navigation.navigate('MoreStack', { screen: 'MyWishlist' })
-          }
+          icon={<MaterialCommunityIcons name="lightning-bolt-outline" size={20} />}
+          onPress={() => navigation.navigate('MoreStack', { screen: 'MyWishlist' })}
         />
         <View style={basePagesStyle.line} />
         <MorePageButtons
@@ -96,10 +81,7 @@ const More = ({ navigation }) => {
           icon={<Feather name="phone" size={20} color={'#F37A20'} />}
         />
         <View style={basePagesStyle.line} />
-        <MorePageButtons
-          text="Mail to us"
-          icon={<Feather name="mail" size={20} />}
-        />
+        <MorePageButtons text="Mail to us" icon={<Feather name="mail" size={20} />} />
         <View style={basePagesStyle.line} />
         <MorePageButtons
           text="Message to facebook page"
@@ -111,6 +93,7 @@ const More = ({ navigation }) => {
           icon={<AntDesign name="poweroff" size={20} color={'#f66'} />}
           onPress={() => {
             clearUser()
+            clearFn()
             navigation.navigate('AuthStack', { screen: 'Landing' })
           }}
         />
@@ -124,7 +107,7 @@ export default More
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    marginVertical: '5%',
+    marginVertical: '5%'
   },
   avatar: {
     backgroundColor: '#eeeeee',
@@ -135,27 +118,27 @@ const styles = StyleSheet.create({
     borderRadius: 30,
 
     shadowColor: '#5EC401',
-    elevation: 4,
+    elevation: 4
   },
   avatarImage: {
     width: 60,
     height: 60,
     alignSelf: 'center',
-    borderRadius: 30,
+    borderRadius: 30
   },
   avatarText: {
     alignSelf: 'center',
     marginTop: '30%',
-    fontSize: 18,
+    fontSize: 18
   },
   name: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   number: {
-    fontSize: 16,
+    fontSize: 16
   },
   scroll: {
-    maxHeight: '72%',
-  },
+    maxHeight: '72%'
+  }
 })

@@ -5,20 +5,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Alert,
+  Alert
 } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useState } from 'react'
-import {
-  UserDatabaseStore,
-  useUserDatabaseStore,
-} from '../../../store/database/userDatabase'
 import { UserState, useUserStore } from '../../../store/userStore.store'
-import {
-  AuthLogic,
-  regexType,
-  userInputType,
-} from '../authComponents/utils/utils'
+import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
+import { ProductState, useProductStore } from '../../../store/productStore.store'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -27,12 +20,12 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import InputUser from '../../share/utils/InputUser'
 import ImageComponent from '../../share/utils/ImageComponent'
 import Feather from 'react-native-vector-icons/Feather'
+import axios from 'axios'
 
 const EditProfile = ({ navigation }) => {
-  const { updateUser, deleteUser } = useUserDatabaseStore(
-    (state: UserDatabaseStore) => state,
-  )
-  const { user, clearUser } = useUserStore((state: UserState) => state)
+  const { clearFn } = useProductStore((state: ProductState) => state)
+  const { user, clearUser, setUser } = useUserStore((state: UserState) => state)
+
   const isKeyboardVisible = AuthLogic()
 
   const [name, setName] = useState('')
@@ -41,16 +34,14 @@ const EditProfile = ({ navigation }) => {
   const [phone, setPhone] = useState('')
   const [edit, setEdit] = useState(false)
 
-  const handleOnUpdateUser = () => {
+  const handleOnUpdateUser = async () => {
     const formatName = name?.split(' ')
     let firstName = ''
     let lastName = ''
 
     if (formatName.length > 1) {
-      firstName =
-        formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
-      lastName =
-        formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
+      firstName = formatName[0].charAt(0).toLocaleUpperCase() + formatName[0].slice(1)
+      lastName = formatName[1].charAt(0).toLocaleUpperCase() + formatName[1].slice(1)
     }
 
     if (
@@ -60,15 +51,27 @@ const EditProfile = ({ navigation }) => {
       regexType.passwordRegex.test(password) &&
       regexType.phoneRegex.test(phone)
     ) {
-      const updatedUser = {
+      const ip = '10.0.0.139'
+      const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
         name: firstName + ' ' + lastName,
         email: email,
         password: password,
-        phone: phone,
+        phone: phone
+      })
+
+      if (response.status === 200) {
+        setUser({
+          name: firstName + ' ' + lastName,
+          email: email,
+          password: password,
+          phone: phone
+        })
+        setEdit(false)
+        console.log('User updated successfully')
+      } else {
+        throw new Error('Failed to update user')
       }
 
-      updateUser(user.id, updatedUser)
-      setEdit(false)
       Alert.alert('User updated successfully!')
     } else {
       Alert.alert('You must fill fields')
@@ -79,16 +82,18 @@ const EditProfile = ({ navigation }) => {
     Alert.alert('Are you sure you want to delete your account?', '', [
       {
         text: 'Confirm',
-        onPress: () => {
-          deleteUser(user.id)
+        onPress: async () => {
+          const ip = '10.0.0.139'
+          await axios.delete(`http://${ip}:2020/delete/${user._id}`)
           clearUser()
+          clearFn()
           navigation.navigate('AuthStack', { screen: 'Landing' })
-        },
+        }
       },
       {
         text: 'Cancel',
-        style: 'cancel',
-      },
+        style: 'cancel'
+      }
     ])
   }
   const handleOnEditUser = () => {
@@ -97,12 +102,12 @@ const EditProfile = ({ navigation }) => {
         text: 'Confirm',
         onPress: () => {
           setEdit(true)
-        },
+        }
       },
       {
         text: 'Cancel',
-        style: 'cancel',
-      },
+        style: 'cancel'
+      }
     ])
   }
 
@@ -153,16 +158,14 @@ const EditProfile = ({ navigation }) => {
                 style={styles.edit}
                 onPress={() => {
                   handleOnUpdateUser()
-                }}
-              >
+                }}>
                 <Text style={styles.text}>Confirm</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.delete}
                 onPress={() => {
                   setEdit(false)
-                }}
-              >
+                }}>
                 <Text style={styles.text}>Cancel</Text>
               </TouchableOpacity>
             </>
@@ -172,8 +175,7 @@ const EditProfile = ({ navigation }) => {
                 style={styles.edit}
                 onPress={() => {
                   handleOnEditUser()
-                }}
-              >
+                }}>
                 <AntDesign size={22} color="white" name="edit" />
                 <Text style={styles.text}>Edit Account</Text>
               </TouchableOpacity>
@@ -181,8 +183,7 @@ const EditProfile = ({ navigation }) => {
                 style={styles.delete}
                 onPress={() => {
                   handleOnDeleteUser()
-                }}
-              >
+                }}>
                 <Feather size={22} color="white" name="user-minus" />
                 <Text style={styles.text}>Delete Account</Text>
               </TouchableOpacity>
@@ -202,7 +203,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-    width: '90%',
+    width: '90%'
   },
   edit: {
     backgroundColor: '#5EC401',
@@ -210,7 +211,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: '2%',
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   delete: {
     backgroundColor: '#f66',
@@ -218,6 +219,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginVertical: '2%',
     flexDirection: 'row',
-    justifyContent: 'center',
-  },
+    justifyContent: 'center'
+  }
 })

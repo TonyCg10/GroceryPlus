@@ -4,10 +4,24 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "ts:check": "tsc",
-    "start": "expo start",
+    "start": "node index.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "dev": "nodemon index.js"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "server"
+    ],
+    "ext": "ts",
+    "ignore": [
+      "*.test.ts"
+    ],
+    "delay": "3",
+    "execMap": {
+      "ts": "ts-node"
+    }
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.18.2",
@@ -17,12 +31,20 @@
     "@react-navigation/material-bottom-tabs": "^6.2.19",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/stack": "^6.3.20",
+    "@realm/react": "^0.6.2",
+    "axios": "^1.6.5",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
     "expo": "~49.0.15",
     "expo-image-picker": "~14.3.2",
     "expo-linear-gradient": "~12.3.0",
     "expo-sqlite": "~11.3.3",
     "expo-status-bar": "~1.6.0",
     "expo-svg-uri": "^1.3.1",
+    "express": "^4.18.2",
+    "mongodb": "^6.3.0",
+    "mongoose": "^8.0.3",
+    "neo4j-driver": "^5.16.0",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-date-picker": "^4.3.5",
@@ -35,12 +57,14 @@
     "react-native-svg-transformer": "^1.1.0",
     "react-native-ui-datepicker": "^1.0.11",
     "react-native-vector-icons": "^10.0.2",
+    "realm": "^12.5.1",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.14",
     "@types/react-native-vector-icons": "^6.4.18",
+    "nodemon": "^3.0.2",
     "typescript": "^5.1.3"
   },
   "private": true
