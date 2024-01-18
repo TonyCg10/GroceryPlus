@@ -1,6 +1,7 @@
 import * as ImagePicker from 'expo-image-picker'
 import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import { ip } from '../../components/authComponents/utils/utils'
 
 import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -32,7 +33,6 @@ const ImageComponent = ({ navigation, route }: Props) => {
       })
 
       if (!result.canceled) {
-        const ip = '10.0.0.139'
         const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
           img: result.assets[0].uri
         })
@@ -54,7 +54,6 @@ const ImageComponent = ({ navigation, route }: Props) => {
       {
         text: 'Confirm',
         onPress: async () => {
-          const ip = '10.0.0.139'
           try {
             const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
               img: ''

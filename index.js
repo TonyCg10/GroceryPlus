@@ -6,12 +6,13 @@ app.use(cors())
 app.use(express.json())
 const PORT = process.env.PORT || 2020
 
+
 mongoose
   .connect('mongodb+srv://antoniocorcoba1:4P8Lts5WkpxqNSuK@cluster0.iwirqeh.mongodb.net/Users')
   .then(() => {
     console.log('Connected')
-    app.listen(PORT, '10.0.0.139', () => {
-      console.log(`Server running on http://10.0.0.139:${PORT}/`)
+    app.listen(PORT, 'localhost', () => {
+      console.log(`Server running on http://localhost:${PORT}/`)
     })
   })
   .catch((err) => console.error(err))

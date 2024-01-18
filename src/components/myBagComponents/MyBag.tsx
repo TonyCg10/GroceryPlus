@@ -3,6 +3,7 @@ import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
+import { ip } from '../authComponents/utils/utils'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../share/utils/Header'
@@ -25,7 +26,6 @@ const MyBag = ({ navigation }) => {
         ids.push(p)
       })
 
-      const ip = '10.0.0.139'
       const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
         productId: ids
       })

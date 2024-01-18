@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Platform } from 'react-native'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import HomePage from '../components/HomePage'
@@ -52,7 +52,7 @@ const BottomRoutes = () => {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             position: 'absolute',
-            height: 80,
+            height: Platform.OS === 'android' ? 80 : 100,
           },
           tabBarShowLabel: false,
         })}

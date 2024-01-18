@@ -1,6 +1,8 @@
 import { Keyboard } from 'react-native'
 import { useEffect, useState } from 'react'
 
+export const ip = 'localhost'
+
 export const regexType = {
   nameRegex:
     /(^[A-Za-z]{1,19})([ ]{0,1})([A-Za-z]{1,19})?([ ]{0,1})?([A-Za-z]{1,19})?([ ]{0,1})?([A-Za-z]{1,19})/,

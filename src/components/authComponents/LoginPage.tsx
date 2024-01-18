@@ -4,6 +4,7 @@ import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { AuthLogic, regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
+import { ip } from '../authComponents/utils/utils'
 
 import axios from 'axios'
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
@@ -25,7 +26,6 @@ const LoginPage = ({ navigation }) => {
 
   const handleOnLogin = async () => {
     try {
-      const ip = '10.0.0.139'
       const response = await axios.post(`http://${ip}:2020/check-user`, {
         email,
         password

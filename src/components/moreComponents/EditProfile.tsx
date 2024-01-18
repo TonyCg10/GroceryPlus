@@ -12,6 +12,7 @@ import { useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
+import { ip } from '../authComponents/utils/utils'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -51,7 +52,6 @@ const EditProfile = ({ navigation }) => {
       regexType.passwordRegex.test(password) &&
       regexType.phoneRegex.test(phone)
     ) {
-      const ip = '10.0.0.139'
       const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
         name: firstName + ' ' + lastName,
         email: email,
@@ -83,7 +83,6 @@ const EditProfile = ({ navigation }) => {
       {
         text: 'Confirm',
         onPress: async () => {
-          const ip = '10.0.0.139'
           await axios.delete(`http://${ip}:2020/delete/${user._id}`)
           clearUser()
           clearFn()

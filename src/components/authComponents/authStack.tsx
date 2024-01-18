@@ -2,7 +2,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 
 import Landing from './Landing'
 import LoginPage from './LoginPage'
-import SignUpPage from './SignUpPage'
+import SignUpPage from './signUpComponents/SignUpPage'
 import SelectImage from './SelectImage'
 
 const Stack = createStackNavigator()

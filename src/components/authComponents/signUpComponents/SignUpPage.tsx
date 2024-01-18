@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { AuthLogic, regexType, userInputType } from './utils/utils'
-import { UserState, useUserStore } from '../../../store/userStore.store'
-import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
+import { basePagesStyle } from '../../../indexStyle/baseStyle'
+import { AuthLogic, regexType, userInputType } from '../utils/utils'
+import { UserState, useUserStore } from '../../../../store/userStore.store'
+import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
+import { ip } from '../utils/utils'
 
-import GroceryPlus from '../../../assets/GroceryPlus.svg'
-import Header from '../../share/utils/Header'
+import GroceryPlus from '../../../../assets/GroceryPlus.svg'
+import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -33,7 +34,6 @@ const SignUpPage = ({ navigation }) => {
         regexType.passwordRegex.test(password) &&
         regexType.phoneRegex.test(phone)
       ) {
-        const ip = '10.0.0.139'
         const response = await fetch(`http://${ip}:2020/check-user`, {
           method: 'POST',
           headers: {
@@ -45,7 +45,6 @@ const SignUpPage = ({ navigation }) => {
         const data = await response.json()
 
         if (!data.exists) {
-          const ip = '10.0.0.139'
           const signUpResponse = await fetch(`http://${ip}:2020/users`, {
             method: 'POST',
             headers: {

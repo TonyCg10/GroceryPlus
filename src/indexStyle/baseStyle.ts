@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 
 const basePagesStyle = StyleSheet.create({
   containerPage: {
-    marginTop: '14%',
+    marginTop: Platform.OS ==='android' ? '14%': '18%',
     flex: 1,
     marginHorizontal: '5%',
   },

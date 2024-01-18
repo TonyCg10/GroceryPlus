@@ -86,7 +86,8 @@ const baseGridsStyle = StyleSheet.create({
   gridsContainer: {
     backgroundColor: 'white',
     shadowColor: 'black',
-    elevation: 4,
+    shadowOpacity: 0.020,
+    elevation: 6,
     flex: 1,
     marginVertical: '2%',
     marginHorizontal: '2%',
