@@ -36,7 +36,7 @@ const Landing = ({ navigation }) => {
           <TouchableOpacity
             style={landingStyles.signUp}
             onPress={() => {
-              navigation.navigate('SignUpPage')
+              navigation.navigate('Phone')
             }}>
             <Text style={landingStyles.text}>Sign Up</Text>
           </TouchableOpacity>
@@ -65,14 +65,14 @@ const landingStyles = StyleSheet.create({
   login: {
     padding: '4%',
     minWidth: '65%',
-    backgroundColor: '#00C896',
+    backgroundColor: '#5EC401',
     marginVertical: '3%',
     borderRadius: 10
   },
   signUp: {
     padding: '4%',
     minWidth: '65%',
-    backgroundColor: '#5EC401',
+    backgroundColor: '#F37A20',
     marginVertical: '3%',
     borderRadius: 10
   },

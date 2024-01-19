@@ -21,6 +21,8 @@ export const userInputType = {
 
   password: 'Password',
 
+  confirmPw: 'Confirm Password',
+
   phone: 'Phone',
 }
 
@@ -48,4 +50,13 @@ export const AuthLogic = () => {
   }, [])
 
   return isKeyboardVisible
+}
+
+export const signUpNotValid = (type: string ,data: string) => {
+  if (type === 'name')
+    if (data && regexType.nameRegex.test(data)) return true
+  if (type === 'phone')
+    if (data && regexType.phoneRegex.test(data)) return true
+  if (type === 'password')
+    if (data && regexType.passwordRegex.test(data)) return true
 }

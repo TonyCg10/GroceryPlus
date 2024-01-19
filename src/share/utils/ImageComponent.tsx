@@ -5,13 +5,13 @@ import { ip } from '../../components/authComponents/utils/utils'
 
 import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 type Props = {
-  navigation?: any
   route?: any
 }
 
-const ImageComponent = ({ navigation, route }: Props) => {
+const ImageComponent = ({ route }: Props) => {
   const { user, setUser } = useUserStore((state: UserState) => state)
 
   const formatName = user?.name?.split(' ') || []
@@ -33,16 +33,8 @@ const ImageComponent = ({ navigation, route }: Props) => {
       })
 
       if (!result.canceled) {
-        const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
-          img: result.assets[0].uri
-        })
-
-        if (response.status === 200) {
-          setUser({ img: result.assets[0].uri })
-          console.log('User updated successfully')
-        } else {
-          throw new Error('Failed to update user')
-        }
+        setUser({ img: result.assets[0].uri })
+        console.log('User updated successfully')
       }
     } catch (error) {
       console.error('Error picking image:', error)
@@ -84,7 +76,11 @@ const ImageComponent = ({ navigation, route }: Props) => {
     <>
       <View style={styles.avatar}>
         {!user.img ? (
-          <Text style={styles.avatarText}>{avatarName}</Text>
+          route !== 'PersonalInfo' ? (
+            <Text style={styles.avatarText}>{avatarName}</Text>
+          ) : (
+            <MaterialCommunityIcons style={styles.iconCamera} name="camera-plus-outline" />
+          )
         ) : (
           <Image source={{ uri: user.img }} style={styles.avatarImage} />
         )}
@@ -106,33 +102,6 @@ const ImageComponent = ({ navigation, route }: Props) => {
           </TouchableOpacity>
         )}
       </View>
-      {route == 'SelectImage' && (
-        <View style={styles.container}>
-          {!user.img ? (
-            <Text style={styles.text}>This is how will look actual avatar, add a pic!</Text>
-          ) : (
-            <Text style={styles.text}>Is fine this pic?</Text>
-          )}
-          <View style={styles.btnContainer}>
-            {!user.img && (
-              <TouchableOpacity
-                style={styles.selectBtn}
-                onPress={() => {
-                  pickImage()
-                }}>
-                <Text style={styles.selectText}>Select Image</Text>
-              </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={user.img ? styles.continueBtn : styles.skipBtn}
-              onPress={() => {
-                navigation.navigate('BottomRoutes')
-              }}>
-              <Text style={styles.btnText}>{user.img ? 'Continue' : 'Skip'}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
     </>
   )
 }
@@ -161,6 +130,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginTop: '35%',
     fontSize: 48
+  },
+  iconCamera: {
+    alignSelf: 'center',
+    marginTop: '35%',
+    fontSize: 86
   },
   container: {
     flex: 1

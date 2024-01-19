@@ -59,7 +59,16 @@ app.post('/users', async (req, res) => {
 app.post('/check-user', async (req, res) => {
   try {
     const { email, password, phone } = req.body
-    let query = { email, password }
+
+    let query = {}
+
+    if (email) {
+      query.email = email
+    }
+
+    if (password) {
+      query.password = password
+    }
 
     if (phone) {
       query.phone = phone

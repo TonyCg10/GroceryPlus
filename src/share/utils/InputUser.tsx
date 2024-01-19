@@ -28,6 +28,7 @@ const InputUser = ({
     (label == userInputType.name && regexType.nameRegex.test(input)) ||
     (label == userInputType.email && regexType.emailRegex.test(input)) ||
     (label == userInputType.password && regexType.passwordRegex.test(input)) ||
+    (label == userInputType.confirmPw && regexType.passwordRegex.test(input)) ||
     (label == userInputType.phone && regexType.phoneRegex.test(input))
 
   const returnPhoneForm = (): string => {
@@ -53,20 +54,17 @@ const InputUser = ({
               autoComplete="off"
               autoCapitalize="none"
               value={label != userInputType.phone ? input : returnPhoneForm()}
-              secureTextEntry={label == 'Password' && !showPassword}
+              secureTextEntry={
+                (label === 'Password' && !showPassword) ||
+                (label === 'Confirm Password' && !showPassword)
+              }
               onChangeText={(value) => setInput(value)}
               style={{ width: '80%' }}
               keyboardType={
-                label == 'Name'
-                  ? 'default'
-                  : label == 'Email'
-                  ? 'email-address'
-                  : label == 'Password'
-                  ? 'default'
-                  : 'phone-pad'
+                label == 'Email' ? 'email-address' : label == 'Phone' ? 'phone-pad' : 'default'
               }
             />
-            {label == 'Password' && (
+            {['Password', 'Confirm Password'].includes(label) && (
               <MaterialCommunityIcons
                 name={showPassword ? 'eye-off' : 'eye'}
                 size={24}
@@ -154,7 +152,8 @@ export const authPagesStyles = StyleSheet.create({
     justifyContent: 'center',
     borderRadius: 10,
     height: 40,
-    marginVertical: '5%'
+    marginVertical: '5%',
+    flexDirection: 'row'
   },
   disabledBtn: {
     backgroundColor: '#A9CEC2'
@@ -162,6 +161,8 @@ export const authPagesStyles = StyleSheet.create({
   btnText: {
     color: 'white',
     fontSize: 18,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    flex: 0.9,
+    textAlign: 'center'
   }
 })
