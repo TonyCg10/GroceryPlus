@@ -13,6 +13,7 @@ import { UserState, useUserStore } from '../../../store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { ip } from '../authComponents/utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -66,15 +67,22 @@ const EditProfile = ({ navigation }) => {
           password: password,
           phone: phone
         })
+        showMessage({
+          icon: 'success',
+          message: 'User Updated!',
+          type: 'success'
+        })
         setEdit(false)
         console.log('User updated successfully')
       } else {
         throw new Error('Failed to update user')
       }
-
-      Alert.alert('User updated successfully!')
     } else {
-      Alert.alert('You must fill fields')
+      showMessage({
+        icon: 'warning',
+        message: 'You must fill fields!',
+        type: 'warning'
+      })
     }
   }
 

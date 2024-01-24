@@ -5,6 +5,7 @@ import { AuthLogic, regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 import { ip } from '../authComponents/utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import axios from 'axios'
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
@@ -45,6 +46,10 @@ const LoginPage = ({ navigation }) => {
             productId: data.user.productId
           })
 
+          showMessage({
+            message: 'Successful Login',
+            type: 'success'
+          })
           console.log('Logged In')
           navigation.navigate('BottomRoutes')
         }

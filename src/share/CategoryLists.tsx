@@ -10,19 +10,52 @@ import {
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { basePagesStyle } from '../indexStyle/baseStyle'
 import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { showMessage } from 'react-native-flash-message'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 
 const CategoryLists = ({ navigation, route }) => {
-  const { setProductId, productId } = useProductStore((state: ProductState) => state)
+  const { setProductId, productId, setWishes, wishes } = useProductStore(
+    (state: ProductState) => state
+  )
 
-  const [wish, setWish] = useState(false)
+  const [wish, setWish] = useState({})
+
+  const ids = []
+  ids.push(Object.keys(wish).map(Number))
+  console.log(wishes)
 
   const { category } = route.params
   const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
+
+  const handleAddToBag = (data) => {
+    return (
+      !productId.includes(data.id) && setProductId([data.id]),
+      showMessage({
+        icon: 'success',
+        message: 'Added to your Bag!',
+        type: 'success'
+      })
+    )
+  }
+
+  const handleWishes = (data: number, productWish: boolean) => {
+    if (wish[data]) {
+      // @ts-ignore
+      const { [data]: removedWish, ...restWishes } = wish
+      setWish(restWishes)
+      ids.pop()
+    } else {
+      setWish((prevWishes) => ({ ...prevWishes, [data]: !productWish }))
+    }
+  }
+
+  useEffect(() => {
+    setWishes(ids[0])
+  }, [])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -37,6 +70,7 @@ const CategoryLists = ({ navigation, route }) => {
             .filter((item) => item.category.toUpperCase().includes(category))
             .map((data, key) => {
               const finalPrice = data.price - data.discountPercentage
+              const productWish = wish[data.id] || false
 
               return (
                 <View key={key} style={baseGridsStyle.gridsContainer}>
@@ -48,13 +82,16 @@ const CategoryLists = ({ navigation, route }) => {
                       flexDirection: 'row'
                     }}>
                     <Text style={baseGridsStyle.price}>${finalPrice.toFixed(2)}</Text>
-                    <TouchableOpacity onPress={() => setWish(!wish)}>
-                      <AntDesign size={24} name={wish ? 'star' : 'staro'} color="gold" />
+                    <TouchableOpacity
+                      onPress={() => {
+                        handleWishes(data.id, productWish)
+                      }}>
+                      <AntDesign size={24} name={productWish ? 'star' : 'staro'} color="gold" />
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity
                     style={baseGridsStyle.pressable}
-                    onPress={() => !productId.includes(data.id) && setProductId([data.id])}>
+                    onPress={() => handleAddToBag(data)}>
                     <View style={baseGridsStyle.pressableView}>
                       <Feather
                         style={baseGridsStyle.pressableIcon}

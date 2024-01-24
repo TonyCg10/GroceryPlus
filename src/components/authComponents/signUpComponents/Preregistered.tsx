@@ -5,6 +5,7 @@ import { AuthLogic, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { ip } from '../utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import Password from '../../../../assets/Forgot password-rafiki.svg'
 import Header from '../../../share/utils/Header'
@@ -38,7 +39,11 @@ const Preregistered = ({ navigation }) => {
             img: data.user.img,
             productId: data.user.productId
           })
-
+          showMessage({
+            icon: 'success',
+            message: 'Successful Login',
+            type: 'success'
+          })
           console.log('Logged In')
           navigation.navigate('BottomRoutes')
         }

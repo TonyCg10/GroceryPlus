@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { StyleSheet } from 'react-native'
 import {
   ProductDatabaseStore,
-  useProductDatabaseStore,
+  useProductDatabaseStore
 } from '../../../store/database/productDatabase'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -15,9 +15,7 @@ import Results from './Results'
 import NotFoundResult from './NotFoundResult'
 
 const Search = ({ navigation }) => {
-  const { productsArray } = useProductDatabaseStore(
-    (state: ProductDatabaseStore) => state,
-  )
+  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
 
   const [look, setLook] = useState('')
   const [rate, setRate] = useState(0)
@@ -38,8 +36,7 @@ const Search = ({ navigation }) => {
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible)
-      }}
-    >
+      }}>
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text style={styles.modalText}>Rating</Text>
@@ -48,8 +45,7 @@ const Search = ({ navigation }) => {
             onPress={() => {
               setModalVisible(!modalVisible)
               setRate(5)
-            }}
-          >
+            }}>
             <Text style={styles.textStyle}>5</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -57,8 +53,7 @@ const Search = ({ navigation }) => {
             onPress={() => {
               setModalVisible(!modalVisible)
               setRate(4)
-            }}
-          >
+            }}>
             <Text style={styles.textStyle}>4</Text>
           </TouchableOpacity>
         </View>
@@ -91,8 +86,7 @@ const Search = ({ navigation }) => {
                 <TouchableOpacity
                   onPress={() => {
                     setModalVisible(!modalVisible)
-                  }}
-                >
+                  }}>
                   <Ionicons name="filter-outline" size={24} />
                 </TouchableOpacity>
               </View>
@@ -116,22 +110,22 @@ const searchPageStyles = StyleSheet.create({
   headerText: {
     fontSize: 22,
     fontWeight: '500',
-    marginBottom: '5%',
+    marginBottom: '5%'
   },
   headerContainer: {
-    marginVertical: '5%',
+    marginVertical: '5%'
   },
   resultContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+    justifyContent: 'space-between'
+  }
 })
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    marginTop: 22
   },
   modalView: {
     margin: 20,
@@ -142,32 +136,32 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 2
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 5
   },
   button: {
     borderRadius: 20,
     padding: 10,
     elevation: 2,
     width: 100,
-    marginVertical: '3%',
+    marginVertical: '3%'
   },
   buttonOpen: {
-    backgroundColor: '#F194FF',
+    backgroundColor: '#F194FF'
   },
   buttonClose: {
-    backgroundColor: '#2196F3',
+    backgroundColor: '#2196F3'
   },
   textStyle: {
     color: 'white',
     fontWeight: 'bold',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   modalText: {
     marginBottom: 15,
-    textAlign: 'center',
-  },
+    textAlign: 'center'
+  }
 })

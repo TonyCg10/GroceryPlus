@@ -2,6 +2,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { ip } from '../../components/authComponents/utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -34,6 +35,11 @@ const ImageComponent = ({ route }: Props) => {
 
       if (!result.canceled) {
         setUser({ img: result.assets[0].uri })
+        showMessage({
+          icon: 'success',
+          message: 'Image settled!',
+          type: 'success'
+        })
         console.log('User updated successfully')
       }
     } catch (error) {

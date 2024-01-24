@@ -1,10 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { Product } from '../../../store/database/GroceryData'
 
@@ -34,16 +28,13 @@ const PopularResults = ({ productData, navigation }: Prop) => {
                     stock: data.stock,
                     discountPercentage: data.discountPercentage,
                     thumbnail: data.thumbnail,
-                    category: data.category,
+                    category: data.category
                   })
                 }
-                key={key}
-              >
+                key={key}>
                 <View style={popularResultStyles.brands}>
                   <Feather size={18} name="search" />
-                  <Text style={popularResultStyles.popularText}>
-                    {data.title}
-                  </Text>
+                  <Text style={popularResultStyles.popularText}>{data.title}</Text>
                 </View>
                 <View style={basePagesStyle.line} />
               </TouchableOpacity>
@@ -60,17 +51,17 @@ export default PopularResults
 const popularResultStyles = StyleSheet.create({
   popularResultContainer: {
     backgroundColor: 'white',
-    marginHorizontal: '-5%',
+    marginHorizontal: '-5%'
   },
   popularResultItem: {
-    marginLeft: '5%',
+    marginLeft: '5%'
   },
   popularText: {
     fontSize: 16,
-    marginLeft: '5%',
+    marginLeft: '5%'
   },
   brands: {
     flexDirection: 'row',
-    marginVertical: '6%',
-  },
+    marginVertical: '6%'
+  }
 })

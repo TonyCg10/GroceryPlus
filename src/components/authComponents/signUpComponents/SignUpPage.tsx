@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { basePagesStyle } from '../../../indexStyle/baseStyle'
-import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
+import { AuthLogic, regexType, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { ip } from '../utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import SetPassw from '../../../../assets/Mobile login-pana.svg'
 import Header from '../../../share/utils/Header'
@@ -40,6 +41,11 @@ const SignUpPage = ({ navigation }) => {
 
         if (!data.exists) {
           setUser({ email: email, password: password })
+          showMessage({
+            icon: 'success',
+            message: 'Successful Login',
+            type: 'success'
+          })
           navigation.navigate('PersonalInfo')
         }
       }

@@ -1,5 +1,4 @@
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { useState } from 'react'
 import {
   ProductDatabaseStore,
@@ -8,11 +7,38 @@ import {
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
-const ProductsSelected = () => {
-  const { productId, removeProductId } = useProductStore((state: ProductState) => state)
+type Props = {
+  productId: number[]
+  removeProductId: (id: number) => void
+}
+
+const ProductsSelected = ({ productId, removeProductId }: Props) => {
   const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
 
-  const [many, setMany] = useState(0)
+  const [quantities, setQuantities] = useState(Array(productsArray.length).fill(0))
+
+  const handleOnDecrease = (productId) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity, index) =>
+        productId === productsArray[index].id ? Math.max(quantity - 1, 0) : quantity
+      )
+    )
+    const isQuantityZero = quantities.some(
+      (quantity, index) => productId === productsArray[index].id && quantity <= 1
+    )
+
+    if (isQuantityZero) {
+      removeProductId(productId)
+    }
+  }
+
+  const handleOnIncrease = (productId) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((quantity, index) =>
+        productId === productsArray[index].id ? quantity + 1 : quantity
+      )
+    )
+  }
 
   return (
     <View>
@@ -20,13 +46,13 @@ const ProductsSelected = () => {
       {productsArray
         .filter((item) => productId.includes(item.id))
         .map((data, key) => {
-          const handleOnDecrees = () => {
-            many == 0 ? removeProductId(data.id) : (setMany(many - 1), data.stock + 1)
-          }
-          const handleOnIncrease = () => {
-            setMany(many + 1)
-            data.stock - 1
-          }
+          const quantity = quantities.filter(Number)[key]
+          if (typeof quantity !== 'number')
+            setQuantities((prevQuantities) =>
+              prevQuantities.map((quantity, index) =>
+                data.id === productsArray[index].id ? quantity + 1 : quantity
+              )
+            )
           const finalPrice = data.price - data.discountPercentage
 
           return (
@@ -42,11 +68,13 @@ const ProductsSelected = () => {
                 <View style={styles.info}>
                   <Text style={styles.price}>$ {finalPrice.toFixed(2)}</Text>
                   <View style={styles.btnContainer}>
-                    <TouchableOpacity style={styles.minus} onPress={handleOnDecrees}>
+                    <TouchableOpacity
+                      style={styles.minus}
+                      onPress={() => handleOnDecrease(data.id)}>
                       <Entypo color="white" name="minus" />
                     </TouchableOpacity>
-                    <Text style={styles.many}>{many}</Text>
-                    <TouchableOpacity style={styles.plus} onPress={handleOnIncrease}>
+                    <Text style={styles.many}>{quantity}</Text>
+                    <TouchableOpacity style={styles.plus} onPress={() => handleOnIncrease(data.id)}>
                       <Entypo color="white" name="plus" />
                     </TouchableOpacity>
                   </View>

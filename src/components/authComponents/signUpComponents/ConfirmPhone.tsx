@@ -10,6 +10,7 @@ import {
   useBlurOnFulfill,
   useClearByFocusCell
 } from 'react-native-confirmation-code-field'
+import { showMessage } from 'react-native-flash-message'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -30,6 +31,11 @@ const ConfirmPhone = ({ navigation }) => {
   const handleOnSetPhone = async () => {
     try {
       if (value !== '') {
+        showMessage({
+          icon: 'success',
+          message: 'Number Verified',
+          type: 'success'
+        })
         navigation.navigate('SignUpPage')
       } else {
         throw new Error('Failed to update user')

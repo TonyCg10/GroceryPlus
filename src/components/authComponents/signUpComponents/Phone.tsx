@@ -4,6 +4,7 @@ import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, ip, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { useState } from 'react'
+import { showMessage } from 'react-native-flash-message'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -32,8 +33,18 @@ const Phone = ({ navigation }) => {
 
         if (!data.exists) {
           setUser({ phone: phone })
+          showMessage({
+            icon: 'info',
+            message: 'Verify your number',
+            type: 'info'
+          })
           navigation.navigate('ConfirmPhone')
         } else {
+          showMessage({
+            icon: 'warning',
+            message: 'Looks like you already have account',
+            type: 'warning'
+          })
           navigation.navigate('Preregistered')
         }
       }

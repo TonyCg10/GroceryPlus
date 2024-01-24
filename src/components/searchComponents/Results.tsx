@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'rea
 import { Product } from '../../../store/database/GroceryData'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
+import { showMessage } from 'react-native-flash-message'
 
 import Feather from 'react-native-vector-icons/Feather'
 
@@ -14,6 +15,17 @@ type Prop = {
 
 const Results = ({ navigation, look, productData, rate }: Prop) => {
   const { setProductId, productId } = useProductStore((state: ProductState) => state)
+
+  const handleAddToBag = (data) => {
+    return (
+      !productId.includes(data.id) && setProductId([data.id]),
+      showMessage({
+        icon: 'success',
+        message: 'Added to your Bag!',
+        type: 'success'
+      })
+    )
+  }
 
   return (
     <>
@@ -78,7 +90,7 @@ const Results = ({ navigation, look, productData, rate }: Prop) => {
                         <View style={resultSyles.buttonContainer}>
                           <TouchableOpacity
                             style={resultSyles.pressable}
-                            onPress={() => !productId.includes(data.id) && setProductId([data.id])}>
+                            onPress={() => handleAddToBag(data)}>
                             <View style={resultSyles.insideButton}>
                               <Feather
                                 color={'white'}

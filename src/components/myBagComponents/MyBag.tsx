@@ -4,6 +4,7 @@ import { ProductState, useProductStore } from '../../../store/productStore.store
 import { useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { ip } from '../authComponents/utils/utils'
+import { showMessage } from 'react-native-flash-message'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../share/utils/Header'
@@ -16,7 +17,7 @@ import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
 
 const MyBag = ({ navigation }) => {
-  const { productId, clearFn } = useProductStore((state: ProductState) => state)
+  const { productId, clearFn, removeProductId } = useProductStore((state: ProductState) => state)
   const { user, setUser } = useUserStore((state: UserState) => state)
   const [ids] = useState<number[]>([])
 
@@ -34,7 +35,11 @@ const MyBag = ({ navigation }) => {
         if (productId.length !== 0) {
           setUser({ productId: ids })
           clearFn()
-
+          showMessage({
+            icon: 'success',
+            message: 'Order Added!',
+            type: 'success'
+          })
           console.log('User updated successfully')
         }
       } else {
@@ -60,7 +65,7 @@ const MyBag = ({ navigation }) => {
       ) : (
         <>
           <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll1}>
-            <ProductsSelected />
+            <ProductsSelected productId={productId} removeProductId={removeProductId} />
           </ScrollView>
 
           <View style={basePagesStyle.line} />
@@ -72,7 +77,7 @@ const MyBag = ({ navigation }) => {
 
             <ExpectedDateTime />
             <SelectLocation />
-            <Payment />
+            <Payment productId={productId} />
             <TouchableOpacity onPress={() => handleOnPlaceOrder()} style={styles.order}>
               <Text style={styles.orderText}>Place Order</Text>
               <AntDesign color="white" size={20} name="arrowright" />

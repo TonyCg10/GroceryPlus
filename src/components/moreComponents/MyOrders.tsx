@@ -1,4 +1,4 @@
-import { View, Text, SafeAreaView, Button } from 'react-native'
+import { View, Text, SafeAreaView } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { useEffect, useState } from 'react'
@@ -7,6 +7,7 @@ import {
   useProductDatabaseStore
 } from '../../../store/database/productDatabase'
 
+import SegmentedControl from '@react-native-segmented-control/segmented-control'
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 
@@ -15,6 +16,8 @@ const MyOrders = ({ navigation }) => {
     (state: ProductDatabaseStore) => state
   )
   const { user, setUser } = useUserStore((state: UserState) => state)
+
+  const [indexTab, setIndexTab] = useState('')
 
   useEffect(() => {
     fetchProducts()
@@ -28,21 +31,17 @@ const MyOrders = ({ navigation }) => {
         navigation={navigation}
       />
       <View>
-        <Button
-          title="clear"
-          onPress={() => {
-            const ids = {
-              productId: []
-            }
-            setUser(ids)
-          }}
+        <SegmentedControl
+          values={['Ongoing', 'History']}
+          onValueChange={(value) => setIndexTab(value)}
         />
+
         <View>
           {productsArray
             .filter((item) => user.productId.includes(item.id))
-            .map((item) => {
+            .map((item, key) => {
               return (
-                <View>
+                <View key={key}>
                   <Text>{item.brand}</Text>
                 </View>
               )

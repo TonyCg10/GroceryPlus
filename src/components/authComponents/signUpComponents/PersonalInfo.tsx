@@ -12,9 +12,9 @@ import { useState } from 'react'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, ip, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
+import { showMessage } from 'react-native-flash-message'
 
 import Header from '../../../share/utils/Header'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
 import ImageComponent from '../../../share/utils/ImageComponent'
 import axios from 'axios'
@@ -45,6 +45,11 @@ const PersonalInfo = ({ navigation, route }) => {
         })
         if (response.status === 201) {
           setUser(response.data)
+          showMessage({
+            icon: 'success',
+            message: `Welcome! ${name}`,
+            type: 'success'
+          })
           navigation.navigate('BottomRoutes')
         } else {
           throw new Error('Failed to update user')

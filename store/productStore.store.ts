@@ -5,8 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface ProductState {
   productId: number[]
+  wishes: number[]
 
   setProductId: (productId: number[]) => void
+  setWishes: (wishes: number[]) => void
   removeProductId: (productIdToRemove: number) => void
   clearFn: () => void
 }
@@ -16,10 +18,16 @@ export const useProductStore = create<ProductState>()(
     persist(
       (set) => ({
         productId: [],
+        wishes: [],
 
         setProductId(productId) {
           set((state) => ({
             productId: [...state.productId, ...productId]
+          }))
+        },
+        setWishes(wishes) {
+          set((state) => ({
+            wishes: [...state.wishes, ...wishes]
           }))
         },
         removeProductId: (productIdToRemove) => {
@@ -30,7 +38,8 @@ export const useProductStore = create<ProductState>()(
 
         clearFn: () => {
           set({
-            productId: []
+            productId: [],
+            wishes: [],
           })
         }
       }),
