@@ -4,8 +4,8 @@ import { basePagesStyle } from '../../../indexStyle/baseStyle'
 import { AuthLogic, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
-import { ip } from '../utils/utils'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER } from '../../../../express/utils'
 
 import Password from '../../../../assets/Forgot password-rafiki.svg'
 import Header from '../../../share/utils/Header'
@@ -18,11 +18,12 @@ const Preregistered = ({ navigation }) => {
 
   const isKeyboardVisible = AuthLogic()
 
-  const [password, setPassword] = useState('123qwe&')
+  // const [password, setPassword] = useState('123qwe&')
+  const [password, setPassword] = useState('923qwe%')
 
   const handleOnLogin = async () => {
     try {
-      const response = await axios.post(`http://${ip}:2020/check-user`, {
+      const response = await axios.post(`http://${IP}:${PORT}/${USER}/check-user`, {
         password
       })
 

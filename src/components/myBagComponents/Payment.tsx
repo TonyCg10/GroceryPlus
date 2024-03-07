@@ -1,28 +1,18 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore
-} from '../../../store/database/productDatabase'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 
 type Props = {
-  productId: number[]
+  quantity: number
 }
 
-const Payment = ({ productId }: Props) => {
-  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
-  const price = productsArray
-    .filter((id) => productId.includes(id.id))
-    .map((price) => price.price)
-    .reduce((a, b) => a + b, 0)
-
+const Payment = ({ quantity }: Props) => {
   return (
     <View style={styles.container}>
       <View style={styles.totals}>
         <Text>Subtotal</Text>
-        <Text>$ {price}</Text>
+        <Text>$ {quantity}</Text>
       </View>
       <View style={styles.totals}>
         <Text>Delivery Charge</Text>
@@ -30,7 +20,7 @@ const Payment = ({ productId }: Props) => {
       </View>
       <View style={styles.totals}>
         <Text>Total</Text>
-        <Text>$ {price + 10}</Text>
+        <Text>$ {quantity + 10}</Text>
       </View>
       <View>
         <Text style={styles.method}>Payment Method</Text>

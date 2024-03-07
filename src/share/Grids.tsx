@@ -1,7 +1,9 @@
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
-import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { IP, PORT, PRODUCT } from '../../express/utils'
+
+import axios from 'axios'
 
 type Pops = {
   display: boolean
@@ -9,17 +11,20 @@ type Pops = {
 }
 
 const Grids = ({ display, navigation }: Pops) => {
-  const { productsArray, fetchProducts } = useProductDatabaseStore(
-    (state: ProductDatabaseStore) => state
-  )
+  const [productsArray, setProductsArray] = useState([])
+  const productsFetch = async () => {
+    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+
+    return setProductsArray(productsArray.data.data)
+  }
+
+  useEffect(() => {
+    productsFetch()
+  }, [])
 
   const uniqueCategories = [
     ...new Set(productsArray.map((item) => item.category.toLowerCase().trim()))
   ]
-
-  useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
 
   return display ? (
     <View style={baseGridsStyle.gridsScreen}>
@@ -29,7 +34,7 @@ const Grids = ({ display, navigation }: Pops) => {
             key={key}
             onPress={() => {
               navigation.navigate('ProductDetails', {
-                id: data.id
+                _id: data._id
               })
             }}
             style={baseGridsStyle.gridsContainer}>
@@ -86,7 +91,7 @@ const baseGridsStyle = StyleSheet.create({
   gridsContainer: {
     backgroundColor: 'white',
     shadowColor: 'black',
-    shadowOpacity: 0.020,
+    shadowOpacity: 0.02,
     elevation: 6,
     flex: 1,
     marginVertical: '2%',

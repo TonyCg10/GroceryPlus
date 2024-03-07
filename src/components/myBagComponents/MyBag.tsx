@@ -1,10 +1,11 @@
 import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
-import { ip } from '../authComponents/utils/utils'
+import { IP, ORDER, PORT, PRODUCT } from '../../../express/utils'
 import { showMessage } from 'react-native-flash-message'
+import { Product } from '../../../store/database/GroceryData'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../share/utils/Header'
@@ -15,43 +16,92 @@ import Payment from './Payment'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
+import SheetModal from '../../share/utils/SheetModal'
 
 const MyBag = ({ navigation }) => {
-  const { productId, clearFn, removeProductId } = useProductStore((state: ProductState) => state)
+  const { productId, removeProductId, clearFn } = useProductStore((state: ProductState) => state)
   const { user, setUser } = useUserStore((state: UserState) => state)
-  const [ids] = useState<number[]>([])
+
+  const [quantity, setQuantity] = useState()
+  const [productsID, setProductsID] = useState([])
+  const [products, setProducts] = useState<Product[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [date, setDate] = useState(new Date())
+  const [hour, setHour] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false)
+
+  const fetchData = async () => {
+    try {
+      if (productId.length !== 0) {
+        const productsArray = await axios.get(
+          `http://${IP}:${PORT}/${PRODUCT}/check/multiple/${productId}`
+        )
+        if (productsArray.status === 200) {
+          setProducts(productsArray.data.result)
+          setIsLoading(false)
+        }
+      }
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const fetchProducts = () => {
+    setIsLoading(true)
+    setTimeout(async () => {
+      await fetchData()
+      setIsLoading(false)
+    })
+  }
+
+  useEffect(() => {
+    fetchProducts()
+  }, [setUser, productId])
 
   const handleOnPlaceOrder = async () => {
     try {
-      productId.forEach((p) => {
-        ids.push(p)
-      })
+      if (productId.length !== 0 && date.toLocaleDateString() !== new Date().toLocaleDateString()) {
+        const response = await axios.post(`http://${IP}:${PORT}/${ORDER}/orders`, {
+          userId: user._id,
+          products: productsID,
+          issuedDate: date,
+          hours: hour,
+          status: 'ongoing'
+        })
 
-      const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
-        productId: ids
-      })
-
-      if (response.status === 200) {
-        if (productId.length !== 0) {
-          setUser({ productId: ids })
-          clearFn()
+        if (response.status === 201) {
           showMessage({
             icon: 'success',
             message: 'Order Added!',
             type: 'success'
           })
-          console.log('User updated successfully')
+          console.log('Order Placed')
+          setHour(null)
+          clearFn()
         }
       } else {
-        throw new Error('Failed to update user')
+        setModalVisible(true)
       }
     } catch (error) {
       console.log(error)
+      setModalVisible(true)
     }
   }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content={
+          date.toLocaleDateString() === new Date().toLocaleDateString()
+            ? 'Select a date from tomorrow'
+            : 'Select an horary'
+        }
+        redBtn={true}
+        redContent="Hide"
+        redAction={() => setModalVisible(false)}
+      />
       <Header
         title="My Bag"
         actionRight={<Feather name="bell" size={20} />}
@@ -64,9 +114,16 @@ const MyBag = ({ navigation }) => {
         </View>
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll1}>
-            <ProductsSelected productId={productId} removeProductId={removeProductId} />
-          </ScrollView>
+          <View style={styles.scroll1}>
+            <ProductsSelected
+              product={products}
+              isLoading={isLoading}
+              fetchProducts={fetchProducts}
+              removeProductId={removeProductId}
+              setQuantitys={setQuantity}
+              setProductsID={setProductsID}
+            />
+          </View>
 
           <View style={basePagesStyle.line} />
 
@@ -75,9 +132,9 @@ const MyBag = ({ navigation }) => {
               <Text style={styles.addText}>Add More Product</Text>
             </TouchableOpacity>
 
-            <ExpectedDateTime />
+            <ExpectedDateTime setDate={setDate} date={date} setHour={setHour} hourss={hour} />
             <SelectLocation />
-            <Payment productId={productId} />
+            <Payment quantity={quantity} />
             <TouchableOpacity onPress={() => handleOnPlaceOrder()} style={styles.order}>
               <Text style={styles.orderText}>Place Order</Text>
               <AntDesign color="white" size={20} name="arrowright" />
@@ -136,3 +193,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
+function setIsLoading(arg0: boolean) {
+  throw new Error('Function not implemented.')
+}

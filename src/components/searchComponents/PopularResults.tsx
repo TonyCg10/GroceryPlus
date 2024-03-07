@@ -5,7 +5,7 @@ import { Product } from '../../../store/database/GroceryData'
 import Feather from 'react-native-vector-icons/Feather'
 
 type Prop = {
-  productData: Product[]
+  productData: any
   navigation: any
 }
 
@@ -19,16 +19,7 @@ const PopularResults = ({ productData, navigation }: Prop) => {
               <TouchableOpacity
                 onPress={() =>
                   navigation.navigate('ProductDetails', {
-                    id: data.id,
-                    description: data.description,
-                    images: data.images,
-                    title: data.title,
-                    price: data.price,
-                    rating: data.rating,
-                    stock: data.stock,
-                    discountPercentage: data.discountPercentage,
-                    thumbnail: data.thumbnail,
-                    category: data.category
+                    _id: data._id
                   })
                 }
                 key={key}>

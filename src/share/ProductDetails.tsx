@@ -2,28 +2,57 @@ import { SafeAreaView, View, Text, Image, StyleSheet, TouchableOpacity } from 'r
 import { basePagesStyle } from '../indexStyle/baseStyle'
 import { ScrollView } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
-import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, PRODUCT } from '../../express/utils'
+import { Product } from '../../store/database/GroceryData'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating-widget'
+import axios from 'axios'
 
 const ProductDetails = ({ route, navigation }) => {
-  const { setProductId } = useProductStore((state: ProductState) => state)
-  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
-
+  const { _id } = route.params
+  const { setProductId, setWishes, removeWish, wishes } = useProductStore(
+    (state: ProductState) => state
+  )
+  const [isLoading, setIsLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
-  const [wish, setWish] = useState(false)
+  const [product, setProduct] = useState<Product>()
 
-  const { id } = route.params
-  const product = productsArray.find((product) => product.id === id)
-  const parts = product.images.split(/[\\",]+/)
-  const images = parts.filter((part) => part.trim() !== '').slice(1)
-  const finalPrice = product.price - product.discountPercentage
+  useEffect(() => {
+    const fetchData = async () => {
+      const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/check/single/${_id}`)
+
+      if (productsArray.data.result) {
+        setProduct(productsArray.data.result)
+        setIsLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const handleWish = () => {
+    if (wishes.includes(_id)) {
+      removeWish(_id)
+      showMessage({
+        icon: 'warning',
+        message: 'Unwished',
+        type: 'warning'
+      })
+    } else {
+      setWishes([_id])
+      showMessage({
+        icon: 'success',
+        message: 'Wished',
+        type: 'success'
+      })
+    }
+  }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -36,125 +65,90 @@ const ProductDetails = ({ route, navigation }) => {
         <TouchableOpacity
           style={{ flex: 1, alignItems: 'flex-end' }}
           onPress={() => {
-            id && setProductId([id])
-            setWish(!wish)
+            handleWish()
           }}>
-          <AntDesign size={24} name={wish ? 'star' : 'staro'} color="gold" />
+          <AntDesign size={24} name={wishes.includes(_id) ? 'star' : 'staro'} color="gold" />
         </TouchableOpacity>
       </View>
 
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Image
-          source={{
-            uri: images[selectedImageIndex ?? 0]
-          }}
-          style={productDetailsStyle.firstImages}
-        />
-        <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-          {images.map((images: string, key: number) => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  setSelectedImageIndex(key)
-                }}
-                activeOpacity={0.5}
-                key={key}
-                style={[
-                  productDetailsStyle.rowImages,
-                  selectedImageIndex === key ? productDetailsStyle.pressedImage : null
-                ]}>
-                <Image
-                  source={{
-                    uri: images
+      {isLoading ? (
+        <></>
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <Image
+            source={{
+              uri: product.images[selectedImageIndex ?? 0]
+            }}
+            style={productDetailsStyle.firstImages}
+          />
+          <ScrollView showsHorizontalScrollIndicator={false} horizontal>
+            {product.images.map((images: string, key: number) => {
+              return (
+                <TouchableOpacity
+                  onPress={() => {
+                    setSelectedImageIndex(key)
                   }}
-                  style={productDetailsStyle.images}
-                />
-              </TouchableOpacity>
-            )
-          })}
-        </ScrollView>
-        <Text style={productDetailsStyle.description}>{product.description}</Text>
-        <View style={productDetailsStyle.pricesContainer}>
-          <Text style={productDetailsStyle.title}>{product.title}</Text>
-          <Text style={productDetailsStyle.price}>${finalPrice.toFixed(2)}</Text>
-        </View>
-        <Text>There is {product.stock} in stock</Text>
+                  activeOpacity={0.5}
+                  key={key}
+                  style={[
+                    productDetailsStyle.rowImages,
+                    selectedImageIndex === key ? productDetailsStyle.pressedImage : null
+                  ]}>
+                  <Image
+                    source={{
+                      uri: images
+                    }}
+                    style={productDetailsStyle.images}
+                  />
+                </TouchableOpacity>
+              )
+            })}
+          </ScrollView>
+          <Text style={productDetailsStyle.description}>{product.description}</Text>
+          <View style={productDetailsStyle.pricesContainer}>
+            <Text style={productDetailsStyle.title}>{product.title}</Text>
+            <Text style={productDetailsStyle.originalPrice}>${product.price}</Text>
+            <Text style={productDetailsStyle.price}>
+              ${(product.price - product.discountPercentage).toFixed(2)}
+            </Text>
+          </View>
+          <Text>There is {product.stock} in stock</Text>
 
-        <View style={productDetailsStyle.rateView}>
-          <Text style={productDetailsStyle.rate}>{product.rating}</Text>
-          <StarRating rating={product.rating} onChange={() => {}} />
-        </View>
-        <View>
-          <View style={productDetailsStyle.productView}>
-            <Feather name="align-left" size={20} />
-            <Text style={productDetailsStyle.product}>{product.category} products</Text>
+          <View style={productDetailsStyle.rateView}>
+            <Text style={productDetailsStyle.rate}>{product.rating}</Text>
+            <StarRating rating={product.rating} onChange={() => {}} />
           </View>
-          <View style={productDetailsStyle.descriptionView}>
-            <Ionicons name="reorder-three-outline" size={24} />
-            <Text style={productDetailsStyle.secondDescription}>{product.description}</Text>
-          </View>
-        </View>
-        <View style={productDetailsStyle.else}>
-          <Text>You can also see</Text>
           <View>
-            {productsArray
-              .filter((item) => item.category.includes(product.category))
-              .map((data, key) => {
-                return (
-                  <View key={key} style={resultStyles.container}>
-                    <TouchableOpacity
-                      key={data.id}
-                      onPress={() => {
-                        navigation.navigate('ProductDetails', {
-                          id: data.id
-                        })
-                      }}>
-                      <View style={resultStyles.contentContainer}>
-                        <Image
-                          source={{
-                            uri: data.thumbnail
-                          }}
-                          style={resultStyles.image}
-                        />
-                        <View style={resultStyles.info}>
-                          <Text style={resultStyles.description}>{data.description}</Text>
-                          <View style={resultStyles.textContainer}>
-                            <View>
-                              <Text style={resultStyles.price}>${data.price}</Text>
-                              <Text style={resultStyles.discountPercentage}>
-                                off ${data.discountPercentage}
-                              </Text>
-                            </View>
-                          </View>
-                        </View>
-                      </View>
-                    </TouchableOpacity>
-                  </View>
-                )
-              })
-              .slice(0, 2)}
+            <View style={productDetailsStyle.productView}>
+              <Feather name="align-left" size={20} />
+              <Text style={productDetailsStyle.product}>{product.category} products</Text>
+            </View>
+            <View style={productDetailsStyle.descriptionView}>
+              <Ionicons name="reorder-three-outline" size={24} />
+              <Text style={productDetailsStyle.secondDescription}>{product.description}</Text>
+            </View>
           </View>
-        </View>
-        <TouchableOpacity
-          onPress={() => {
-            id && setProductId([id]),
-              showMessage({
-                icon: 'success',
-                message: 'Added to your Bag!',
-                type: 'success'
-              })
-          }}>
-          <View style={productDetailsStyle.pressable}>
-            <Text style={productDetailsStyle.pressableText}>Add to Bag</Text>
-            <Feather
-              style={productDetailsStyle.pressableIcon}
-              color={'white'}
-              size={20}
-              name="shopping-bag"
-            />
-          </View>
-        </TouchableOpacity>
-      </ScrollView>
+          <TouchableOpacity
+            onPress={() => {
+              _id && setProductId([_id]),
+                showMessage({
+                  icon: 'success',
+                  message: 'Added to your Bag!',
+                  type: 'success'
+                })
+            }}>
+            <View style={productDetailsStyle.pressable}>
+              <Text style={productDetailsStyle.pressableText}>Add to Bag</Text>
+              <Feather
+                style={productDetailsStyle.pressableIcon}
+                color={'white'}
+                size={20}
+                name="shopping-bag"
+              />
+            </View>
+          </TouchableOpacity>
+        </ScrollView>
+      )}
     </SafeAreaView>
   )
 }
@@ -241,60 +235,19 @@ const productDetailsStyle = StyleSheet.create({
     alignSelf: 'center',
     flexWrap: 'wrap',
     fontWeight: 'bold',
-    fontSize: 18
+    fontSize: 18,
+    flex: 0.8
+  },
+  originalPrice: {
+    textDecorationLine: 'line-through',
+    color: '#F37A20',
+    fontSize: 16,
+    alignSelf: 'center'
   },
   price: {
     alignSelf: 'flex-end',
     color: '#5EC401',
     fontWeight: 'bold',
     fontSize: 18
-  }
-})
-
-const resultStyles = StyleSheet.create({
-  container: {
-    margin: '4%'
-  },
-  contentContainer: {
-    flexDirection: 'row',
-    margin: 10
-  },
-  image: {
-    width: 80,
-    height: 80,
-    borderRadius: 10
-  },
-  info: {
-    marginLeft: '10%',
-    width: '70%'
-  },
-  description: {
-    flexWrap: 'wrap',
-    flexShrink: 1
-  },
-  textContainer: {
-    flexDirection: 'row'
-  },
-  price: {
-    marginVertical: '20%'
-  },
-  discountPercentage: {
-    color: '#F37A20',
-    fontSize: 16,
-    fontWeight: 'bold'
-  },
-  buttonContainer: {
-    alignSelf: 'center',
-    flex: 1
-  },
-  pressable: {
-    alignItems: 'flex-end'
-  },
-  insideButton: {
-    backgroundColor: '#5EC401',
-    borderRadius: 10,
-    padding: '6%',
-    color: 'white',
-    flexDirection: 'row'
   }
 })

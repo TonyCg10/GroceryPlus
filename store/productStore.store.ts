@@ -4,13 +4,15 @@ import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface ProductState {
-  productId: number[]
-  wishes: number[]
+  productId: string[]
+  wishes: string[]
 
-  setProductId: (productId: number[]) => void
-  setWishes: (wishes: number[]) => void
-  removeProductId: (productIdToRemove: number) => void
+  setProductId: (productId: string[]) => void
+  setWishes: (wishes: string[]) => void
+  removeProductId: (productIdToRemove: string) => void
+  removeWish:(wishToRemove: string) => void
   clearFn: () => void
+  clearWishes: () => void
 }
 
 export const useProductStore = create<ProductState>()(
@@ -25,22 +27,37 @@ export const useProductStore = create<ProductState>()(
             productId: [...state.productId, ...productId]
           }))
         },
+
         setWishes(wishes) {
           set((state) => ({
             wishes: [...state.wishes, ...wishes]
           }))
         },
+
         removeProductId: (productIdToRemove) => {
           set((state) => ({
             productId: state.productId.filter((id) => id !== productIdToRemove)
           }))
         },
 
+        removeWish: (wishToRemove) => {
+          set((state) => ({
+            wishes: state.wishes.filter((id) => id !== wishToRemove)
+          }))
+        },
+
         clearFn: () => {
           set({
             productId: [],
+          })
+          console.log('productStore ===== store clear');
+        },
+
+        clearWishes: () => {
+          set({
             wishes: [],
           })
+          console.log('productStore ===== store clear');
         }
       }),
       {

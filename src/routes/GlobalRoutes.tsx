@@ -13,9 +13,7 @@ const Stack = createStackNavigator()
 const GlobalRoutes = () => {
   try {
     return (
-      <Stack.Navigator
-        screenOptions={{ headerShown: false, gestureEnabled: true }}
-      >
+      <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
         <Stack.Screen name="AuthStack" component={AuthStack} />
         <Stack.Screen name="BottomRoutes" component={BottomRoutes} />
         <Stack.Screen name="MoreStack" component={MoreStack} />

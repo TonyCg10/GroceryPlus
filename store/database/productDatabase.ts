@@ -58,7 +58,7 @@ export const useProductDatabaseStore = create<ProductDatabaseStore>((set) => ({
           for (let i = 0; i < rows.length; i++) {
             products.push(rows.item(i))
           }
-          console.log('FETCHING #####', 'Fetched products:', rows)
+          console.log('FETCHING #####', 'Fetched products')
           set({ productsArray: products })
         },
         (_, error) => {
