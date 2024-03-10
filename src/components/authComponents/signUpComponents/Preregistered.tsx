@@ -37,8 +37,7 @@ const Preregistered = ({ navigation }) => {
             email: data.user.email,
             password: data.user.password,
             phone: data.user.phone,
-            img: data.user.img,
-            productId: data.user.productId
+            img: data.user.img
           })
           showMessage({
             icon: 'success',

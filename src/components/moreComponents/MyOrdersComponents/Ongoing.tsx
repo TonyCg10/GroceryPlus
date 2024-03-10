@@ -33,6 +33,7 @@ const Ongoing = ({ products, quantity, orderId, fetchOrders }: Props) => {
     try {
       await axios.delete(`http://${IP}:${PORT}/${ORDER}/delete/${id}`)
       fetchOrder()
+      setModalVisible(false)
     } catch (error) {
       console.error(error)
     }
