@@ -2,20 +2,11 @@ import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet } from 'react-na
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useEffect } from 'react'
 import { useGroceryData } from '../../../store/database/GroceryData'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore
-} from '../../../store/database/productDatabase'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
 const Landing = ({ navigation }) => {
-  const { initializeProductDB } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
   const { fetched } = useGroceryData()
-
-  useEffect(() => {
-    initializeProductDB()
-  }, [initializeProductDB])
 
   useEffect(() => {
     fetched()

@@ -4,22 +4,26 @@ import { basePagesStyle } from '../../../indexStyle/baseStyle'
 import { AuthLogic, regexType, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
-import { ip } from '../utils/utils'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER } from '../../../../express/utils'
 
 import SetPassw from '../../../../assets/Mobile login-pana.svg'
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import axios from 'axios'
 
 const SignUpPage = ({ navigation }) => {
-  const { setUser, user } = useUserStore((state: UserState) => state)
+  const { setUser } = useUserStore((state: UserState) => state)
   const isKeyboardVisible = AuthLogic()
 
-  const [email, setEmail] = useState('ac@gmail.com')
-  const [password, setPassword] = useState('123qwe&')
-  const [confirmPw, setConfirmPw] = useState('123qwe&')
+  // const [email, setEmail] = useState('ac@gmail.com')
+  const [email, setEmail] = useState('cc@gmail.com')
+  // const [password, setPassword] = useState('123qwe&')
+  const [password, setPassword] = useState('923qwe%')
+  // const [confirmPw, setConfirmPw] = useState('123qwe&')
+  const [confirmPw, setConfirmPw] = useState('923qwe%')
 
   const handleOnSignUp = async () => {
     try {
@@ -29,17 +33,12 @@ const SignUpPage = ({ navigation }) => {
         regexType.passwordRegex.test(password) &&
         regexType.passwordRegex.test(confirmPw)
       ) {
-        const response = await fetch(`http://${ip}:2020/check-user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
+        const response = await axios.post(`http://${IP}:${PORT}/${USER}/check-user`, {
+          email,
+          password
         })
 
-        const data = await response.json()
-
-        if (!data.exists) {
+        if (response.status === 200) {
           setUser({ email: email, password: password })
           showMessage({
             icon: 'success',
@@ -89,10 +88,10 @@ const SignUpPage = ({ navigation }) => {
         </ScrollView>
 
         <TouchableOpacity
-          disabled={email === '' && password === ''}
+          disabled={email === '' && password === '' && confirmPw !== password}
           style={[
             authPagesStyles.button,
-            email === '' && password === '' && authPagesStyles.disabledBtn
+            email === '' && password === '' && confirmPw !== password && authPagesStyles.disabledBtn
           ]}
           onPress={() => {
             handleOnSignUp()

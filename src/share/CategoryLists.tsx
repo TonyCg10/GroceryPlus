@@ -9,53 +9,58 @@ import {
 } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { basePagesStyle } from '../indexStyle/baseStyle'
-import { ProductDatabaseStore, useProductDatabaseStore } from '../../store/database/productDatabase'
-import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
+import { IP, PORT, PRODUCT } from '../../express/utils'
 
 const CategoryLists = ({ navigation, route }) => {
-  const { setProductId, productId, setWishes, wishes } = useProductStore(
+  const { category } = route.params
+  const { setProductId, productId, setWishes, removeWish, wishes } = useProductStore(
     (state: ProductState) => state
   )
 
-  const [wish, setWish] = useState({})
+  const [productsArray, setProductsArray] = useState([])
+  const productsFetch = async () => {
+    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
 
-  const ids = []
-  ids.push(Object.keys(wish).map(Number))
-  console.log(wishes)
+    return setProductsArray(productsArray.data.data)
+  }
 
-  const { category } = route.params
-  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
+  useEffect(() => {
+    productsFetch()
+  }, [])
 
   const handleAddToBag = (data) => {
-    return (
-      !productId.includes(data.id) && setProductId([data.id]),
+    !productId.includes(data._id) && setProductId([data._id]),
       showMessage({
         icon: 'success',
         message: 'Added to your Bag!',
         type: 'success'
       })
-    )
   }
 
-  const handleWishes = (data: number, productWish: boolean) => {
-    if (wish[data]) {
-      // @ts-ignore
-      const { [data]: removedWish, ...restWishes } = wish
-      setWish(restWishes)
-      ids.pop()
+  const handleWish = (id) => {
+    if (wishes.includes(id)) {
+      removeWish(id)
+      showMessage({
+        icon: 'warning',
+        message: 'Unwished',
+        type: 'warning'
+      })
     } else {
-      setWish((prevWishes) => ({ ...prevWishes, [data]: !productWish }))
+      setWishes([id])
+      showMessage({
+        icon: 'success',
+        message: 'Wished',
+        type: 'success'
+      })
     }
   }
-
-  useEffect(() => {
-    setWishes(ids[0])
-  }, [])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -70,7 +75,6 @@ const CategoryLists = ({ navigation, route }) => {
             .filter((item) => item.category.toUpperCase().includes(category))
             .map((data, key) => {
               const finalPrice = data.price - data.discountPercentage
-              const productWish = wish[data.id] || false
 
               return (
                 <View key={key} style={baseGridsStyle.gridsContainer}>
@@ -82,11 +86,16 @@ const CategoryLists = ({ navigation, route }) => {
                       flexDirection: 'row'
                     }}>
                     <Text style={baseGridsStyle.price}>${finalPrice.toFixed(2)}</Text>
+                    <Text style={baseGridsStyle.originalPrice}>${data.price.toFixed(2)}</Text>
                     <TouchableOpacity
                       onPress={() => {
-                        handleWishes(data.id, productWish)
+                        handleWish(data._id)
                       }}>
-                      <AntDesign size={24} name={productWish ? 'star' : 'staro'} color="gold" />
+                      <AntDesign
+                        size={24}
+                        name={wishes.includes(data._id) ? 'star' : 'staro'}
+                        color="gold"
+                      />
                     </TouchableOpacity>
                   </View>
                   <TouchableOpacity
@@ -154,6 +163,12 @@ const baseGridsStyle = StyleSheet.create({
   text: {
     marginTop: '5%',
     minHeight: 60
+  },
+  originalPrice: {
+    textDecorationLine: 'line-through',
+    color: '#F37A20',
+    fontSize: 16,
+    alignSelf: 'center'
   },
   price: {
     color: '#5EC401',

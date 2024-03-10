@@ -8,7 +8,7 @@ import Feather from 'react-native-vector-icons/Feather'
 
 type Prop = {
   look: string
-  productData: Product[]
+  productData: any[]
   navigation: any
   rate: number
 }
@@ -40,7 +40,7 @@ const Results = ({ navigation, look, productData, rate }: Prop) => {
                 <TouchableOpacity
                   onPress={() =>
                     navigation.navigate('ProductDetails', {
-                      id: data.id
+                      _id: data._id
                     })
                   }
                   key={key}>
@@ -67,7 +67,7 @@ const Results = ({ navigation, look, productData, rate }: Prop) => {
                   key={data.id}
                   onPress={() => {
                     navigation.navigate('ProductDetails', {
-                      id: data.id
+                      _id: data._id
                     })
                   }}>
                   <View style={resultSyles.contentContainer}>
@@ -126,7 +126,7 @@ const resultSyles = StyleSheet.create({
     marginHorizontal: '10%'
   },
   scrollVertical: {
-    paddingBottom: '8%',
+    paddingBottom: '2%',
     marginHorizontal: '-3%'
   },
   scrollVerticalText: {
@@ -138,7 +138,7 @@ const resultSyles = StyleSheet.create({
   scrollHorizontal: {
     backgroundColor: 'white',
     marginHorizontal: '-5%',
-    maxHeight: '77  %'
+    maxHeight: '82%'
   },
   container: {
     margin: '4%'
@@ -164,7 +164,9 @@ const resultSyles = StyleSheet.create({
     flexDirection: 'row'
   },
   price: {
-    marginVertical: '20%'
+    color: '#5EC401',
+    marginVertical: '20%',
+    fontWeight: '600'
   },
   discountPercentage: {
     color: '#F37A20',

@@ -12,7 +12,7 @@ const Stack = createStackNavigator()
 
 const AuthStack = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: true }}>
+    <Stack.Navigator screenOptions={{ headerShown: false, gestureEnabled: false }}>
       <Stack.Screen name="Landing" component={Landing} />
       <Stack.Screen name="LoginPage" component={LoginPage} />
       <Stack.Screen name="SignUpPage" component={SignUpPage} />

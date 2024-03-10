@@ -1,37 +1,33 @@
 import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native'
 import { basePagesStyle } from '../../../indexStyle/baseStyle'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
-import { AuthLogic, ip, regexType, signUpNotValid, userInputType } from '../utils/utils'
+import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER } from '../../../../express/utils'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import PhoneNumber from '../../../../assets/undraw_personalization_triu.svg'
+import axios from 'axios'
 
 const Phone = ({ navigation }) => {
   const { setUser } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
 
-  const [phone, setPhone] = useState('8102873196')
+  // const [phone, setPhone] = useState('8102873196')
+  const [phone, setPhone] = useState('5599559912')
 
   const handleOnSetPhone = async () => {
     try {
       if (regexType.phoneRegex.test(phone)) {
-        const response = await fetch(`http://${ip}:2020/check-user`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ phone })
+        const response = await axios.post(`http://${IP}:${PORT}/${USER}/check-user`, {
+          phone
         })
-
-        const data = await response.json()
-
-        if (!data.exists) {
+        if (!response.data.exists) {
           setUser({ phone: phone })
           showMessage({
             icon: 'info',

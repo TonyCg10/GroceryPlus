@@ -2,6 +2,7 @@ import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-n
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
+import { useState } from 'react'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -12,10 +13,12 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import SheetModal from '../../share/utils/SheetModal'
 
 const More = ({ navigation }) => {
   const { user, clearUser } = useUserStore((state: UserState) => state)
   const { clearFn } = useProductStore((state: ProductState) => state)
+  const [modalVisible, setModalVisible] = useState(false)
 
   const formatName = user?.name?.split(' ') || []
   let avatarName = ''
@@ -28,6 +31,19 @@ const More = ({ navigation }) => {
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content="Are you sure you want to log out?"
+        redBtn={true}
+        redContent="Log Out"
+        redAction={() => (
+          setModalVisible(false),
+          setTimeout(() => {
+            clearUser(), clearFn(), navigation.navigate('AuthStack', { screen: 'Landing' })
+          }, 500)
+        )}
+      />
       <Header
         title="More"
         actionRight={<Feather name="bell" size={20} />}
@@ -92,9 +108,7 @@ const More = ({ navigation }) => {
           text="Log out"
           icon={<AntDesign name="poweroff" size={20} color={'#f66'} />}
           onPress={() => {
-            clearUser()
-            clearFn()
-            navigation.navigate('AuthStack', { screen: 'Landing' })
+            setModalVisible(true)
           }}
         />
       </ScrollView>

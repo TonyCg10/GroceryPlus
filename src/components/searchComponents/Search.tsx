@@ -1,11 +1,8 @@
-import { SafeAreaView, View, Text, Modal, TouchableOpacity } from 'react-native'
+import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
-import {
-  ProductDatabaseStore,
-  useProductDatabaseStore
-} from '../../../store/database/productDatabase'
+import { IP, PORT, PRODUCT } from '../../../express/utils'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -13,12 +10,22 @@ import Header from '../../share/utils/Header'
 import PopularResults from './PopularResults'
 import Results from './Results'
 import NotFoundResult from './NotFoundResult'
+import SheetModal from '../../share/utils/SheetModal'
+import axios from 'axios'
 
 const Search = ({ navigation }) => {
-  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
-
   const [look, setLook] = useState('')
   const [rate, setRate] = useState(0)
+  const [productsArray, setProductsArray] = useState([])
+  const productsFetch = async () => {
+    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+
+    return setProductsArray(productsArray.data.data)
+  }
+
+  useEffect(() => {
+    productsFetch()
+  }, [])
 
   const filteredData = productsArray.filter((item) => {
     const matches =
@@ -29,41 +36,17 @@ const Search = ({ navigation }) => {
   })
 
   const [modalVisible, setModalVisible] = useState(false)
-  const filterModal = (
-    <Modal
-      animationType="fade"
-      transparent={true}
-      visible={modalVisible}
-      onRequestClose={() => {
-        setModalVisible(!modalVisible)
-      }}>
-      <View style={styles.centeredView}>
-        <View style={styles.modalView}>
-          <Text style={styles.modalText}>Rating</Text>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              setModalVisible(!modalVisible)
-              setRate(5)
-            }}>
-            <Text style={styles.textStyle}>5</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              setModalVisible(!modalVisible)
-              setRate(4)
-            }}>
-            <Text style={styles.textStyle}>4</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
-  )
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
-      {filterModal}
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        rate={true}
+        rating={rate}
+        setRating={setRate}
+        content="Choose a rating to sort"
+      />
       <Header
         navigation={navigation}
         actionLeft={<AntDesign size={22} name="arrowleft" />}

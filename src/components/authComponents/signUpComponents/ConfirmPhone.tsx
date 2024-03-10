@@ -30,7 +30,7 @@ const ConfirmPhone = ({ navigation }) => {
 
   const handleOnSetPhone = async () => {
     try {
-      if (value !== '') {
+      if (value.length === 5) {
         showMessage({
           icon: 'success',
           message: 'Number Verified',
@@ -41,7 +41,7 @@ const ConfirmPhone = ({ navigation }) => {
         throw new Error('Failed to update user')
       }
     } catch (error) {
-      console.error('Error signing up:', error)
+      console.error('Error confirm phone:', error)
     }
   }
 
@@ -85,8 +85,8 @@ const ConfirmPhone = ({ navigation }) => {
         </View>
 
         <TouchableOpacity
-          disabled={value === ''}
-          style={[authPagesStyles.button, value === '' && authPagesStyles.disabledBtn]}
+          disabled={value.length !== 5}
+          style={[authPagesStyles.button, value.length !== 5 && authPagesStyles.disabledBtn]}
           onPress={() => {
             handleOnSetPhone()
           }}>

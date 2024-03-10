@@ -1,19 +1,11 @@
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  ScrollView,
-  Alert
-} from 'react-native'
+import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
-import { ip } from '../authComponents/utils/utils'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER } from '../../../express/utils'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -23,10 +15,14 @@ import InputUser from '../../share/utils/InputUser'
 import ImageComponent from '../../share/utils/ImageComponent'
 import Feather from 'react-native-vector-icons/Feather'
 import axios from 'axios'
+import SheetModal from '../../share/utils/SheetModal'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 
 const EditProfile = ({ navigation }) => {
-  const { clearFn } = useProductStore((state: ProductState) => state)
+  const { clearFn, clearWishes } = useProductStore((state: ProductState) => state)
   const { user, clearUser, setUser } = useUserStore((state: UserState) => state)
+  const [modalVisible, setModalVisible] = useState(false)
+  const [modalsVisible, setModalsVisible] = useState(0)
 
   const isKeyboardVisible = AuthLogic()
 
@@ -53,7 +49,7 @@ const EditProfile = ({ navigation }) => {
       regexType.passwordRegex.test(password) &&
       regexType.phoneRegex.test(phone)
     ) {
-      const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
+      const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
         name: firstName + ' ' + lastName,
         email: email,
         password: password,
@@ -86,46 +82,67 @@ const EditProfile = ({ navigation }) => {
     }
   }
 
-  const handleOnDeleteUser = () => {
-    Alert.alert('Are you sure you want to delete your account?', '', [
-      {
-        text: 'Confirm',
-        onPress: async () => {
-          await axios.delete(`http://${ip}:2020/delete/${user._id}`)
-          clearUser()
-          clearFn()
-          navigation.navigate('AuthStack', { screen: 'Landing' })
-        }
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel'
-      }
-    ])
+  const handleOnErasePhoto = async () => {
+    setModalVisible(false)
+    const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
+      img: null
+    })
+    if (response.status === 200) {
+      setUser({
+        img: ''
+      })
+    }
   }
-  const handleOnEditUser = () => {
-    Alert.alert('Are you sure you want to edit your account?', '', [
-      {
-        text: 'Confirm',
-        onPress: () => {
-          setEdit(true)
-        }
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel'
-      }
-    ])
+
+  const handleOnDeleteUser = async () => {
+    const response = await axios.delete(`http://${IP}:${PORT}/${USER}/delete/${user._id}`)
+
+    if (response.status === 200) {
+      setModalVisible(false)
+      clearUser()
+      clearFn()
+      clearWishes()
+      navigation.navigate('AuthStack', { screen: 'Landing' })
+    }
   }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content={
+          modalsVisible === 1
+            ? 'Are you sure you want to erase your photo?'
+            : modalsVisible === 2
+            ? 'Are you sure you want to edit your information?'
+            : modalsVisible === 3
+            ? 'Are you sure you want to delete your account?'
+            : null
+        }
+        greenBtn={modalsVisible === 2 && true}
+        greenContent={modalsVisible === 2 && 'Edit'}
+        greenAction={() => {
+          setEdit(true), setModalVisible(false)
+        }}
+        redBtn={modalsVisible === 1 ? true : modalsVisible === 3 ? true : null}
+        redContent={modalsVisible === 1 ? 'Erase' : modalsVisible === 3 ? 'Delete' : null}
+        redAction={() =>
+          modalsVisible === 1
+            ? handleOnErasePhoto()
+            : modalsVisible === 3
+            ? handleOnDeleteUser()
+            : null
+        }
+      />
       <Header
         title="Edit Profile"
         actionLeft={<AntDesign size={22} name="arrowleft" />}
         navigation={navigation}
       />
-      {!isKeyboardVisible && <ImageComponent />}
+      {!isKeyboardVisible && (
+        <ImageComponent setModalVisible={setModalVisible} setModalsVisible={setModalsVisible} />
+      )}
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -166,6 +183,7 @@ const EditProfile = ({ navigation }) => {
                 onPress={() => {
                   handleOnUpdateUser()
                 }}>
+                <AntDesign size={22} color="white" name="checkcircle" />
                 <Text style={styles.text}>Confirm</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -173,6 +191,7 @@ const EditProfile = ({ navigation }) => {
                 onPress={() => {
                   setEdit(false)
                 }}>
+                <MaterialIcons size={22} color="white" name="cancel" />
                 <Text style={styles.text}>Cancel</Text>
               </TouchableOpacity>
             </>
@@ -181,7 +200,8 @@ const EditProfile = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.edit}
                 onPress={() => {
-                  handleOnEditUser()
+                  setModalVisible(true)
+                  setModalsVisible(2)
                 }}>
                 <AntDesign size={22} color="white" name="edit" />
                 <Text style={styles.text}>Edit Account</Text>
@@ -189,7 +209,8 @@ const EditProfile = ({ navigation }) => {
               <TouchableOpacity
                 style={styles.delete}
                 onPress={() => {
-                  handleOnDeleteUser()
+                  setModalVisible(true)
+                  setModalsVisible(3)
                 }}>
                 <Feather size={22} color="white" name="user-minus" />
                 <Text style={styles.text}>Delete Account</Text>

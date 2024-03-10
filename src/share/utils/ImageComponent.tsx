@@ -1,18 +1,20 @@
 import * as ImagePicker from 'expo-image-picker'
 import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
 import { UserState, useUserStore } from '../../../store/userStore.store'
-import { ip } from '../../components/authComponents/utils/utils'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER } from '../../../express/utils'
 
-import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import axios from 'axios'
 
 type Props = {
   route?: any
+  setModalVisible: (value: boolean) => void
+  setModalsVisible?: (value: number) => void
 }
 
-const ImageComponent = ({ route }: Props) => {
+const ImageComponent = ({ route, setModalVisible, setModalsVisible }: Props) => {
   const { user, setUser } = useUserStore((state: UserState) => state)
 
   const formatName = user?.name?.split(' ') || []
@@ -25,57 +27,37 @@ const ImageComponent = ({ route }: Props) => {
   }
 
   const pickImage = async () => {
-    try {
-      let result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [6, 6],
-        quality: 1
-      })
-
-      if (!result.canceled) {
-        setUser({ img: result.assets[0].uri })
-        showMessage({
-          icon: 'success',
-          message: 'Image settled!',
-          type: 'success'
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!')
+      return
+    } else {
+      try {
+        let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.All,
+          allowsEditing: true,
+          aspect: [6, 6],
+          quality: 1
         })
-        console.log('User updated successfully')
-      }
-    } catch (error) {
-      console.error('Error picking image:', error)
-    }
-  }
 
-  const deleteImage = () => {
-    Alert.alert('Are you sure you want to delete your image?', '', [
-      {
-        text: 'Confirm',
-        onPress: async () => {
-          try {
-            const response = await axios.put(`http://${ip}:2020/update/${user._id}`, {
-              img: ''
+        if (!result.canceled) {
+          const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
+            img: result.assets[0].uri
+          })
+          if (response.status === 200) {
+            setUser({ img: result.assets[0].uri })
+            showMessage({
+              icon: 'success',
+              message: 'Image settled!',
+              type: 'success'
             })
-            if (response.status === 200) {
-              const userFetch = {
-                img: ''
-              }
-
-              setUser(userFetch)
-              console.log('User updated successfully')
-            } else {
-              throw new Error('Failed to update user image')
-            }
-          } catch (error) {
-            console.error('Error updating user image:', error)
+            console.log('User updated successfully')
           }
         }
-      },
-      {
-        text: 'Cancel',
-        style: 'cancel'
+      } catch (error) {
+        console.error('Error picking image:', error)
       }
-    ])
+    }
   }
 
   return (
@@ -101,7 +83,8 @@ const ImageComponent = ({ route }: Props) => {
         {user.img && (
           <TouchableOpacity
             onPress={() => {
-              deleteImage()
+              setModalVisible(true)
+              setModalsVisible(1)
             }}
             style={styles.delete}>
             <AntDesign size={28} color="white" name="delete" />

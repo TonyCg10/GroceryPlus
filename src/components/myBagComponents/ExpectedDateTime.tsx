@@ -4,10 +4,15 @@ import { useState } from 'react'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
 
-const ExpectedDateTime = () => {
-  const [date, setDate] = useState(new Date())
+type Props = {
+  setDate: (value: Date) => void
+  date: Date
+  setHour: (value: null) => void
+  hourss: null
+}
+
+const ExpectedDateTime = ({ setDate, date, setHour, hourss }: Props) => {
   const [open, setOpen] = useState(false)
-  const [selected, setSelected] = useState(false)
 
   const datePicker = (
     <DateTimePickerModal
@@ -24,6 +29,16 @@ const ExpectedDateTime = () => {
     />
   )
 
+  const hour = (hours) => {
+    return (
+      <TouchableOpacity
+        onPress={() => setHour(hours)}
+        style={[styles.hours, hourss === hours && styles.selected]}>
+        <Text>{hours}</Text>
+      </TouchableOpacity>
+    )
+  }
+
   return (
     <View>
       <View>
@@ -35,42 +50,12 @@ const ExpectedDateTime = () => {
         </TouchableOpacity>
         {datePicker}
         <View style={styles.hour}>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>8 AM - 11 AM</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>11 AM - 12 PM</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>12 PM - 2 PM</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>2 PM - 4 PM</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>4 PM - 8 PM</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={() => setSelected(true)}
-            style={[styles.hours, selected && styles.selected]}
-          >
-            <Text>6 PM - 8 PM</Text>
-          </TouchableOpacity>
+          {hour('08 AM - 11 AM')}
+          {hour('11 AM - 12 PM')}
+          {hour('12 PM - 02 PM')}
+          {hour('02 PM - 04 PM')}
+          {hour('04 PM - 08 PM')}
+          {hour('06 PM - 08 PM')}
         </View>
       </View>
     </View>
@@ -83,30 +68,31 @@ const styles = StyleSheet.create({
   text1: {
     marginVertical: '5%',
     fontWeight: 'bold',
-    fontSize: 15,
+    fontSize: 15
   },
   setDate: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     backgroundColor: 'silver',
     padding: '4%',
-    borderRadius: 10,
+    borderRadius: 10
   },
   hour: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginHorizontal: '-2%',
+    marginHorizontal: '-2%'
   },
   hours: {
     backgroundColor: 'silver',
     padding: '2%',
     margin: '2%',
-    flexGrow: 1,
     borderRadius: 8,
+    flexGrow: 1,
+    minWidth: '30%'
   },
   selected: {
     borderWidth: 2,
     borderColor: '#5EC401',
-  },
+    padding: 6
+  }
 })

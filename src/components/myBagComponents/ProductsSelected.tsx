@@ -1,89 +1,130 @@
-import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native'
-import { useState } from 'react'
 import {
-  ProductDatabaseStore,
-  useProductDatabaseStore
-} from '../../../store/database/productDatabase'
+  View,
+  Text,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  RefreshControl
+} from 'react-native'
+import { useEffect, useState } from 'react'
+import { Product } from '../../../store/database/GroceryData'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
 type Props = {
-  productId: number[]
-  removeProductId: (id: number) => void
+  product: Product[]
+  isLoading: boolean
+
+  fetchProducts: () => void
+  removeProductId: (id: string) => void
+  setQuantitys: (q: any) => void
+  setProductsID: (IDs: any[]) => void
 }
 
-const ProductsSelected = ({ productId, removeProductId }: Props) => {
-  const { productsArray } = useProductDatabaseStore((state: ProductDatabaseStore) => state)
+const ProductsSelected = ({
+  product,
+  isLoading,
 
-  const [quantities, setQuantities] = useState(Array(productsArray.length).fill(0))
+  fetchProducts,
+  removeProductId,
+  setQuantitys,
+  setProductsID
+}: Props) => {
+  const [quantities, setQuantities] = useState([])
+  useEffect(() => {
+    setProductsID(quantities)
+  }, [setQuantities, quantities])
 
-  const handleOnDecrease = (productId) => {
-    setQuantities((prevQuantities) =>
-      prevQuantities.map((quantity, index) =>
-        productId === productsArray[index].id ? Math.max(quantity - 1, 0) : quantity
-      )
-    )
-    const isQuantityZero = quantities.some(
-      (quantity, index) => productId === productsArray[index].id && quantity <= 1
-    )
-
-    if (isQuantityZero) {
-      removeProductId(productId)
-    }
-  }
+  useEffect(() => {
+    const initialQuantities = product.map((data) => ({ productId: data._id, quantity: 1 }))
+    setQuantities(initialQuantities)
+  }, [product])
 
   const handleOnIncrease = (productId) => {
-    setQuantities((prevQuantities) =>
-      prevQuantities.map((quantity, index) =>
-        productId === productsArray[index].id ? quantity + 1 : quantity
-      )
-    )
+    setQuantities((prevQuantities) => {
+      const existingProductIndex = prevQuantities.findIndex((item) => item.productId === productId)
+
+      if (existingProductIndex !== -1) {
+        return prevQuantities.map((item, index) => {
+          if (index === existingProductIndex) {
+            return { ...item, quantity: item.quantity + 1 }
+          }
+          return item
+        })
+      } else {
+        return [...prevQuantities, { productId, quantity: 1 }]
+      }
+    })
   }
 
-  return (
-    <View>
-      <Text style={styles.text1}>Products</Text>
-      {productsArray
-        .filter((item) => productId.includes(item.id))
-        .map((data, key) => {
-          const quantity = quantities.filter(Number)[key]
-          if (typeof quantity !== 'number')
-            setQuantities((prevQuantities) =>
-              prevQuantities.map((quantity, index) =>
-                data.id === productsArray[index].id ? quantity + 1 : quantity
-              )
-            )
-          const finalPrice = data.price - data.discountPercentage
+  const handleOnDecrease = (productId) => {
+    setQuantities((prevQuantities) => {
+      const existingProductIndex = prevQuantities.findIndex((item) => item.productId === productId)
 
-          return (
-            <View key={key} style={styles.container}>
-              <Image
-                source={{
-                  uri: data.thumbnail
-                }}
-                style={styles.image}
-              />
-              <View style={styles.flex}>
-                <Text style={styles.title}>{data.title}</Text>
-                <View style={styles.info}>
-                  <Text style={styles.price}>$ {finalPrice.toFixed(2)}</Text>
-                  <View style={styles.btnContainer}>
-                    <TouchableOpacity
-                      style={styles.minus}
-                      onPress={() => handleOnDecrease(data.id)}>
-                      <Entypo color="white" name="minus" />
-                    </TouchableOpacity>
-                    <Text style={styles.many}>{quantity}</Text>
-                    <TouchableOpacity style={styles.plus} onPress={() => handleOnIncrease(data.id)}>
-                      <Entypo color="white" name="plus" />
-                    </TouchableOpacity>
-                  </View>
+      if (existingProductIndex !== -1) {
+        return prevQuantities
+          .map((item, index) => {
+            if (index === existingProductIndex) {
+              const updatedQuantity = item.quantity - 1
+              if (updatedQuantity === 0) {
+                removeProductId(productId)
+              } else {
+                return { ...item, quantity: updatedQuantity }
+              }
+            }
+            return item
+          })
+          .filter(Boolean)
+      } else {
+        return prevQuantities
+      }
+    })
+  }
+
+  let totalPrice = 0
+
+  return (
+    <ScrollView
+      refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchProducts} />}>
+      <Text style={styles.text1}>Products</Text>
+      {product.map((data, key) => {
+        const price = data.price * quantities[key]?.quantity
+        setQuantitys((totalPrice += price))
+
+        return (
+          <View key={key} style={styles.container}>
+            <Image
+              source={{
+                uri: data.thumbnail
+              }}
+              style={styles.image}
+            />
+            <View style={styles.flex}>
+              <Text style={styles.title}>{data.title}</Text>
+              <View style={styles.info}>
+                <Text style={styles.price}>
+                  $ {(data.price * quantities[key]?.quantity).toFixed(2)}
+                </Text>
+                <View style={styles.btnContainer}>
+                  <TouchableOpacity style={styles.minus} onPress={() => handleOnDecrease(data._id)}>
+                    <Entypo color="white" name="minus" />
+                  </TouchableOpacity>
+                  <Text style={styles.many}>
+                    {quantities
+                      .filter((id) => id.productId.includes(data._id))
+                      .map((q) => q.quantity)}
+                  </Text>
+                  <TouchableOpacity style={styles.plus} onPress={() => handleOnIncrease(data._id)}>
+                    <Entypo color="white" name="plus" />
+                  </TouchableOpacity>
                 </View>
               </View>
             </View>
-          )
-        })}
-    </View>
+          </View>
+        )
+      })}
+    </ScrollView>
   )
 }
 
@@ -111,8 +152,9 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     marginLeft: '5%',
     color: '#5EC401',
-    fontSize: 16,
-    fontWeight: 'bold'
+    fontSize: 18,
+    fontWeight: 'bold',
+    flex: 1
   },
   discountPercentage: {
     marginTop: '15%'
@@ -133,9 +175,8 @@ const styles = StyleSheet.create({
   btnContainer: {
     flexDirection: 'row',
     alignSelf: 'flex-end',
-    marginLeft: '25%',
     flex: 1,
-    justifyContent: 'space-around'
+    justifyContent: 'space-between'
   },
   minus: {
     backgroundColor: '#f66',

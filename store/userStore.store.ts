@@ -9,7 +9,6 @@ export type User = {
   password: string
   phone: string
   img: string
-  productId: number[]
 }
 
 export interface UserState {
@@ -30,7 +29,6 @@ export const useUserStore = create<UserState>()(
           password: '',
           phone: '',
           img: '',
-          productId: []
         },
 
         setUser: (user) => {
@@ -52,7 +50,6 @@ export const useUserStore = create<UserState>()(
               password: '',
               phone: '',
               img: '',
-              productId: []
             }
           })
           console.log('userStore ===== ', 'store clear')

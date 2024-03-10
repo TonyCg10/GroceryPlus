@@ -23,8 +23,8 @@ const BottomRoutes = () => {
                 width: 50,
                 borderRadius: 100,
                 justifyContent: 'center',
-                alignItems: 'center',
-              },
+                alignItems: 'center'
+              }
             })
 
             if (route.name === 'HomePage') {
@@ -52,11 +52,10 @@ const BottomRoutes = () => {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
             position: 'absolute',
-            height: Platform.OS === 'android' ? 80 : 100,
+            height: Platform.OS === 'android' ? 80 : 100
           },
-          tabBarShowLabel: false,
-        })}
-      >
+          tabBarShowLabel: false
+        })}>
         <Tab.Screen name="HomePage" component={HomePage} />
         <Tab.Screen name="Category" component={Category} />
         <Tab.Screen name="MyBag" component={MyBag} />
