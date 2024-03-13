@@ -1,15 +1,75 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
+import { useEffect, useState } from 'react'
+import { CardField, useStripe } from '@stripe/stripe-react-native'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import SheetModal from '../../share/utils/SheetModal'
+import InputUser from '../../share/utils/InputUser'
+import PaymentScreen from './payments/PaymentScreen'
 
 type Props = {
   quantity: number
 }
 
 const Payment = ({ quantity }: Props) => {
+  const { createPaymentMethod } = useStripe()
+
+  const [modalVisible, setModalVisible] = useState(false)
+  const [paymentMethods, setPaymentMethods] = useState<any[]>([])
+  const [cardDetails, setCardDetails] = useState({
+    number: '',
+    expMonth: '',
+    expYear: '',
+    cvc: ''
+  })
+
+  const handleAddPaymentMethod = async () => {
+    // try {
+    //   const paymentMethod = await createPaymentMethod({
+    //     paymentMethodType: 'Card',
+    //     card: {
+    //       number: cardDetails.number,
+    //       expMonth: cardDetails.expMonth,
+    //       expYear: cardDetails.expYear,
+    //       cvc: cardDetails.cvc
+    //     }
+    //   })
+    //   console.log('paymentMethod ====================================')
+    //   console.log(paymentMethod)
+    //   console.log('====================================')
+    //   Alert.alert('Success', 'Payment method added successfully')
+    // } catch (error) {
+    //   console.error(error)
+    //   Alert.alert('Error', 'Failed to add payment method. Please try again.')
+    // }
+  }
+
+  // useEffect(() => {
+  //   const fetchPaymentMethods = async () => {
+  //     try {
+  //       const { paymentMethods } = await listPaymentMethods();
+  //       setPaymentMethods(paymentMethods);
+  //     } catch (error) {
+  //       console.error('Error al obtener métodos de pago:', error);
+  //     }
+  //   };
+
+  //   fetchPaymentMethods();
+  // }, []);
+
   return (
     <View style={styles.container}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content={'Select or add payment method'}
+        greenBtn={true}
+        greenContent="Add payment method"
+        greenAction={() => {
+          setModalVisible(false), handleAddPaymentMethod()
+        }}
+      />
       <View style={styles.totals}>
         <Text>Subtotal</Text>
         <Text>$ {quantity}</Text>
@@ -24,13 +84,18 @@ const Payment = ({ quantity }: Props) => {
       </View>
       <View>
         <Text style={styles.method}>Payment Method</Text>
-        <TouchableOpacity style={styles.btn}>
+        <TouchableOpacity
+          style={styles.btn}
+          onPress={() => {
+            setModalVisible(true)
+          }}>
           <View style={styles.signCon}>
             <FontAwesome style={styles.sign} color="white" size={20} name="dollar" />
           </View>
           <Text style={styles.text}>Tap Here to select your Payment Method</Text>
           <AntDesign name="right" size={20} style={styles.right} />
         </TouchableOpacity>
+        <PaymentScreen quantity={quantity} />
       </View>
     </View>
   )

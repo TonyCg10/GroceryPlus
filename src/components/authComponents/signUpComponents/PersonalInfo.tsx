@@ -13,12 +13,12 @@ import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
+import { IP, PORT, USER, secret_key } from '../../../../express/utils'
 
 import Header from '../../../share/utils/Header'
 import Octicons from 'react-native-vector-icons/Octicons'
 import ImageComponent from '../../../share/utils/ImageComponent'
 import axios from 'axios'
-import { IP, PORT, USER } from '../../../../express/utils'
 
 const PersonalInfo = ({ navigation, route }) => {
   const { setUser, user } = useUserStore((state: UserState) => state)
@@ -37,24 +37,33 @@ const PersonalInfo = ({ navigation, route }) => {
       const fullName = firstName + ' ' + lastName
 
       if (regexType.nameRegex.test(fullName)) {
-        const response = await axios.post(`http://${IP}:${PORT}/${USER}/users`, {
-          _id: user._id,
+        const stripeId = await axios.post(`http://${IP}:${PORT}/${USER}/add/customer`, {
           name: fullName,
-          email: user.email,
-          password: user.password,
-          phone: user.phone,
-          img: user.img
+          email: user.email
         })
-        if (response.status === 201) {
-          setUser(response.data.data)
-          showMessage({
-            icon: 'success',
-            message: `Welcome! ${fullName}`,
-            type: 'success'
+
+        if (stripeId.data.data.id) {
+          const response = await axios.post(`http://${IP}:${PORT}/${USER}/users`, {
+            _id: user._id,
+            name: fullName,
+            email: user.email,
+            password: user.password,
+            phone: user.phone,
+            img: user.img,
+            stripeCustomerId: stripeId.data.data.id
           })
-          navigation.navigate('BottomRoutes')
-        } else {
-          throw new Error('Failed to update user')
+
+          if (response.status === 201) {
+            setUser(response.data.data)
+            showMessage({
+              icon: 'success',
+              message: `Welcome! ${fullName}`,
+              type: 'success'
+            })
+            navigation.navigate('BottomRoutes')
+          } else {
+            throw new Error('Failed to update user')
+          }
         }
       }
     } catch (error) {

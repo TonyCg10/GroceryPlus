@@ -13,7 +13,6 @@ import ExpectedDateTime from './ExpectedDateTime'
 import SelectLocation from './SelectLocation'
 import ProductsSelected from './ProductsSelected'
 import Payment from './Payment'
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
 import SheetModal from '../../share/utils/SheetModal'
@@ -135,10 +134,10 @@ const MyBag = ({ navigation }) => {
             <ExpectedDateTime setDate={setDate} date={date} setHour={setHour} hourss={hour} />
             <SelectLocation />
             <Payment quantity={quantity} />
-            <TouchableOpacity onPress={() => handleOnPlaceOrder()} style={styles.order}>
+            {/* <TouchableOpacity onPress={() => handleOnPlaceOrder()} style={styles.order}>
               <Text style={styles.orderText}>Place Order</Text>
               <AntDesign color="white" size={20} name="arrowright" />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </ScrollView>
         </>
       )}
@@ -193,6 +192,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold'
   }
 })
-function setIsLoading(arg0: boolean) {
-  throw new Error('Function not implemented.')
-}

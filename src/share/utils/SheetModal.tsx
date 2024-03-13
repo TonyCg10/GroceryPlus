@@ -10,6 +10,7 @@ type Props = {
   modalVisible: boolean
   setModalVisible: (value: boolean) => void
   content: string
+  box?: any
   rate?: boolean
   rating?: number
   setRating?: (value: number) => void
@@ -28,6 +29,7 @@ const SheetModal = ({
   rating,
   setRating,
   content,
+  box,
   greenAction,
   greenBtn,
   greenContent,
@@ -53,6 +55,7 @@ const SheetModal = ({
           borderRadius: 10
         }}>
         <Text style={stylesBtn.content}>{content}</Text>
+        {box}
         {rate && (
           <View>
             <StarRating rating={rating} onChange={setRating} />
@@ -81,6 +84,7 @@ const stylesBtn = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600'
   },
+  box: {},
   text: {
     fontWeight: 'bold',
     color: 'white',

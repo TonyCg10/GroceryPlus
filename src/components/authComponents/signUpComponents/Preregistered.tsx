@@ -37,7 +37,8 @@ const Preregistered = ({ navigation }) => {
             email: data.user.email,
             password: data.user.password,
             phone: data.user.phone,
-            img: data.user.img
+            img: data.user.img,
+            stripeCustomerId: data.user.stripeCustomerId
           })
           showMessage({
             icon: 'success',

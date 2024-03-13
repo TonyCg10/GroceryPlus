@@ -21,6 +21,9 @@ export const useGroceryData = () => {
   const fetched = async () => {
     try {
       const res = await fetch('https://dummyjson.com/products')
+      if (!res.ok) {
+        throw new Error(`Failed to fetch products: ${res.status} ${res.statusText}`)
+      }
       const json = await res.json()
       const { products } = json
 
@@ -55,21 +58,25 @@ export const useGroceryData = () => {
 
           if (checkProductResponse.status === 404) {
             for (const product of data) {
-              const addProductResponse = await axios.post(
-                `http://${IP}:${PORT}/${PRODUCT}/products`,
-                product
-              )
+              try {
+                const addProductResponse = await axios.post(
+                  `http://${IP}:${PORT}/${PRODUCT}/products`,
+                  product
+                )
 
-              if (addProductResponse.status === 201) {
-                console.log(`Product -- ${product} -- added`)
-              } else {
-                console.error(`Error with -- ${product} -- product`)
+                if (addProductResponse.status === 201) {
+                  console.log(`Product -- ${product} -- added`)
+                } else {
+                  console.error(`Error with -- ${product} -- product`)
+                }
+              } catch (error) {
+                console.error(`Error adding product: ${error}`)
               }
             }
           }
         }
       } catch (error) {
-        console.error('Error fetching data:', error)
+        console.error('Error fetching product list:', error)
       }
     } catch (error) {
       console.error('Error fetching data:', error)

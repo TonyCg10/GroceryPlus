@@ -9,6 +9,7 @@ export type User = {
   password: string
   phone: string
   img: string
+  stripeCustomerId: string
 }
 
 export interface UserState {
@@ -29,6 +30,7 @@ export const useUserStore = create<UserState>()(
           password: '',
           phone: '',
           img: '',
+          stripeCustomerId: ''
         },
 
         setUser: (user) => {
@@ -50,6 +52,7 @@ export const useUserStore = create<UserState>()(
               password: '',
               phone: '',
               img: '',
+              stripeCustomerId: ''
             }
           })
           console.log('userStore ===== ', 'store clear')
