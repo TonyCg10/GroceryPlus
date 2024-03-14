@@ -14,23 +14,26 @@
         }
       ]
     ],
-    "splash": {
-    },
+    "splash": {},
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tony54.GroceryPlus"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/GroceryPlus.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.tony54.GroceryPlus"
     },
     "web": {
       "favicon": "./assets/GroceryPlus.png"
     }
-    
   }
 }

@@ -1,9 +1,0 @@
-<key>CFBundleURLTypes</key>
-<array>
-  <dict>
-    <key>CFBundleURLSchemes</key>
-    <array>
-      <string>groceryplus://</string>
-    </array>
-  </dict>
-</array>

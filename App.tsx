@@ -4,6 +4,7 @@ import { StripeProvider } from '@stripe/stripe-react-native'
 
 import GlobalRoutes from './src/routes/GlobalRoutes'
 import FlashMessage from 'react-native-flash-message'
+import React from 'react'
 
 export default function App() {
   const publishableKey =
@@ -11,11 +12,11 @@ export default function App() {
   return (
     <>
       <StatusBar style="auto" />
-      <StripeProvider publishableKey={publishableKey} urlScheme="groceryplus://">
-        <NavigationContainer>
-          <GlobalRoutes />
-        </NavigationContainer>
-      </StripeProvider>
+      <StripeProvider
+        children={<NavigationContainer children={<GlobalRoutes />} />}
+        publishableKey={publishableKey}
+        urlScheme="com.tony54.GroceryPlus://"
+      />
       <FlashMessage position="top" />
     </>
   )

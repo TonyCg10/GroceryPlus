@@ -16,6 +16,7 @@ import Payment from './Payment'
 import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
 import SheetModal from '../../share/utils/SheetModal'
+import React from 'react'
 
 const MyBag = ({ navigation }) => {
   const { productId, removeProductId, clearFn } = useProductStore((state: ProductState) => state)
@@ -134,10 +135,6 @@ const MyBag = ({ navigation }) => {
             <ExpectedDateTime setDate={setDate} date={date} setHour={setHour} hourss={hour} />
             <SelectLocation />
             <Payment quantity={quantity} />
-            {/* <TouchableOpacity onPress={() => handleOnPlaceOrder()} style={styles.order}>
-              <Text style={styles.orderText}>Place Order</Text>
-              <AntDesign color="white" size={20} name="arrowright" />
-            </TouchableOpacity> */}
           </ScrollView>
         </>
       )}
@@ -165,19 +162,6 @@ const styles = StyleSheet.create({
     color: '#5EC401',
     alignSelf: 'center',
     padding: '3%'
-  },
-  order: {
-    flexDirection: 'row',
-    backgroundColor: '#5EC401',
-    marginVertical: '5%',
-    padding: '3%',
-    borderRadius: 10
-  },
-  orderText: {
-    color: 'white',
-    fontWeight: 'bold',
-    flex: 1,
-    marginLeft: '40%'
   },
   notFoundSVG: {
     flex: 2,
