@@ -1,7 +1,7 @@
+import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
 import { basePagesStyle } from '../../indexStyle/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
-import { useEffect, useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { IP, ORDER, PORT, PRODUCT } from '../../../express/utils'
 import { showMessage } from 'react-native-flash-message'
@@ -16,13 +16,12 @@ import Payment from './Payment'
 import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
 import SheetModal from '../../share/utils/SheetModal'
-import React from 'react'
 
 const MyBag = ({ navigation }) => {
   const { productId, removeProductId, clearFn } = useProductStore((state: ProductState) => state)
   const { user, setUser } = useUserStore((state: UserState) => state)
 
-  const [quantity, setQuantity] = useState()
+  const [quantity, setQuantity] = useState(0)
   const [productsID, setProductsID] = useState([])
   const [products, setProducts] = useState<Product[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -45,18 +44,6 @@ const MyBag = ({ navigation }) => {
       console.error(error)
     }
   }
-
-  const fetchProducts = () => {
-    setIsLoading(true)
-    setTimeout(async () => {
-      await fetchData()
-      setIsLoading(false)
-    })
-  }
-
-  useEffect(() => {
-    fetchProducts()
-  }, [setUser, productId])
 
   const handleOnPlaceOrder = async () => {
     try {
@@ -88,6 +75,10 @@ const MyBag = ({ navigation }) => {
     }
   }
 
+  useEffect(() => {
+    fetchData()
+  }, [setUser, productId])
+
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
       <SheetModal
@@ -114,16 +105,16 @@ const MyBag = ({ navigation }) => {
         </View>
       ) : (
         <>
-          <View style={styles.scroll1}>
+          <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll1}>
             <ProductsSelected
               product={products}
               isLoading={isLoading}
-              fetchProducts={fetchProducts}
+              fetchProducts={fetchData}
               removeProductId={removeProductId}
               setQuantitys={setQuantity}
               setProductsID={setProductsID}
             />
-          </View>
+          </ScrollView>
 
           <View style={basePagesStyle.line} />
 
@@ -134,7 +125,7 @@ const MyBag = ({ navigation }) => {
 
             <ExpectedDateTime setDate={setDate} date={date} setHour={setHour} hourss={hour} />
             <SelectLocation />
-            <Payment quantity={quantity} />
+            <Payment quantity={quantity} handleOnPlaceOrder={handleOnPlaceOrder} />
           </ScrollView>
         </>
       )}

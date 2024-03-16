@@ -1,5 +1,5 @@
+import React, { useState } from 'react'
 import { TouchableOpacity, View, Text, StyleSheet } from 'react-native'
-import { useState } from 'react'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import DateTimePickerModal from 'react-native-modal-datetime-picker'
@@ -14,49 +14,50 @@ type Props = {
 const ExpectedDateTime = ({ setDate, date, setHour, hourss }: Props) => {
   const [open, setOpen] = useState(false)
 
+  const handleDateConfirm = (selectedDate) => {
+    setDate(selectedDate)
+    setOpen(false)
+  }
+
+  const renderHours = (hours) => (
+    <TouchableOpacity
+      key={hours}
+      onPress={() => setHour(hours)}
+      style={[styles.hours, hourss === hours && styles.selected]}>
+      <Text>{hours}</Text>
+    </TouchableOpacity>
+  )
+
   const datePicker = (
     <DateTimePickerModal
-      negativeButton={{ textColor: '#f66', label: 'Cancel' }}
-      positiveButton={{ textColor: '#5EC401', label: 'Confirm' }}
-      minimumDate={new Date()}
       isVisible={open}
       mode="date"
-      onConfirm={(date) => {
-        setDate(date)
-        setOpen(false)
-      }}
+      minimumDate={new Date()}
+      onConfirm={handleDateConfirm}
       onCancel={() => setOpen(false)}
+      cancelTextIOS="Cancel"
+      confirmTextIOS="Confirm"
     />
   )
 
-  const hour = (hours) => {
-    return (
-      <TouchableOpacity
-        onPress={() => setHour(hours)}
-        style={[styles.hours, hourss === hours && styles.selected]}>
-        <Text>{hours}</Text>
-      </TouchableOpacity>
-    )
-  }
-
   return (
     <View>
-      <View>
-        <Text style={styles.text1}>Expected Date & Time</Text>
-        <TouchableOpacity onPress={() => setOpen(true)} style={styles.setDate}>
-          <AntDesign name="calendar" size={20} />
-          <Text>{date.toDateString()}</Text>
-          <AntDesign name="down" size={20} />
-        </TouchableOpacity>
-        {datePicker}
-        <View style={styles.hour}>
-          {hour('08 AM - 11 AM')}
-          {hour('11 AM - 12 PM')}
-          {hour('12 PM - 02 PM')}
-          {hour('02 PM - 04 PM')}
-          {hour('04 PM - 08 PM')}
-          {hour('06 PM - 08 PM')}
-        </View>
+      <Text style={styles.text1}>Expected Date & Time</Text>
+      <TouchableOpacity onPress={() => setOpen(true)} style={styles.setDate}>
+        <AntDesign name="calendar" size={20} />
+        <Text>{date.toDateString()}</Text>
+        <AntDesign name="down" size={20} />
+      </TouchableOpacity>
+      {datePicker}
+      <View style={styles.hour}>
+        {[
+          '08 AM - 11 AM',
+          '11 AM - 12 PM',
+          '12 PM - 02 PM',
+          '02 PM - 04 PM',
+          '04 PM - 08 PM',
+          '06 PM - 08 PM'
+        ].map(renderHours)}
       </View>
     </View>
   )

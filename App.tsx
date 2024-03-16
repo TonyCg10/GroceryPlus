@@ -15,7 +15,7 @@ export default function App() {
       <StripeProvider
         children={<NavigationContainer children={<GlobalRoutes />} />}
         publishableKey={publishableKey}
-        urlScheme="com.tony54.GroceryPlus://"
+        urlScheme="com.tony54.GroceryPlus://MyBag"
       />
       <FlashMessage position="top" />
     </>

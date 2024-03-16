@@ -13,7 +13,7 @@ import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER, secret_key } from '../../../../express/utils'
+import { IP, PORT, USER } from '../../../../express/utils'
 
 import Header from '../../../share/utils/Header'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -39,7 +39,8 @@ const PersonalInfo = ({ navigation, route }) => {
       if (regexType.nameRegex.test(fullName)) {
         const stripeId = await axios.post(`http://${IP}:${PORT}/${USER}/add/customer`, {
           name: fullName,
-          email: user.email
+          email: user.email,
+          phone: user.phone
         })
 
         if (stripeId.data.data.id) {

@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
@@ -7,7 +8,6 @@ import {
   ScrollView,
   RefreshControl
 } from 'react-native'
-import { useEffect, useState } from 'react'
 import { Product } from '../../../store/database/GroceryData'
 
 import Entypo from 'react-native-vector-icons/Entypo'
@@ -31,90 +31,73 @@ const ProductsSelected = ({
   setQuantitys,
   setProductsID
 }: Props) => {
-  const [quantities, setQuantities] = useState([])
+  const [quantities, setQuantities] = useState<{ productId: string; quantity: number }[]>([])
+
   useEffect(() => {
     setProductsID(quantities)
-  }, [setQuantities, quantities])
+  }, [quantities, setProductsID])
 
   useEffect(() => {
     const initialQuantities = product.map((data) => ({ productId: data._id, quantity: 1 }))
     setQuantities(initialQuantities)
   }, [product])
 
-  const handleOnIncrease = (productId) => {
-    setQuantities((prevQuantities) => {
-      const existingProductIndex = prevQuantities.findIndex((item) => item.productId === productId)
+  const handleOnIncrease = (productId: string) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities.map((item) =>
+        item.productId === productId ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    )
+  }
 
-      if (existingProductIndex !== -1) {
-        return prevQuantities.map((item, index) => {
-          if (index === existingProductIndex) {
-            return { ...item, quantity: item.quantity + 1 }
+  const handleOnDecrease = (productId: string) => {
+    setQuantities((prevQuantities) =>
+      prevQuantities
+        .map((item) =>
+          item.productId === productId
+            ? { ...item, quantity: Math.max(0, item.quantity - 1) }
+            : item
+        )
+        .filter((item) => {
+          if (item.quantity === 0) {
+            removeProductId(item.productId)
+            return false
           }
-          return item
+          return true
         })
-      } else {
-        return [...prevQuantities, { productId, quantity: 1 }]
-      }
-    })
+    )
   }
 
-  const handleOnDecrease = (productId) => {
-    setQuantities((prevQuantities) => {
-      const existingProductIndex = prevQuantities.findIndex((item) => item.productId === productId)
+  useEffect(() => {
+    const totalPrice = product.reduce((acc, data, key) => {
+      const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
+      return acc + data.price * quantity
+    }, 0)
 
-      if (existingProductIndex !== -1) {
-        return prevQuantities
-          .map((item, index) => {
-            if (index === existingProductIndex) {
-              const updatedQuantity = item.quantity - 1
-              if (updatedQuantity === 0) {
-                removeProductId(productId)
-              } else {
-                return { ...item, quantity: updatedQuantity }
-              }
-            }
-            return item
-          })
-          .filter(Boolean)
-      } else {
-        return prevQuantities
-      }
-    })
-  }
-
-  let totalPrice = 0
+    setQuantitys(totalPrice)
+  }, [product, quantities, setQuantitys])
 
   return (
     <ScrollView
+      showsVerticalScrollIndicator={false}
       refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchProducts} />}>
       <Text style={styles.text1}>Products</Text>
       {product.map((data, key) => {
+        const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
         const price = data.price * quantities[key]?.quantity
-        setQuantitys((totalPrice += price))
 
         return (
           <View key={key} style={styles.container}>
-            <Image
-              source={{
-                uri: data.thumbnail
-              }}
-              style={styles.image}
-            />
+            <Image source={{ uri: data.thumbnail }} style={styles.image} />
             <View style={styles.flex}>
               <Text style={styles.title}>{data.title}</Text>
               <View style={styles.info}>
-                <Text style={styles.price}>
-                  $ {(data.price * quantities[key]?.quantity).toFixed(2)}
-                </Text>
+                <Text style={styles.price}>$ {price.toFixed(2)}</Text>
                 <View style={styles.btnContainer}>
                   <TouchableOpacity style={styles.minus} onPress={() => handleOnDecrease(data._id)}>
                     <Entypo color="white" name="minus" />
                   </TouchableOpacity>
-                  <Text style={styles.many}>
-                    {quantities
-                      .filter((id) => id.productId.includes(data._id))
-                      .map((q) => q.quantity)}
-                  </Text>
+                  <Text style={styles.many}>{quantity}</Text>
                   <TouchableOpacity style={styles.plus} onPress={() => handleOnIncrease(data._id)}>
                     <Entypo color="white" name="plus" />
                   </TouchableOpacity>
@@ -156,9 +139,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1
   },
-  discountPercentage: {
-    marginTop: '15%'
-  },
   container: {
     flexDirection: 'row',
     marginVertical: '5%'
@@ -189,5 +169,11 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     padding: '6%',
     borderRadius: 5
+  },
+  totalPrice: {
+    alignSelf: 'flex-end',
+    fontWeight: 'bold',
+    fontSize: 18,
+    marginVertical: 10
   }
 })
