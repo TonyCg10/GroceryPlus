@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native'
-import { basePagesStyle } from '../../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../../styles/baseStyle'
 import { AuthLogic, regexType, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'

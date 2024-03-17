@@ -1,5 +1,5 @@
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { useState } from 'react'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'

@@ -7,7 +7,7 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'

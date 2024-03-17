@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { IP, ORDER, PORT, PRODUCT } from '../../../express/utils'

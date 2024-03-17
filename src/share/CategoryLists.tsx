@@ -8,7 +8,7 @@ import {
   TouchableOpacity
 } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
-import { basePagesStyle } from '../indexStyle/baseStyle'
+import { basePagesStyle } from '../styles/baseStyle'
 import { showMessage } from 'react-native-flash-message'
 
 import Header from './utils/Header'

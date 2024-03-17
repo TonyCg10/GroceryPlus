@@ -1,5 +1,5 @@
 import { SafeAreaView, View, Text } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'

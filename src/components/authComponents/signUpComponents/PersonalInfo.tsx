@@ -7,7 +7,7 @@ import {
   Text,
   Alert
 } from 'react-native'
-import { basePagesStyle } from '../../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../../styles/baseStyle'
 import { useState } from 'react'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'

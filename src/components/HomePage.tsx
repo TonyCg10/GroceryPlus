@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { basePagesStyle } from '../indexStyle/baseStyle'
+import { basePagesStyle } from '../styles/baseStyle'
 import { useFocusEffect } from '@react-navigation/native'
 
 import Header from '../share/utils/Header'

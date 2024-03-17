@@ -1,5 +1,5 @@
 import { SafeAreaView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
-import { basePagesStyle } from '../indexStyle/baseStyle'
+import { basePagesStyle } from '../styles/baseStyle'
 import { ScrollView } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { useEffect, useState } from 'react'

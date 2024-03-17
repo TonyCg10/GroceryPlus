@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView } from 'react-native'
-import { basePagesStyle } from '../indexStyle/baseStyle'
+import { basePagesStyle } from '../styles/baseStyle'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../share/utils/Header'
@@ -14,10 +14,7 @@ const Category = ({ navigation }) => {
         navigation={navigation}
       />
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={basePagesStyle.gridsScroll}
-      >
+      <ScrollView showsVerticalScrollIndicator={false} style={basePagesStyle.gridsScroll}>
         <Grids display={false} navigation={navigation} />
       </ScrollView>
     </SafeAreaView>

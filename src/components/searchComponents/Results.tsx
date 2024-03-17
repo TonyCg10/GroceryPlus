@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
 import { Product } from '../../../store/database/GroceryData'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { showMessage } from 'react-native-flash-message'
 

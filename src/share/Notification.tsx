@@ -1,5 +1,5 @@
 import { SafeAreaView, View, Text, StyleSheet } from 'react-native'
-import { basePagesStyle } from '../indexStyle/baseStyle'
+import { basePagesStyle } from '../styles/baseStyle'
 
 // import fakeData from '../fakeData/fakeData'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -14,12 +14,8 @@ const Notifications = ({ navigation }) => {
         return (
           <View style={style.box}>
             <View>
-              <Text style={style.order}>
-                Order #{Math.floor(Math.random() * 100)}
-              </Text>
-              <Text style={style.text}>
-                Your Order is Delivering to your home
-              </Text>
+              <Text style={style.order}>Order #{Math.floor(Math.random() * 100)}</Text>
+              <Text style={style.text}>Your Order is Delivering to your home</Text>
             </View>
             <View>
               <Text>{time}</Text>
@@ -33,9 +29,7 @@ const Notifications = ({ navigation }) => {
         return (
           <View style={style.box}>
             <View>
-              <Text style={style.order}>
-                Order #{Math.floor(Math.random() * 100)}
-              </Text>
+              <Text style={style.order}>Order #{Math.floor(Math.random() * 100)}</Text>
               <Text style={style.text}>
                 Your Order is Confirmed. Please check everything is okay
               </Text>
@@ -43,11 +37,7 @@ const Notifications = ({ navigation }) => {
             <View>
               <Text>{time}</Text>
               <View style={[style.icon, { backgroundColor: '#FF5552' }]}>
-                <Ionicons
-                  size={24}
-                  color="white"
-                  name="reorder-three-outline"
-                />
+                <Ionicons size={24} color="white" name="reorder-three-outline" />
               </View>
             </View>
           </View>
@@ -56,12 +46,8 @@ const Notifications = ({ navigation }) => {
         return (
           <View style={style.box}>
             <View>
-              <Text style={style.order}>
-                Order #{Math.floor(Math.random() * 100)}
-              </Text>
-              <Text style={style.text}>
-                Your Order is Completed. Please rate the experience
-              </Text>
+              <Text style={style.order}>Order #{Math.floor(Math.random() * 100)}</Text>
+              <Text style={style.text}>Your Order is Completed. Please rate the experience</Text>
             </View>
 
             <View>
@@ -103,15 +89,15 @@ const style = StyleSheet.create({
     marginTop: '3%',
     flexDirection: 'row',
     padding: 20,
-    borderRadius: 20,
+    borderRadius: 20
   },
   text: {
     width: 270,
-    marginTop: '2%',
+    marginTop: '2%'
   },
   order: {
     fontSize: 15,
-    fontWeight: '600',
+    fontWeight: '600'
   },
   icon: {
     marginTop: 5,
@@ -120,6 +106,6 @@ const style = StyleSheet.create({
     height: 45,
     borderRadius: 100,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
+    alignItems: 'center'
+  }
 })

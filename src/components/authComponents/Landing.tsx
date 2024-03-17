@@ -1,5 +1,5 @@
 import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { useEffect } from 'react'
 import { useGroceryData } from '../../../store/database/GroceryData'
 

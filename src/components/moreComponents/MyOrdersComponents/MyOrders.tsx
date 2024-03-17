@@ -1,5 +1,5 @@
 import { View, SafeAreaView, ScrollView } from 'react-native'
-import { basePagesStyle } from '../../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../../styles/baseStyle'
 import { useEffect, useState } from 'react'
 import { IP, ORDER, PORT, PRODUCT } from '../../../../express/utils'
 import { Product } from '../../../../store/database/GroceryData'

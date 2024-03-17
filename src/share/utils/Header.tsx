@@ -1,11 +1,5 @@
-import {
-  TouchableOpacity,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-} from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { TouchableOpacity, View, Text, StyleSheet, TextInput } from 'react-native'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { useState } from 'react'
 
 import Feather from 'react-native-vector-icons/Feather'
@@ -19,14 +13,7 @@ type Props = {
   navigation?: any
 }
 
-const Header = ({
-  title,
-  actionRight,
-  actionLeft,
-  searcher,
-  setLook,
-  navigation,
-}: Props) => {
+const Header = ({ title, actionRight, actionLeft, searcher, setLook, navigation }: Props) => {
   const [text, setText] = useState('')
 
   return (
@@ -35,8 +22,7 @@ const Header = ({
         style={actionLeft && basePagesStyle.icon}
         onPress={() => {
           navigation.goBack()
-        }}
-      >
+        }}>
         {actionLeft}
       </TouchableOpacity>
       <View>
@@ -63,8 +49,7 @@ const Header = ({
         style={basePagesStyle.notiIcon}
         onPress={() => {
           navigation.navigate('Notifications')
-        }}
-      >
+        }}>
         {actionRight}
       </TouchableOpacity>
     </View>
@@ -79,14 +64,14 @@ const headerStyle = StyleSheet.create({
     flexDirection: 'row',
     padding: '1%',
     minWidth: '90%',
-    borderRadius: 10,
+    borderRadius: 10
   },
   searchText: {
     color: '#5EC401',
-    fontSize: 12,
+    fontSize: 12
   },
   searcherIcon: {
     alignSelf: 'center',
-    marginHorizontal: '4%',
-  },
+    marginHorizontal: '4%'
+  }
 })

@@ -1,5 +1,5 @@
 import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native'
-import { basePagesStyle } from '../../indexStyle/baseStyle'
+import { basePagesStyle } from '../../styles/baseStyle'
 import { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
 import { IP, PORT, PRODUCT } from '../../../express/utils'
