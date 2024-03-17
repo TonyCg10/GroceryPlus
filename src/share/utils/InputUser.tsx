@@ -93,21 +93,21 @@ const userInputStyles = StyleSheet.create({
     shadowColor: '#5EC401',
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 2
     },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
+    shadowOpacity: 1.0,
+    shadowRadius: 2.0,
 
-    elevation: 2
+    elevation: 2.5
   },
   textInputBad: {
     shadowColor: '#f66',
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 2
     },
-    shadowOpacity: 0.18,
-    shadowRadius: 1.0,
+    shadowOpacity: 1.0,
+    shadowRadius: 2.0,
 
     elevation: 2
   },

@@ -13,7 +13,7 @@ import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER } from '../../../../express/utils'
+import { PAYMENT, URL, USER } from '../../../../express/utils'
 
 import Header from '../../../share/utils/Header'
 import Octicons from 'react-native-vector-icons/Octicons'
@@ -22,12 +22,12 @@ import axios from 'axios'
 
 const PersonalInfo = ({ navigation, route }) => {
   const { setUser, user } = useUserStore((state: UserState) => state)
-  const [modalVisible, setModalVisible] = useState(false)
 
   const isKeyboardVisible = AuthLogic()
 
-  // const [name, setName] = useState('antonio corcoba')
-  const [name, setName] = useState('camila capella')
+  const [modalVisible, setModalVisible] = useState(false)
+  const [name, setName] = useState('antonio corcoba')
+  // const [name, setName] = useState('camila capella')
 
   const handleSetPersonalInfo = async () => {
     try {
@@ -37,39 +37,41 @@ const PersonalInfo = ({ navigation, route }) => {
       const fullName = firstName + ' ' + lastName
 
       if (regexType.nameRegex.test(fullName)) {
-        const stripeId = await axios.post(`http://${IP}:${PORT}/${USER}/add/customer`, {
-          name: fullName,
+        const stripeId = await axios.post(`${URL}/${PAYMENT}/add-customer`, {
           email: user.email,
+          name: fullName,
           phone: user.phone
         })
+        const { data } = stripeId
 
-        if (stripeId.data.data.id) {
-          const response = await axios.post(`http://${IP}:${PORT}/${USER}/users`, {
-            _id: user._id,
+        if (data.data) {
+          const response = await axios.put(`${URL}/${USER}/update-user/${user._id}`, {
             name: fullName,
-            email: user.email,
-            password: user.password,
-            phone: user.phone,
-            img: user.img,
-            stripeCustomerId: stripeId.data.data.id
+            stripeCustomerId: stripeId.data.data
           })
+          const { data } = response
 
-          if (response.status === 201) {
-            setUser(response.data.data)
+          if (response.status === 200) {
+            setUser({ name: fullName, stripeCustomerId: stripeId.data.data })
+
             showMessage({
-              icon: 'success',
               message: `Welcome! ${fullName}`,
-              type: 'success'
+              type: 'success',
+              icon: 'success',
+              hideStatusBar: true
             })
+
+            console.log('#####')
+            console.log(data)
+            console.log('#####')
+
             navigation.navigate('BottomRoutes')
-          } else {
-            throw new Error('Failed to update user')
           }
         }
       }
     } catch (error) {
+      Alert.alert(`An error has ocurred. Please try again`)
       console.error('Error signing up:', error)
-      Alert.alert('Sign-up failed', 'Failed to sign up. Please try again.')
     }
   }
 
@@ -83,7 +85,9 @@ const PersonalInfo = ({ navigation, route }) => {
         </Text>
 
         <View style={styles.container}>
-          <ImageComponent setModalVisible={setModalVisible} route={route.name} />
+          {!isKeyboardVisible && (
+            <ImageComponent setModalVisible={setModalVisible} route={route.name} />
+          )}
         </View>
 
         <ScrollView

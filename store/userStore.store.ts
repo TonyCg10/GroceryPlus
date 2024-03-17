@@ -40,7 +40,9 @@ export const useUserStore = create<UserState>()(
               ...user
             }
           }))
+          console.log('#####')
           console.log('userStore ===== ', 'user set successfully', user)
+          console.log('#####')
         },
 
         clearUser: () => {
@@ -55,7 +57,9 @@ export const useUserStore = create<UserState>()(
               stripeCustomerId: ''
             }
           })
+          console.log('#####')
           console.log('userStore ===== ', 'store clear')
+          console.log('#####')
         }
       }),
       {

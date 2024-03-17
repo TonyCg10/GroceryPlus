@@ -5,7 +5,7 @@ import { AuthLogic, regexType, userInputType } from './utils/utils'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER } from '../../../express/utils'
+import { URL, USER } from '../../../express/utils'
 
 import axios from 'axios'
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
@@ -17,9 +17,10 @@ import SheetModal from '../../share/utils/SheetModal'
 
 const LoginPage = ({ navigation }) => {
   const { setUser } = useUserStore((state: UserState) => state)
-  const isKeyboardVisible = AuthLogic()
-  const [modalVisible, setModalVisible] = useState(false)
 
+  const isKeyboardVisible = AuthLogic()
+
+  const [modalVisible, setModalVisible] = useState(false)
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
   const [email, setEmail] = useState('ac@gmail.com')
@@ -29,40 +30,40 @@ const LoginPage = ({ navigation }) => {
 
   const handleOnLogin = async () => {
     try {
-      const response = await axios.post(`http://${IP}:${PORT}/${USER}/check-user`, {
+      const response = await axios.post(`${URL}/${USER}/check-user`, {
         email,
         password
       })
+      const { data } = response
 
-      if (response.status === 200) {
-        const { data } = response
+      if (data.exists) {
+        setUser({
+          _id: data.data._id,
+          name: data.data.name,
+          email: data.data.email,
+          password: data.data.password,
+          phone: data.data.phone,
+          img: data.data.img
+        })
 
-        if (data.exists) {
-          setUser({
-            _id: data.user._id,
-            name: data.user.name,
-            email: data.user.email,
-            password: data.user.password,
-            phone: data.user.phone,
-            img: data.user.img
-          })
+        showMessage({
+          message: `Successful Login! ${data.data.name}`,
+          type: 'success',
+          icon: 'success',
+          hideStatusBar: true
+        })
 
-          showMessage({
-            message: 'Successful Login',
-            type: 'success',
-            icon: 'success'
-          })
-          console.log('Logged In')
-          navigation.navigate('BottomRoutes')
-        } else {
-          setModalVisible(true)
-        }
+        console.log('#####')
+        console.log(data)
+        console.log('#####')
+
+        navigation.navigate('BottomRoutes')
       } else {
-        console.log('Unexpected response:', response)
-        Alert.alert('Unexpected response')
+        setModalVisible(true)
       }
     } catch (error) {
-      console.error(error)
+      Alert.alert(`An error has ocurred. Please try again`)
+      console.error('Error log in:', error)
     }
   }
 
@@ -75,9 +76,9 @@ const LoginPage = ({ navigation }) => {
       <SheetModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        content="User not found"
+        content="User does not exists"
         redBtn={true}
-        redContent="Accept"
+        redContent="Close"
         redAction={() => setModalVisible(false)}
       />
       <Header

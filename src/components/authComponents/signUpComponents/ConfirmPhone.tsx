@@ -1,4 +1,4 @@
-import { StyleSheet, SafeAreaView, TouchableOpacity, View, Text } from 'react-native'
+import { StyleSheet, SafeAreaView, TouchableOpacity, View, Text, Alert } from 'react-native'
 import { basePagesStyle } from '../../../indexStyle/baseStyle'
 import { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic } from '../utils/utils'
@@ -22,6 +22,7 @@ const ConfirmPhone = ({ navigation }) => {
   const isKeyboardVisible = AuthLogic()
 
   const [value, setValue] = useState('12345')
+
   const ref = useBlurOnFulfill({ value, cellCount: 5 })
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
     value,
@@ -32,15 +33,16 @@ const ConfirmPhone = ({ navigation }) => {
     try {
       if (value.length === 5) {
         showMessage({
+          message: 'Number Verified!',
+          type: 'success',
           icon: 'success',
-          message: 'Number Verified',
-          type: 'success'
+          hideStatusBar: true
         })
+
         navigation.navigate('SignUpPage')
-      } else {
-        throw new Error('Failed to update user')
       }
     } catch (error) {
+      Alert.alert(`An error has ocurred. Please try again`)
       console.error('Error confirm phone:', error)
     }
   }

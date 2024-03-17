@@ -1,11 +1,11 @@
-import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native'
+import { SafeAreaView, TouchableOpacity, View, Text, Alert } from 'react-native'
 import { basePagesStyle } from '../../../indexStyle/baseStyle'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 import { useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER } from '../../../../express/utils'
+import { URL, USER } from '../../../../express/utils'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -14,37 +14,48 @@ import PhoneNumber from '../../../../assets/undraw_personalization_triu.svg'
 import axios from 'axios'
 
 const Phone = ({ navigation }) => {
-  const { setUser } = useUserStore((state: UserState) => state)
+  const { setUser, user } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
 
-  // const [phone, setPhone] = useState('8102873196')
-  const [phone, setPhone] = useState('5599559912')
+  // const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState('1299559955')
+  // const [phone, setPhone] = useState('5599559912')
 
   const handleOnSetPhone = async () => {
     try {
       if (regexType.phoneRegex.test(phone)) {
-        const response = await axios.post(`http://${IP}:${PORT}/${USER}/check-user`, {
+        const response = await axios.post(`${URL}/${USER}/check-user`, {
           phone
         })
-        if (!response.data.exists) {
+        const { data } = response
+
+        if (!data.exists) {
           setUser({ phone: phone })
           showMessage({
-            icon: 'info',
             message: 'Verify your number',
-            type: 'info'
+            type: 'info',
+            icon: 'info',
+            hideStatusBar: true
           })
           navigation.navigate('ConfirmPhone')
         } else {
           showMessage({
-            icon: 'warning',
             message: 'Looks like you already have account',
-            type: 'warning'
+            type: 'warning',
+            icon: 'warning',
+            hideStatusBar: true
           })
+
+          console.log('#####')
+          console.log(data)
+          console.log('#####')
+
           navigation.navigate('Preregistered')
         }
       }
     } catch (error) {
+      Alert.alert(`An error has ocurred. Please try again`)
       console.error('Error signing up:', error)
     }
   }

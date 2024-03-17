@@ -2,7 +2,7 @@ import * as ImagePicker from 'expo-image-picker'
 import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
 import { UserState, useUserStore } from '../../../store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER } from '../../../express/utils'
+import { URL, USER } from '../../../express/utils'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -10,6 +10,7 @@ import axios from 'axios'
 
 type Props = {
   route?: any
+
   setModalVisible: (value: boolean) => void
   setModalsVisible?: (value: number) => void
 }
@@ -20,14 +21,12 @@ const ImageComponent = ({ route, setModalVisible, setModalsVisible }: Props) => 
   const formatName = user?.name?.split(' ') || []
   let avatarName = ''
 
-  if (formatName.length > 1) {
-    avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
-  } else if (formatName.length === 1) {
-    avatarName = formatName[0].charAt(0)
-  }
+  if (formatName.length > 1) avatarName = formatName[0].charAt(0) + formatName[1].charAt(0)
+  else if (formatName.length === 1) avatarName = formatName[0].charAt(0)
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+
     if (status !== 'granted') {
       alert('Sorry, we need camera roll permissions to make this work!')
       return
@@ -41,20 +40,29 @@ const ImageComponent = ({ route, setModalVisible, setModalsVisible }: Props) => 
         })
 
         if (!result.canceled) {
-          const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
+          const response = await axios.put(`${URL}/${USER}/update-user/${user._id}`, {
             img: result.assets[0].uri
           })
+          const { data } = response
+
           if (response.status === 200) {
             setUser({ img: result.assets[0].uri })
             showMessage({
-              icon: 'success',
               message: 'Image settled!',
-              type: 'success'
+              type: 'success',
+              icon: 'success',
+              hideStatusBar: true
             })
+
+            console.log('#####')
+            console.log(data)
+            console.log('#####')
+
             console.log('User updated successfully')
           }
         }
       } catch (error) {
+        Alert.alert(`An error has ocurred. Please try again`)
         console.error('Error picking image:', error)
       }
     }
