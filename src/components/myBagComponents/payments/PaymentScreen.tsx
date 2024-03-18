@@ -1,7 +1,7 @@
 import { usePaymentSheet } from '@stripe/stripe-react-native'
 import { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
-import { IP, PORT, PAYMENT } from '../../../../express/utils'
+import { PAYMENT, URL } from '../../../../express/utils'
 import { UserState, useUserStore } from '../../../../store/userStore.store'
 
 import axios from 'axios'
@@ -25,13 +25,10 @@ const PaymentScreen = ({ quantity, handleOnPlaceOrder }: Props) => {
     if (!error) {
       setReady(true)
       try {
-        const response = await axios.post(
-          `http://${IP}:${PORT}/${PAYMENT}/create-payments-intents`,
-          {
-            amount: quantity * 100,
-            email: user.email
-          }
-        )
+        const response = await axios.post(`${URL}/${PAYMENT}/create-payments-intents`, {
+          amount: quantity * 100,
+          email: user.email
+        })
 
         const { paymentIntent, ephemeralKey, customer } = await response.data
 
@@ -51,7 +48,7 @@ const PaymentScreen = ({ quantity, handleOnPlaceOrder }: Props) => {
   }
 
   const fetchSetupIntents = async () => {
-    const response = await axios.post(`http://${IP}:${PORT}/${PAYMENT}/set-up-intents`, {
+    const response = await axios.post(`${URL}/${PAYMENT}/set-up-intents`, {
       email: user.email
     })
 
