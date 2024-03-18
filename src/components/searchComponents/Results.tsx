@@ -20,9 +20,10 @@ const Results = ({ navigation, look, productData, rate }: Prop) => {
     return (
       !productId.includes(data.id) && setProductId([data.id]),
       showMessage({
-        icon: 'success',
         message: 'Added to your Bag!',
-        type: 'success'
+        type: 'success',
+        icon: 'success',
+        hideStatusBar: true
       })
     )
   }

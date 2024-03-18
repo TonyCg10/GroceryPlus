@@ -1,7 +1,7 @@
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { useEffect, useState } from 'react'
-import { IP, PORT, PRODUCT } from '../../express/utils'
+import { PRODUCT, URL } from '../../express/utils'
 
 import axios from 'axios'
 
@@ -12,8 +12,17 @@ type Pops = {
 
 const Grids = ({ display, navigation }: Pops) => {
   const [productsArray, setProductsArray] = useState([])
+
+  const uniqueCategories = [
+    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim()))
+  ]
+
   const productsFetch = async () => {
-    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+    const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
+
+    console.log('#####')
+    console.log(productsArray.data.data)
+    console.log('#####')
 
     return setProductsArray(productsArray.data.data)
   }
@@ -21,10 +30,6 @@ const Grids = ({ display, navigation }: Pops) => {
   useEffect(() => {
     productsFetch()
   }, [])
-
-  const uniqueCategories = [
-    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim()))
-  ]
 
   return display ? (
     <View style={baseGridsStyle.gridsScreen}>

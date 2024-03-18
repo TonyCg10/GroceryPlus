@@ -10,23 +10,29 @@ import {
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { basePagesStyle } from '../styles/baseStyle'
 import { showMessage } from 'react-native-flash-message'
+import { useState, useEffect } from 'react'
+import { PRODUCT, URL } from '../../express/utils'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
 import axios from 'axios'
-import { useState, useEffect } from 'react'
-import { IP, PORT, PRODUCT } from '../../express/utils'
 
 const CategoryLists = ({ navigation, route }) => {
   const { category } = route.params
+
   const { setProductId, productId, setWishes, removeWish, wishes } = useProductStore(
     (state: ProductState) => state
   )
 
   const [productsArray, setProductsArray] = useState([])
+
   const productsFetch = async () => {
-    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+    const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
+
+    console.log('#####')
+    console.log(productsArray.data.data)
+    console.log('#####')
 
     return setProductsArray(productsArray.data.data)
   }
@@ -38,9 +44,10 @@ const CategoryLists = ({ navigation, route }) => {
   const handleAddToBag = (data) => {
     !productId.includes(data._id) && setProductId([data._id]),
       showMessage({
-        icon: 'success',
         message: 'Added to your Bag!',
-        type: 'success'
+        type: 'success',
+        icon: 'success',
+        hideStatusBar: true
       })
   }
 
@@ -48,16 +55,18 @@ const CategoryLists = ({ navigation, route }) => {
     if (wishes.includes(id)) {
       removeWish(id)
       showMessage({
-        icon: 'warning',
         message: 'Unwished',
-        type: 'warning'
+        type: 'warning',
+        icon: 'warning',
+        hideStatusBar: true
       })
     } else {
       setWishes([id])
       showMessage({
-        icon: 'success',
         message: 'Wished',
-        type: 'success'
+        type: 'success',
+        icon: 'success',
+        hideStatusBar: true
       })
     }
   }

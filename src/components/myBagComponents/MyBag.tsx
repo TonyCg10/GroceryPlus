@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } fr
 import { basePagesStyle } from '../../styles/baseStyle'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { UserState, useUserStore } from '../../../store/userStore.store'
-import { IP, ORDER, PORT, PRODUCT } from '../../../express/utils'
+import { ORDER, PRODUCT, URL } from '../../../express/utils'
 import { showMessage } from 'react-native-flash-message'
 import { Product } from '../../../store/database/GroceryData'
 
@@ -32,11 +32,14 @@ const MyBag = ({ navigation }) => {
   const fetchData = async () => {
     try {
       if (productId.length !== 0) {
-        const productsArray = await axios.get(
-          `http://${IP}:${PORT}/${PRODUCT}/check/multiple/${productId}`
-        )
+        const productsArray = await axios.get(`${URL}/${PRODUCT}/check-multiple/${productId}`)
+
+        console.log('#####')
+        console.log(productsArray.data.data)
+        console.log('#####')
+
         if (productsArray.status === 200) {
-          setProducts(productsArray.data.result)
+          setProducts(productsArray.data.data)
           setIsLoading(false)
         }
       }
@@ -48,7 +51,7 @@ const MyBag = ({ navigation }) => {
   const handleOnPlaceOrder = async () => {
     try {
       if (productId.length !== 0 && date.toLocaleDateString() !== new Date().toLocaleDateString()) {
-        const response = await axios.post(`http://${IP}:${PORT}/${ORDER}/orders`, {
+        const response = await axios.post(`${URL}/${ORDER}/create-orders`, {
           userId: user._id,
           products: productsID,
           issuedDate: date,
@@ -58,9 +61,10 @@ const MyBag = ({ navigation }) => {
 
         if (response.status === 201) {
           showMessage({
-            icon: 'success',
             message: 'Order Added!',
-            type: 'success'
+            type: 'success',
+            icon: 'success',
+            hideStatusBar: true
           })
           console.log('Order Placed')
           setHour(null)

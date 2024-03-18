@@ -1,6 +1,6 @@
 import { View, Text, Image, ScrollView, TouchableOpacity, RefreshControl } from 'react-native'
 import { useEffect, useState } from 'react'
-import { IP, ORDER, PORT } from '../../../../express/utils'
+import { ORDER, URL } from '../../../../express/utils'
 
 import Empty from '../../../../assets/Empty-rafiki.svg'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
@@ -31,7 +31,7 @@ const Ongoing = ({ products, quantity, orderId, fetchOrders }: Props) => {
 
   const handleRemoveOrder = async (id) => {
     try {
-      await axios.delete(`http://${IP}:${PORT}/${ORDER}/delete/${id}`)
+      await axios.delete(`${URL}/${ORDER}/delete-order/${id}`)
       fetchOrder()
       setModalVisible(false)
     } catch (error) {
@@ -41,7 +41,7 @@ const Ongoing = ({ products, quantity, orderId, fetchOrders }: Props) => {
 
   const handleOnRemoveProductOrder = async (id, itemId) => {
     try {
-      await axios.delete(`http://${IP}:${PORT}/${ORDER}/deleteProduct/${id}/${itemId}`)
+      await axios.delete(`${URL}/${ORDER}/delete-roduct-order/${id}/${itemId}`)
       fetchOrder()
       setModalVisible(false)
     } catch (error) {

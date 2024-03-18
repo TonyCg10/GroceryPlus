@@ -5,7 +5,7 @@ import { UserState, useUserStore } from '../../../store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
 import { ProductState, useProductStore } from '../../../store/productStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, USER } from '../../../express/utils'
+import { URL, USER } from '../../../express/utils'
 
 import Header from '../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -49,7 +49,7 @@ const EditProfile = ({ navigation }) => {
       regexType.passwordRegex.test(password) &&
       regexType.phoneRegex.test(phone)
     ) {
-      const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
+      const response = await axios.put(`${URL}/${USER}/update-user/${user._id}`, {
         name: firstName + ' ' + lastName,
         email: email,
         password: password,
@@ -64,9 +64,10 @@ const EditProfile = ({ navigation }) => {
           phone: phone
         })
         showMessage({
-          icon: 'success',
           message: 'User Updated!',
-          type: 'success'
+          type: 'success',
+          icon: 'success',
+          hideStatusBar: true
         })
         setEdit(false)
         console.log('User updated successfully')
@@ -75,16 +76,17 @@ const EditProfile = ({ navigation }) => {
       }
     } else {
       showMessage({
-        icon: 'warning',
         message: 'You must fill fields!',
-        type: 'warning'
+        type: 'warning',
+        icon: 'warning',
+        hideStatusBar: true
       })
     }
   }
 
   const handleOnErasePhoto = async () => {
     setModalVisible(false)
-    const response = await axios.put(`http://${IP}:${PORT}/${USER}/update/${user._id}`, {
+    const response = await axios.put(`${URL}/${USER}/update-user/${user._id}`, {
       img: null
     })
     if (response.status === 200) {
@@ -95,7 +97,7 @@ const EditProfile = ({ navigation }) => {
   }
 
   const handleOnDeleteUser = async () => {
-    const response = await axios.delete(`http://${IP}:${PORT}/${USER}/delete/${user._id}`)
+    const response = await axios.delete(`${URL}/${USER}/delete-user/${user._id}`)
 
     if (response.status === 200) {
       setModalVisible(false)

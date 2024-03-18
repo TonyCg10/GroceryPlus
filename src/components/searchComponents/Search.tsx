@@ -2,7 +2,7 @@ import { SafeAreaView, View, Text, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
 import { useEffect, useState } from 'react'
 import { StyleSheet } from 'react-native'
-import { IP, PORT, PRODUCT } from '../../../express/utils'
+import { PRODUCT, URL } from '../../../express/utils'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
@@ -17,8 +17,14 @@ const Search = ({ navigation }) => {
   const [look, setLook] = useState('')
   const [rate, setRate] = useState(0)
   const [productsArray, setProductsArray] = useState([])
+  const [modalVisible, setModalVisible] = useState(false)
+
   const productsFetch = async () => {
-    const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+    const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
+
+    console.log('#####')
+    console.log(productsArray.data.data)
+    console.log('#####')
 
     return setProductsArray(productsArray.data.data)
   }
@@ -34,8 +40,6 @@ const Search = ({ navigation }) => {
 
     return matches
   })
-
-  const [modalVisible, setModalVisible] = useState(false)
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>

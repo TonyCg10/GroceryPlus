@@ -1,4 +1,4 @@
-import { IP, PORT, PRODUCT } from '../../express/utils'
+import { PRODUCT, URL } from '../../express/utils'
 
 import axios from 'axios'
 
@@ -42,7 +42,7 @@ export const useGroceryData = () => {
       }))
 
       try {
-        const productListResponse = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/`)
+        const productListResponse = await axios.get(`${URL}/${PRODUCT}/get-products`)
         const productList = productListResponse.data.data
 
         if (productList.length !== 0) {
@@ -53,18 +53,26 @@ export const useGroceryData = () => {
           const productId = product.id
 
           const checkProductResponse = await axios.get(
-            `http://${IP}:${PORT}/${PRODUCT}/check/${productId}`
+            `${URL}/${PRODUCT}/check-single/${productId}`
           )
+
+          console.log('#####')
+          console.log(checkProductResponse.data.data)
+          console.log('#####')
 
           if (checkProductResponse.status === 404) {
             for (const product of data) {
               try {
                 const addProductResponse = await axios.post(
-                  `http://${IP}:${PORT}/${PRODUCT}/products`,
+                  `${URL}/${PRODUCT}/create-product`,
                   product
                 )
 
-                if (addProductResponse.status === 201) {
+                console.log('#####')
+                console.log(addProductResponse.data.data)
+                console.log('#####')
+
+                if (addProductResponse.status === 200) {
                   console.log(`Product -- ${product} -- added`)
                 } else {
                   console.error(`Error with -- ${product} -- product`)
@@ -73,6 +81,10 @@ export const useGroceryData = () => {
                 console.error(`Error adding product: ${error}`)
               }
             }
+          } else {
+            console.log('#####')
+            console.log('All products already in')
+            console.log('#####')
           }
         }
       } catch (error) {

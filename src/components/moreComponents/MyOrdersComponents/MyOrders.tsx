@@ -1,7 +1,7 @@
-import { View, SafeAreaView, ScrollView } from 'react-native'
+import { View, SafeAreaView } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { useEffect, useState } from 'react'
-import { IP, ORDER, PORT, PRODUCT } from '../../../../express/utils'
+import { ORDER, URL } from '../../../../express/utils'
 import { Product } from '../../../../store/database/GroceryData'
 import { useUserStore, UserState } from '../../../../store/userStore.store'
 
@@ -20,7 +20,11 @@ const MyOrders = ({ navigation }) => {
 
   const fetchOrders = async () => {
     try {
-      const ordersArray = await axios.get(`http://${IP}:${PORT}/${ORDER}/${user._id}`)
+      const ordersArray = await axios.get(`${URL}/${ORDER}/get-orders/${user._id}`)
+
+      console.log('#####')
+      console.log(ordersArray.data.data)
+      console.log('#####')
 
       if (ordersArray.status) {
         const orderProducts = ordersArray.data.data.map((pr) =>

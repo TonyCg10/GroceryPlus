@@ -10,7 +10,7 @@ export interface ProductState {
   setProductId: (productId: string[]) => void
   setWishes: (wishes: string[]) => void
   removeProductId: (productIdToRemove: string) => void
-  removeWish:(wishToRemove: string) => void
+  removeWish: (wishToRemove: string) => void
   clearFn: () => void
   clearWishes: () => void
 }
@@ -26,38 +26,54 @@ export const useProductStore = create<ProductState>()(
           set((state) => ({
             productId: [...state.productId, ...productId]
           }))
+          console.log('#####')
+          console.log('productStore ===== ', 'set product id')
+          console.log('#####')
         },
 
         setWishes(wishes) {
           set((state) => ({
             wishes: [...state.wishes, ...wishes]
           }))
+          console.log('#####')
+          console.log('productStore ===== ', 'set wishes')
+          console.log('#####')
         },
 
         removeProductId: (productIdToRemove) => {
           set((state) => ({
             productId: state.productId.filter((id) => id !== productIdToRemove)
           }))
+          console.log('#####')
+          console.log('productStore ===== ', 'a product clear')
+          console.log('#####')
         },
 
         removeWish: (wishToRemove) => {
           set((state) => ({
             wishes: state.wishes.filter((id) => id !== wishToRemove)
           }))
+          console.log('#####')
+          console.log('productStore ===== ', 'a wish clear')
+          console.log('#####')
         },
 
         clearFn: () => {
           set({
-            productId: [],
+            productId: []
           })
-          console.log('productStore ===== store clear');
+          console.log('#####')
+          console.log('productStore ===== ', 'store clear')
+          console.log('#####')
         },
 
         clearWishes: () => {
           set({
-            wishes: [],
+            wishes: []
           })
-          console.log('productStore ===== store clear');
+          console.log('#####')
+          console.log('productStore ===== ', 'wishes clear')
+          console.log('#####')
         }
       }),
       {

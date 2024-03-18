@@ -4,7 +4,7 @@ import { ScrollView } from 'react-native'
 import { ProductState, useProductStore } from '../../store/productStore.store'
 import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
-import { IP, PORT, PRODUCT } from '../../express/utils'
+import { PRODUCT, URL } from '../../express/utils'
 import { Product } from '../../store/database/GroceryData'
 
 import Header from './utils/Header'
@@ -16,6 +16,7 @@ import axios from 'axios'
 
 const ProductDetails = ({ route, navigation }) => {
   const { _id } = route.params
+
   const { setProductId, setWishes, removeWish, wishes } = useProductStore(
     (state: ProductState) => state
   )
@@ -25,10 +26,14 @@ const ProductDetails = ({ route, navigation }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const productsArray = await axios.get(`http://${IP}:${PORT}/${PRODUCT}/check/single/${_id}`)
+      const productsArray = await axios.get(`${URL}/${PRODUCT}/check-single/${_id}`)
 
-      if (productsArray.data.result) {
-        setProduct(productsArray.data.result)
+      console.log('#####')
+      console.log(productsArray.data.data)
+      console.log('#####')
+
+      if (productsArray.data.data) {
+        setProduct(productsArray.data.data)
         setIsLoading(false)
       }
     }
@@ -40,16 +45,18 @@ const ProductDetails = ({ route, navigation }) => {
     if (wishes.includes(_id)) {
       removeWish(_id)
       showMessage({
-        icon: 'warning',
         message: 'Unwished',
-        type: 'warning'
+        type: 'warning',
+        icon: 'warning',
+        hideStatusBar: true
       })
     } else {
       setWishes([_id])
       showMessage({
-        icon: 'success',
         message: 'Wished',
-        type: 'success'
+        type: 'success',
+        icon: 'success',
+        hideStatusBar: true
       })
     }
   }
@@ -132,9 +139,10 @@ const ProductDetails = ({ route, navigation }) => {
             onPress={() => {
               _id && setProductId([_id]),
                 showMessage({
-                  icon: 'success',
                   message: 'Added to your Bag!',
-                  type: 'success'
+                  type: 'success',
+                  icon: 'success',
+                  hideStatusBar: true
                 })
             }}>
             <View style={productDetailsStyle.pressable}>

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "esnext",
-    "strict": true,
+    "strict": false,
     "jsx": "react-native",
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -12,13 +12,9 @@
     "isolatedModules": true,
     "noEmit": true
   },
-  "include": [
-    "src"
-  ],
   "exclude": [
     "node_modules",
     "babel.config.js",
-    "metro.config.js",
     "jest.config.js"
   ],
   "extends": "expo/tsconfig.base"
