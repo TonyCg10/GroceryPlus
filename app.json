@@ -1,0 +1,44 @@
+{
+  "expo": {
+    "name": "Grocery Plus",
+    "slug": "GroceryPlus",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/GroceryPlus.png",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]
+    ],
+    "splash": {},
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tony54.GroceryPlus"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/GroceryPlus.png",
+        "backgroundColor": "#ffffff"
+      },
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.tony54.GroceryPlus"
+    },
+    "web": {
+      "favicon": "./assets/GroceryPlus.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "b2c3480e-a9ad-4920-a182-a18cd62dc6a4"
+      }
+    }
+  }
+}

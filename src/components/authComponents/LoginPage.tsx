@@ -1,0 +1,123 @@
+import React, { useState } from 'react'
+import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
+import { basePagesStyle } from '../../styles/baseStyle'
+import { AuthLogic, regexType, userInputType } from './utils/utils'
+import { UserState, useUserStore } from '../../../store/userStore.store'
+import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
+import { showMessage } from 'react-native-flash-message'
+import { URL, USER } from '../../../express/utils'
+
+import axios from 'axios'
+import GroceryPlus from '../../../assets/GroceryPlus.svg'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import Header from '../../share/utils/Header'
+import Octicons from 'react-native-vector-icons/Octicons'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import SheetModal from '../../share/utils/SheetModal'
+
+const LoginPage = ({ navigation }) => {
+  const { setUser } = useUserStore((state: UserState) => state)
+
+  const isKeyboardVisible = AuthLogic()
+
+  const [modalVisible, setModalVisible] = useState(false)
+  // const [email, setEmail] = useState('')
+  // const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('ac@gmail.com')
+  // const [email, setEmail] = useState('cc@gmail.com')
+  const [password, setPassword] = useState('123qwe&')
+  // const [password, setPassword] = useState('923qwe%')
+
+  const handleOnLogin = async () => {
+    try {
+      const response = await axios.post(`${URL}/${USER}/check-user`, {
+        email,
+        password
+      })
+      const { data } = response
+
+      if (data.exists) {
+        setUser({
+          _id: data.data._id,
+          name: data.data.name,
+          email: data.data.email,
+          password: data.data.password,
+          phone: data.data.phone,
+          img: data.data.img
+        })
+
+        showMessage({
+          message: `Successful Login! ${data.data.name}`,
+          type: 'success',
+          icon: 'success',
+          hideStatusBar: true
+        })
+
+        console.log('#####')
+        console.log(data)
+        console.log('#####')
+
+        navigation.navigate('BottomRoutes')
+      } else {
+        setModalVisible(true)
+      }
+    } catch (error) {
+      Alert.alert(`An error has ocurred. Please try again`)
+      console.error('Error log in:', error)
+    }
+  }
+
+  const logNotValid = () => {
+    if (regexType.emailRegex.test(email) && regexType.passwordRegex.test(password)) return true
+  }
+
+  return (
+    <SafeAreaView style={basePagesStyle.containerPage}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content="User does not exists"
+        redBtn={true}
+        redContent="Close"
+        redAction={() => setModalVisible(false)}
+      />
+      <Header
+        title="Login"
+        actionLeft={<AntDesign size={22} name="arrowleft" />}
+        navigation={navigation}
+      />
+      <View style={authPagesStyles.container}>
+        {!isKeyboardVisible && (
+          <View style={authPagesStyles.icon}>
+            <GroceryPlus width={260} height={260} />
+          </View>
+        )}
+
+        <View style={authPagesStyles.inputContainer}>
+          <InputUser
+            icon={<MaterialCommunityIcons name="email-outline" size={24} />}
+            label={userInputType.email}
+            input={email}
+            setInput={setEmail}
+          />
+          <InputUser
+            icon={<Octicons name="lock" size={22} />}
+            label={userInputType.password}
+            input={password}
+            setInput={setPassword}
+          />
+        </View>
+        <TouchableOpacity
+          disabled={!logNotValid()}
+          style={[authPagesStyles.button, !logNotValid() && authPagesStyles.disabledBtn]}
+          onPress={() => {
+            handleOnLogin()
+          }}>
+          <Text style={authPagesStyles.btnText}>Continue</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
+  )
+}
+
+export default LoginPage
