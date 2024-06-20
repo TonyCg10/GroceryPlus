@@ -1,12 +1,14 @@
 # Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 android/
+ios/
 
 # dependencies
 node_modules/
 
 # Expo
 .expo/
+.vscode/
 dist/
 web-build/
 
@@ -78,3 +80,5 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli
+android/app/src/main/res/values/colors.xml
+/android
