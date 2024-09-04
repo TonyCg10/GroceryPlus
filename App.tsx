@@ -10,6 +10,7 @@ import React from 'react'
 export default function App() {
   const publishableKey =
     'pk_test_51OtIvaFORGuFh6IZL6AzxXP1TwLO5qZzJlqmEs7a3xDXwD3DYtWqhkDuX44CGBcbPgPLBVpPh0BqpvZjAAid6pzG00O2x4EqhP'
+
   return (
     <SafeAreaProvider>
       <StatusBar style="auto" />
