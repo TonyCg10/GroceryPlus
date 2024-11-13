@@ -1,20 +1,20 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { AuthLogic, signUpNotValid, userInputType } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../store/userStore.store'
+import { UserState, useUserStore } from '../../../../core/store/userStore.store'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { showMessage } from 'react-native-flash-message'
-import { URL, USER } from '../../../../express/utils'
+import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
 
 import Password from '../../../../assets/Forgot password-rafiki.svg'
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
-import axios from 'axios'
 
-const Preregistered = ({ navigation }) => {
-  const { setUser } = useUserStore((state: UserState) => state)
+const Preregistered = () => {
+  const navigation = useAppNavigation()
+  const { fetchUserData } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
 
@@ -22,43 +22,26 @@ const Preregistered = ({ navigation }) => {
   const [password, setPassword] = useState('123qwe&')
   // const [password, setPassword] = useState('923qwe%')
 
-  const handleOnLogin = async () => {
-    try {
-      const response = await axios.post(`${URL}/${USER}/check-user`, {
-        password
+  const handleOnLogin = () => {
+    fetchUserData({ password })
+      .then((fetchedUser) => {
+        if (fetchedUser) {
+          showMessage({
+            message: `Successful Login! Welcome ${fetchedUser.name}`,
+            icon: 'success',
+            type: 'success',
+            hideStatusBar: true
+          })
+
+          navigation.navigate(routes.BottomRoutes)
+        } else {
+          Alert.alert(`Wrong password`)
+        }
       })
-      const { data } = response
-
-      if (data.exists) {
-        setUser({
-          _id: data.data._id,
-          name: data.data.name,
-          email: data.data.email,
-          password: data.data.password,
-          phone: data.data.phone,
-          img: data.data.img,
-          stripeCustomerId: data.data.stripeCustomerId
-        })
-
-        showMessage({
-          message: `Successful Login! Welcome ${data.data.name}`,
-          icon: 'success',
-          type: 'success',
-          hideStatusBar: true
-        })
-
-        console.log('#####')
-        console.log(data)
-        console.log('#####')
-
-        navigation.navigate('BottomRoutes')
-      } else {
-        Alert.alert(`Wrong password`)
-      }
-    } catch (error) {
-      Alert.alert(`An error has ocurred. Please try again`)
-      console.error('Error has ocurred:', error)
-    }
+      .catch((error) => {
+        console.error('Error fetching user data:', error)
+        Alert.alert(`An error occurred during login. Please try again.`)
+      })
   }
 
   return (

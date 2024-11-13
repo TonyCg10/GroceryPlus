@@ -2,12 +2,11 @@ import React, { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
 import { AuthLogic, regexType, userInputType } from './utils/utils'
-import { UserState, useUserStore } from '../../../store/userStore.store'
+import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 import { showMessage } from 'react-native-flash-message'
-import { URL, USER } from '../../../express/utils'
+import { routes, useAppNavigation } from '../../utils/useAppNavigation'
 
-import axios from 'axios'
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Header from '../../share/utils/Header'
@@ -15,8 +14,9 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import SheetModal from '../../share/utils/SheetModal'
 
-const LoginPage = ({ navigation }) => {
-  const { setUser } = useUserStore((state: UserState) => state)
+const LoginPage = () => {
+  const navigation = useAppNavigation()
+  const { fetchUserData, user } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
 
@@ -30,40 +30,28 @@ const LoginPage = ({ navigation }) => {
 
   const handleOnLogin = async () => {
     try {
-      const response = await axios.post(`${URL}/${USER}/check-user`, {
+      await fetchUserData({
         email,
         password
       })
-      const { data } = response
 
-      if (data.exists) {
-        setUser({
-          _id: data.data._id,
-          name: data.data.name,
-          email: data.data.email,
-          password: data.data.password,
-          phone: data.data.phone,
-          img: data.data.img
-        })
-
+      if (user) {
         showMessage({
-          message: `Successful Login! ${data.data.name}`,
+          message: `Successful Login! ${user.name}`,
           type: 'success',
           icon: 'success',
           hideStatusBar: true
         })
 
-        console.log('#####')
-        console.log(data)
-        console.log('#####')
-
-        navigation.navigate('BottomRoutes')
-      } else {
-        setModalVisible(true)
+        navigation.navigate(routes.BottomRoutes)
       }
     } catch (error) {
-      Alert.alert(`An error has ocurred. Please try again`)
-      console.error('Error log in:', error)
+      if (error instanceof Error && error.message.includes('404')) {
+        setModalVisible(true)
+      } else {
+        Alert.alert('An error has occurred. Please try again.')
+        console.error('Error logging in:', error)
+      }
     }
   }
 

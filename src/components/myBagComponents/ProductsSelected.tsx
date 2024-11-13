@@ -8,7 +8,7 @@ import {
   ScrollView,
   RefreshControl
 } from 'react-native'
-import { Product } from '../../../store/database/GroceryData'
+import { Product } from '../../../core/database/GroceryData'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
@@ -38,7 +38,7 @@ const ProductsSelected = ({
   }, [quantities, setProductsID])
 
   useEffect(() => {
-    const initialQuantities = product.map((data) => ({ productId: data._id, quantity: 1 }))
+    const initialQuantities = product?.map((data) => ({ productId: data._id, quantity: 1 }))
     setQuantities(initialQuantities)
   }, [product])
 
@@ -69,8 +69,8 @@ const ProductsSelected = ({
   }
 
   useEffect(() => {
-    const totalPrice = product.reduce((acc, data, key) => {
-      const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
+    const totalPrice = product?.reduce((acc, data, key) => {
+      const quantity = quantities?.find((item) => item.productId === data._id)?.quantity || 1
       return acc + data.price * quantity
     }, 0)
 
@@ -82,8 +82,8 @@ const ProductsSelected = ({
       showsVerticalScrollIndicator={false}
       refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchProducts} />}>
       <Text style={styles.text1}>Products</Text>
-      {product.map((data, key) => {
-        const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
+      {product?.map((data, key) => {
+        const quantity = quantities?.find((item) => item.productId === data._id)?.quantity || 1
         const price = data.price * quantities[key]?.quantity
 
         return (

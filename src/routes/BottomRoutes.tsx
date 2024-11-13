@@ -1,6 +1,8 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { View, StyleSheet, Platform } from 'react-native'
+import { routes } from '../utils/useAppNavigation'
 
+import React from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import HomePage from '../components/HomePage'
 import Category from '../components/Category'
@@ -27,13 +29,13 @@ const BottomRoutes = () => {
               }
             })
 
-            if (route.name === 'HomePage') {
+            if (route.name === routes.HomePage) {
               iconName = 'home-outline'
-            } else if (route.name === 'Category') {
+            } else if (route.name === routes.Category) {
               iconName = 'view-dashboard-outline'
-            } else if (route.name === 'MyBag') {
+            } else if (route.name === routes.MyBag) {
               iconName = 'bag-personal'
-            } else if (route.name === 'More') {
+            } else if (route.name === routes.More) {
               iconName = 'card-account-details-outline'
             }
 
@@ -56,10 +58,10 @@ const BottomRoutes = () => {
           },
           tabBarShowLabel: false
         })}>
-        <Tab.Screen name="HomePage" component={HomePage} />
-        <Tab.Screen name="Category" component={Category} />
-        <Tab.Screen name="MyBag" component={MyBag} />
-        <Tab.Screen name="More" component={More} />
+        <Tab.Screen name={routes.HomePage} component={HomePage} />
+        <Tab.Screen name={routes.Category} component={Category} />
+        {/* <Tab.Screen name={routes.MyBag} component={MyBag} /> */}
+        {/* <Tab.Screen name={routes.More} component={More} /> */}
       </Tab.Navigator>
     )
   } catch (error) {

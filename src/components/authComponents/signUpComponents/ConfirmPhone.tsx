@@ -2,8 +2,8 @@ import { StyleSheet, SafeAreaView, TouchableOpacity, View, Text, Alert } from 'r
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../store/userStore.store'
-import { useState } from 'react'
+import { UserState, useUserStore } from '../../../../core/store/userStore.store'
+import React, { useState } from 'react'
 import {
   CodeField,
   Cursor,
@@ -11,12 +11,14 @@ import {
   useClearByFocusCell
 } from 'react-native-confirmation-code-field'
 import { showMessage } from 'react-native-flash-message'
+import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import PhoneNumber from '../../../../assets/undraw_personalization_triu.svg'
 
-const ConfirmPhone = ({ navigation }) => {
+const ConfirmPhone = () => {
+  const navigation = useAppNavigation()
   const { user } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
@@ -39,7 +41,7 @@ const ConfirmPhone = ({ navigation }) => {
           hideStatusBar: true
         })
 
-        navigation.navigate('SignUpPage')
+        navigation.navigate(routes.SignUpPage)
       }
     } catch (error) {
       Alert.alert(`An error has ocurred. Please try again`)
@@ -61,7 +63,7 @@ const ConfirmPhone = ({ navigation }) => {
           <Text style={{ fontSize: 18 }}>Enter Verification Code</Text>
           <Text style={{ fontWeight: '300' }}>We have sent SMS to:</Text>
           <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
-            {user.phone.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}
+            {user?.phone?.replace(/(\d{3})(\d{3})(\d{4})/, '$1-$2-$3')}
           </Text>
         </View>
 

@@ -2,12 +2,17 @@ import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
 
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { createProduct, fetchProducts } from '../services/product.service'
+import { Product } from '../database/GroceryData'
 
 export interface ProductState {
+  products: Product[]
   productId: string[]
   wishes: string[]
 
   setProductId: (productId: string[]) => void
+  fetchProductsData: (filters?: { [key: string]: unknown }) => Promise<void>
+  createNewProduct: (info: { [key: string]: unknown }) => Promise<Product>
   setWishes: (wishes: string[]) => void
   removeProductId: (productIdToRemove: string) => void
   removeWish: (wishToRemove: string) => void
@@ -19,6 +24,7 @@ export const useProductStore = create<ProductState>()(
   devtools(
     persist(
       (set) => ({
+        products: [],
         productId: [],
         wishes: [],
 
@@ -29,6 +35,26 @@ export const useProductStore = create<ProductState>()(
           console.log('#####')
           console.log('productStore ===== ', 'set product id')
           console.log('#####')
+        },
+
+        fetchProductsData: async (filters?: { [key: string]: unknown }): Promise<void> => {
+          const productData = await fetchProducts(filters)
+
+          set({ products: productData })
+
+          console.log('#####')
+          console.log('productStore ===== ', 'fetchProductsData')
+          console.log('#####')
+        },
+
+        createNewProduct: async (info: { [key: string]: unknown }): Promise<Product> => {
+          const create = await createProduct(info)
+
+          console.log('#####')
+          console.log('productStore ===== ', 'createNewProduct')
+          console.log('#####')
+
+          return create
         },
 
         setWishes(wishes) {

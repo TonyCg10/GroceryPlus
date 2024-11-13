@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { ProductState, useProductStore } from '../../../store/productStore.store'
-import { UserState, useUserStore } from '../../../store/userStore.store'
-import { ORDER, PRODUCT, URL } from '../../../express/utils'
+import { ProductState, useProductStore } from '../../../core/store/productStore.store'
+import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { Product } from '../../../store/database/GroceryData'
+import { Product } from '../../../core/database/GroceryData'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../share/utils/Header'
@@ -32,14 +31,14 @@ const MyBag = ({ navigation }) => {
   const fetchData = async () => {
     try {
       if (productId.length !== 0) {
-        const productsArray = await axios.get(`${URL}/${PRODUCT}/check-multiple/${productId}`)
+        const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
 
         console.log('#####')
-        console.log(productsArray.data.data)
-        console.log('#####')
+        console.log(productsArray.data.product)
+        console.log('##### api')
 
         if (productsArray.status === 200) {
-          setProducts(productsArray.data.data)
+          setProducts(productsArray.data.product)
           setIsLoading(false)
         }
       }
@@ -110,14 +109,14 @@ const MyBag = ({ navigation }) => {
       ) : (
         <>
           <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll1}>
-            <ProductsSelected
+            {/* <ProductsSelected
               product={products}
               isLoading={isLoading}
               fetchProducts={fetchData}
               removeProductId={removeProductId}
               setQuantitys={setQuantity}
               setProductsID={setProductsID}
-            />
+            /> */}
           </ScrollView>
 
           <View style={basePagesStyle.line} />

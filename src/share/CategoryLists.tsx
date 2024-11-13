@@ -7,51 +7,57 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import { ProductState, useProductStore } from '../../store/productStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { basePagesStyle } from '../styles/baseStyle'
 import { showMessage } from 'react-native-flash-message'
 import { useState, useEffect } from 'react'
-import { PRODUCT, URL } from '../../express/utils'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { RootStackParamList, useAppNavigation } from '../utils/useAppNavigation'
+import { Product } from '../../core/database/GroceryData'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Feather from 'react-native-vector-icons/Feather'
-import axios from 'axios'
+import React from 'react'
 
-const CategoryLists = ({ navigation, route }) => {
-  const { category } = route.params
+const CategoryLists = () => {
+  const route = useRoute<RouteProp<RootStackParamList, 'CategoryLists'>>()
+  const navigation = useAppNavigation()
 
-  const { setProductId, productId, setWishes, removeWish, wishes } = useProductStore(
-    (state: ProductState) => state
-  )
+  const { category } = route.params || {}
 
-  const [productsArray, setProductsArray] = useState([])
+  const { setProductId, productId, setWishes, removeWish, wishes, fetchProductsData, products } =
+    useProductStore((state: ProductState) => state)
+
+  const [productsArray, setProductsArray] = useState<Product[]>([])
 
   const productsFetch = async () => {
-    const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
+    await fetchProductsData().then(() => {
+      console.log('#####')
+      console.log(products)
+      console.log('#####')
+    })
 
-    console.log('#####')
-    console.log(productsArray.data.products)
-    console.log('#####')
-
-    return setProductsArray(productsArray.data.products)
+    return setProductsArray(products)
   }
 
   useEffect(() => {
     productsFetch()
   }, [])
 
-  const handleAddToBag = (data) => {
-    !productId.includes(data._id) && setProductId([data._id]),
-      showMessage({
-        message: 'Added to your Bag!',
-        type: 'success',
-        icon: 'success',
-        hideStatusBar: true
-      })
+  const handleAddToBag = (data: Product) => {
+    if (data._id) {
+      !productId.includes(data._id) && setProductId([data._id]),
+        showMessage({
+          message: 'Added to your Bag!',
+          type: 'success',
+          icon: 'success',
+          hideStatusBar: true
+        })
+    }
   }
 
-  const handleWish = (id) => {
+  const handleWish = (id: string) => {
     if (wishes.includes(id)) {
       removeWish(id)
       showMessage({
@@ -81,7 +87,7 @@ const CategoryLists = ({ navigation, route }) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={baseGridsStyle.gridsScreen}>
           {productsArray
-            .filter((item) => item.category.toUpperCase().includes(category))
+            .filter((item) => item.category.toUpperCase().includes(category || ''))
             .map((data, key) => {
               const finalPrice = data.price - data.discountPercentage
 
@@ -98,11 +104,11 @@ const CategoryLists = ({ navigation, route }) => {
                     <Text style={baseGridsStyle.originalPrice}>${data.price.toFixed(2)}</Text>
                     <TouchableOpacity
                       onPress={() => {
-                        handleWish(data._id)
+                        data?._id && handleWish(data?._id)
                       }}>
                       <AntDesign
                         size={24}
-                        name={wishes.includes(data._id) ? 'star' : 'staro'}
+                        name={data?._id && wishes.includes(data?._id) ? 'star' : 'staro'}
                         color="gold"
                       />
                     </TouchableOpacity>

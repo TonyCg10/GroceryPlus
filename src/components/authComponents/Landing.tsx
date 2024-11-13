@@ -1,11 +1,13 @@
+import React, { useEffect } from 'react'
 import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { useEffect } from 'react'
-import { useGroceryData } from '../../../store/database/GroceryData'
+import { useGroceryData } from '../../../core/database/GroceryData'
+import { routes, useAppNavigation } from '../../utils/useAppNavigation'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
-const Landing = ({ navigation }) => {
+const Landing = () => {
+  const navigation = useAppNavigation()
   const { fetched } = useGroceryData()
 
   useEffect(() => {
@@ -21,13 +23,13 @@ const Landing = ({ navigation }) => {
         <View style={landingStyles.options}>
           <TouchableOpacity
             style={landingStyles.login}
-            onPress={() => navigation.navigate('LoginPage')}>
+            onPress={() => navigation.navigate(routes.LoginPage)}>
             <Text style={landingStyles.text}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={landingStyles.signUp}
             onPress={() => {
-              navigation.navigate('Phone')
+              navigation.navigate(routes.Phone)
             }}>
             <Text style={landingStyles.text}>Sign Up</Text>
           </TouchableOpacity>

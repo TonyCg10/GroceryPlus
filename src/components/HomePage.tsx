@@ -1,6 +1,7 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { basePagesStyle } from '../styles/baseStyle'
 import { useFocusEffect } from '@react-navigation/native'
+import { routes, useAppNavigation } from '../utils/useAppNavigation'
 
 import Header from '../share/utils/Header'
 import Grids from '../share/Grids'
@@ -8,7 +9,9 @@ import Feather from 'react-native-vector-icons/Feather'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
 import React from 'react'
 
-const HomePage = ({ navigation }) => {
+const HomePage = () => {
+  const navigation = useAppNavigation()
+
   useFocusEffect(
     React.useCallback(() => {
       const onBackPress = () => {
@@ -38,7 +41,7 @@ const HomePage = ({ navigation }) => {
         navigation={navigation}
       />
       <TouchableOpacity
-        onPress={() => navigation.navigate('MoreStack', { screen: 'MyAddress' })}
+        onPress={() => navigation.navigate(routes.MoreStack, { screen: 'MyAddress' })}
         style={styles.locationView}>
         <View style={styles.locationLeft}>
           <View style={styles.locationIconBack}>

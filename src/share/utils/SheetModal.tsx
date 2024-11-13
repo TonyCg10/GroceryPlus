@@ -5,6 +5,7 @@ import Modal from 'react-native-modal'
 import StarRating from 'react-native-star-rating-widget'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import React from 'react'
 
 type Props = {
   modalVisible: boolean
@@ -58,7 +59,7 @@ const SheetModal = ({
         {box}
         {rate && (
           <View>
-            <StarRating rating={rating} onChange={setRating} />
+            <StarRating rating={rating || 0} onChange={setRating} />
           </View>
         )}
         {greenBtn && (

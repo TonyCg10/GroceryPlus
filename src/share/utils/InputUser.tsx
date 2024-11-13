@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { regexType, userInputType } from '../../components/authComponents/utils/utils'
 
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+import React from 'react'
 
 type Props = {
   label?: string

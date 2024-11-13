@@ -1,44 +1,33 @@
+import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
-import { useEffect, useState } from 'react'
-import { PRODUCT, URL } from '../../express/utils'
-
-import axios from 'axios'
+import { useEffect } from 'react'
+import { useProductStore, ProductState } from '../../core/store/productStore.store'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList, routes } from '../utils/useAppNavigation'
 
 type Pops = {
   display: boolean
-  navigation: any
+  navigation: StackNavigationProp<RootStackParamList>
 }
 
 const Grids = ({ display, navigation }: Pops) => {
-  const [productsArray, setProductsArray] = useState([])
-
-  const uniqueCategories = [
-    ...new Set(productsArray.map((item) => item.category.toLowerCase().trim()))
-  ]
-
-  const productsFetch = async () => {
-    const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
-
-    console.log('#####')
-    console.log(productsArray.data.products)
-    console.log('#####')
-
-    return setProductsArray(productsArray.data.products)
-  }
+  const { fetchProductsData, products } = useProductStore((state: ProductState) => state)
 
   useEffect(() => {
-    productsFetch()
+    fetchProductsData()
   }, [])
+
+  const uniqueCategories = [...new Set(products.map((item) => item.category.toLowerCase().trim()))]
 
   return display ? (
     <View style={baseGridsStyle.gridsScreen}>
-      {productsArray.map((data, key) => {
+      {products.map((data, key) => {
         return (
           <TouchableOpacity
             key={key}
             onPress={() => {
-              navigation.navigate('ProductDetails', {
+              navigation.navigate(routes.ProductDetails, {
                 _id: data._id
               })
             }}
@@ -58,7 +47,7 @@ const Grids = ({ display, navigation }: Pops) => {
   ) : (
     <View style={baseGridsStyle.gridsScreen}>
       {uniqueCategories.map((category, categoryIndex) => {
-        const representativeItem = productsArray.find(
+        const representativeItem = products.find(
           (data) => data.category.toLowerCase().trim() === category
         )
 
@@ -66,18 +55,20 @@ const Grids = ({ display, navigation }: Pops) => {
           <TouchableOpacity
             key={categoryIndex}
             onPress={() => {
-              navigation.navigate('CategoryLists', {
-                category: representativeItem.category.toUpperCase()
+              navigation.navigate(routes.CategoryLists, {
+                category: representativeItem && representativeItem.category.toUpperCase()
               })
             }}
             style={baseGridsStyle.gridsContainer}>
             <Image
               source={{
-                uri: representativeItem.thumbnail
+                uri: representativeItem && representativeItem.thumbnail
               }}
               style={baseGridsStyle.image}
             />
-            <Text style={baseGridsStyle.text}>{representativeItem.category}</Text>
+            <Text style={baseGridsStyle.text}>
+              {representativeItem && representativeItem.category}
+            </Text>
           </TouchableOpacity>
         )
       })}

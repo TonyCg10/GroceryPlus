@@ -1,47 +1,53 @@
 import { SafeAreaView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../styles/baseStyle'
 import { ScrollView } from 'react-native'
-import { ProductState, useProductStore } from '../../store/productStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
-import { PRODUCT, URL } from '../../express/utils'
-import { Product } from '../../store/database/GroceryData'
+import { Product } from '../../core/database/GroceryData'
+import { RouteProp, useRoute } from '@react-navigation/native'
+import { RootStackParamList, useAppNavigation } from '../utils/useAppNavigation'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating-widget'
-import axios from 'axios'
+import React from 'react'
 
-const ProductDetails = ({ route, navigation }) => {
-  const { _id } = route.params
+const ProductDetails = () => {
+  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetails'>>()
+  const navigation = useAppNavigation()
 
-  const { setProductId, setWishes, removeWish, wishes } = useProductStore(
-    (state: ProductState) => state
-  )
+  const { _id } = route.params || {}
+
+  const { setProductId, setWishes, removeWish, wishes, fetchProductsData, products } =
+    useProductStore((state: ProductState) => state)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [product, setProduct] = useState<Product>()
 
   useEffect(() => {
     const fetchData = async () => {
-      const productsArray = await axios.get(`${URL}/${PRODUCT}/check-single/${_id}`)
+      await fetchProductsData({ _id: _id }).then(() => {
+        console.log('#####')
+        console.log(products)
+        console.log('#####')
 
-      console.log('#####')
-      console.log(productsArray.data.product)
-      console.log('#####')
-
-      if (productsArray.data.product) {
-        setProduct(productsArray.data.product)
+        setProduct(products[0])
         setIsLoading(false)
-      }
+      })
     }
 
     fetchData()
   }, [])
 
   const handleWish = () => {
+    if (_id === undefined) {
+      console.error('ID is undefined')
+      return
+    }
+
     if (wishes.includes(_id)) {
       removeWish(_id)
       showMessage({
@@ -61,6 +67,8 @@ const ProductDetails = ({ route, navigation }) => {
     }
   }
 
+  const isWished = _id ? wishes.includes(_id) : false
+
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
       <View style={{ flexDirection: 'row' }}>
@@ -74,7 +82,7 @@ const ProductDetails = ({ route, navigation }) => {
           onPress={() => {
             handleWish()
           }}>
-          <AntDesign size={24} name={wishes.includes(_id) ? 'star' : 'staro'} color="gold" />
+          <AntDesign size={24} name={isWished ? 'star' : 'staro'} color="gold" />
         </TouchableOpacity>
       </View>
 
@@ -84,12 +92,12 @@ const ProductDetails = ({ route, navigation }) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <Image
             source={{
-              uri: product.images[selectedImageIndex ?? 0]
+              uri: product?.images[selectedImageIndex ?? 0]
             }}
             style={productDetailsStyle.firstImages}
           />
           <ScrollView showsHorizontalScrollIndicator={false} horizontal>
-            {product.images.map((images: string, key: number) => {
+            {product?.images.map((images: string, key: number) => {
               return (
                 <TouchableOpacity
                   onPress={() => {
@@ -111,28 +119,28 @@ const ProductDetails = ({ route, navigation }) => {
               )
             })}
           </ScrollView>
-          <Text style={productDetailsStyle.description}>{product.description}</Text>
+          <Text style={productDetailsStyle.description}>{product?.description}</Text>
           <View style={productDetailsStyle.pricesContainer}>
-            <Text style={productDetailsStyle.title}>{product.title}</Text>
-            <Text style={productDetailsStyle.originalPrice}>${product.price}</Text>
+            <Text style={productDetailsStyle.title}>{product?.title}</Text>
+            <Text style={productDetailsStyle.originalPrice}>${product?.price}</Text>
             <Text style={productDetailsStyle.price}>
-              ${(product.price - product.discountPercentage).toFixed(2)}
+              ${product && (product.price - product.discountPercentage).toFixed(2)}
             </Text>
           </View>
-          <Text>There is {product.stock} in stock</Text>
+          <Text>There is {product?.stock} in stock</Text>
 
           <View style={productDetailsStyle.rateView}>
-            <Text style={productDetailsStyle.rate}>{product.rating}</Text>
-            <StarRating rating={product.rating} onChange={() => {}} />
+            <Text style={productDetailsStyle.rate}>{product?.rating}</Text>
+            <StarRating rating={product ? product.rating : 0} onChange={() => {}} />
           </View>
           <View>
             <View style={productDetailsStyle.productView}>
               <Feather name="align-left" size={20} />
-              <Text style={productDetailsStyle.product}>{product.category} products</Text>
+              <Text style={productDetailsStyle.product}>{product?.category} products</Text>
             </View>
             <View style={productDetailsStyle.descriptionView}>
               <Ionicons name="reorder-three-outline" size={24} />
-              <Text style={productDetailsStyle.secondDescription}>{product.description}</Text>
+              <Text style={productDetailsStyle.secondDescription}>{product?.description}</Text>
             </View>
           </View>
           <TouchableOpacity

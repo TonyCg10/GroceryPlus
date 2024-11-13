@@ -1,62 +1,55 @@
-import { SafeAreaView, TouchableOpacity, View, Text, Alert } from 'react-native'
+import React, { useState } from 'react'
+import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../store/userStore.store'
-import { useState } from 'react'
+import { UserState, useUserStore } from '../../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { URL, USER } from '../../../../express/utils'
+import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import PhoneNumber from '../../../../assets/undraw_personalization_triu.svg'
-import axios from 'axios'
 
-const Phone = ({ navigation }) => {
-  const { setUser, user } = useUserStore((state: UserState) => state)
+const Phone = () => {
+  const { fetchUserData, setUser } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
+  const navigation = useAppNavigation()
 
   // const [phone, setPhone] = useState('')
   const [phone, setPhone] = useState('1299559955')
   // const [phone, setPhone] = useState('5599559912')
 
   const handleOnSetPhone = async () => {
-    try {
-      if (regexType.phoneRegex.test(phone)) {
-        const response = await axios.post(`${URL}/${USER}/check-user`, {
-          phone
-        })
-        const { data } = response
-
-        if (!data.exists) {
-          setUser({ phone: phone })
+    if (regexType.phoneRegex.test(phone)) {
+      fetchUserData({ phone })
+        .then(() => {
           showMessage({
-            message: 'Verify your number',
-            type: 'info',
-            icon: 'info',
-            hideStatusBar: true
-          })
-          navigation.navigate('ConfirmPhone')
-        } else {
-          showMessage({
-            message: 'Looks like you already have account',
+            message: 'Looks like you already have an account',
             type: 'warning',
             icon: 'warning',
             hideStatusBar: true
           })
 
-          console.log('#####')
-          console.log(data)
-          console.log('#####')
+          navigation.navigate(routes.Preregistered)
+        })
+        .catch((error) => {
+          if (error.response && error.response.status === 404) {
+            setUser({ phone })
+            showMessage({
+              message: 'Verify your number',
+              type: 'info',
+              icon: 'info',
+              hideStatusBar: true
+            })
 
-          navigation.navigate('Preregistered')
-        }
-      }
-    } catch (error) {
-      Alert.alert(`An error has ocurred. Please try again`)
-      console.error('Error signing up:', error)
+            navigation.navigate(routes.ConfirmPhone)
+          } else {
+            console.error('Error fetching user data:', error)
+          }
+        })
     }
   }
 

@@ -1,16 +1,18 @@
 import { TouchableOpacity, View, Text, StyleSheet, TextInput } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { useState } from 'react'
+import React, { useState } from 'react'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RootStackParamList, routes } from '../../utils/useAppNavigation'
 
 import Feather from 'react-native-vector-icons/Feather'
 
 type Props = {
   title?: string
-  actionRight?: any
-  actionLeft?: any
+  actionRight?: React.ReactNode
+  actionLeft?: React.ReactNode
   searcher?: boolean
   setLook?: (text: string) => void
-  navigation?: any
+  navigation?: StackNavigationProp<RootStackParamList> | undefined
 }
 
 const Header = ({ title, actionRight, actionLeft, searcher, setLook, navigation }: Props) => {
@@ -18,13 +20,17 @@ const Header = ({ title, actionRight, actionLeft, searcher, setLook, navigation 
 
   return (
     <View style={basePagesStyle.header}>
-      <TouchableOpacity
-        style={actionLeft && basePagesStyle.icon}
-        onPress={() => {
-          navigation.goBack()
-        }}>
-        {actionLeft}
-      </TouchableOpacity>
+      {actionLeft && (
+        <TouchableOpacity
+          style={basePagesStyle.icon}
+          onPress={() => {
+            if (navigation) {
+              navigation.goBack()
+            }
+          }}>
+          {actionLeft}
+        </TouchableOpacity>
+      )}
       <View>
         {!!searcher && (
           <View style={headerStyle.searcherContainer}>
@@ -45,13 +51,17 @@ const Header = ({ title, actionRight, actionLeft, searcher, setLook, navigation 
         )}
       </View>
       <Text style={basePagesStyle.headerText}>{title}</Text>
-      <TouchableOpacity
-        style={basePagesStyle.notiIcon}
-        onPress={() => {
-          navigation.navigate('Notifications')
-        }}>
-        {actionRight}
-      </TouchableOpacity>
+      {actionRight && (
+        <TouchableOpacity
+          style={basePagesStyle.notiIcon}
+          onPress={() => {
+            if (navigation) {
+              navigation.navigate(routes.Notifications)
+            }
+          }}>
+          {actionRight}
+        </TouchableOpacity>
+      )}
     </View>
   )
 }

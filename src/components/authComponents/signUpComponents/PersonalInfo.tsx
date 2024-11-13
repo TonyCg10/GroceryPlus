@@ -11,17 +11,23 @@ import { basePagesStyle } from '../../../styles/baseStyle'
 import { useState } from 'react'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../store/userStore.store'
+import { UserState, useUserStore } from '../../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { PAYMENT, URL, USER } from '../../../../express/utils'
+import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
 
+import React from 'react'
 import Header from '../../../share/utils/Header'
 import Octicons from 'react-native-vector-icons/Octicons'
 import ImageComponent from '../../../share/utils/ImageComponent'
-import axios from 'axios'
+import { useRoute } from '@react-navigation/native'
+import SheetModal from '../../../share/utils/SheetModal'
 
-const PersonalInfo = ({ navigation, route }) => {
-  const { setUser, user } = useUserStore((state: UserState) => state)
+const PersonalInfo = () => {
+  const route = useRoute()
+  const navigation = useAppNavigation()
+  const { setUser, user, updateAUser } = useUserStore((state: UserState) => state)
+
+  console.log(user)
 
   const isKeyboardVisible = AuthLogic()
 
@@ -29,56 +35,84 @@ const PersonalInfo = ({ navigation, route }) => {
   const [name, setName] = useState('antonio corcoba')
   // const [name, setName] = useState('camila capella')
 
-  const handleSetPersonalInfo = async () => {
-    try {
-      const formatName = name.split(' ')
-      const firstName = formatName[0].charAt(0).toUpperCase() + formatName[0].slice(1)
-      const lastName = formatName[1].charAt(0).toUpperCase() + formatName[1].slice(1)
-      const fullName = firstName + ' ' + lastName
+  const handleSetPersonalInfo = () => {
+    const formatName = name.split(' ')
+    const firstName = formatName[0].charAt(0).toUpperCase() + formatName[0].slice(1)
+    const lastName = formatName[1]?.charAt(0).toUpperCase() + formatName[1]?.slice(1) || ''
+    const fullName = firstName + ' ' + lastName
 
-      if (regexType.nameRegex.test(fullName)) {
-        // const stripeId = await axios.post(`${URL}/${PAYMENT}/add-customer`, {
-        //   email: user.email,
-        //   name: fullName,
-        //   phone: user.phone
-        // })
-        // const { data } = stripeId
+    if (regexType.nameRegex.test(fullName)) {
+      // axios.post(`${URL}/${PAYMENT}/add-customer`, {
+      //   email: user.email,
+      //   name: fullName,
+      //   phone: user.phone
+      // })
+      // .then(response => {
+      //   const stripeCustomerId = response.data.data || ''
 
-        // if (data.data) {
-          const response = await axios.put(`${URL}/${USER}/update-user/${user._id}`, {
-            name: fullName,
-            // stripeCustomerId: stripeId.data.data
+      updateAUser(
+        {
+          name: fullName
+          // stripeCustomerId: stripeCustomerId
+        },
+        user._id as string
+      )
+        .then(() => {
+          setUser({
+            ...user,
+            name: fullName
+            // stripeCustomerId: stripeCustomerId
           })
-          const { data } = response
 
-          if (response.status === 200) {
-            setUser({ name: fullName, 
-              // stripeCustomerId: stripeId.data.data
-             })
+          showMessage({
+            message: `Welcome! ${fullName}`,
+            type: 'success',
+            icon: 'success',
+            hideStatusBar: true
+          })
 
-            showMessage({
-              message: `Welcome! ${fullName}`,
-              type: 'success',
-              icon: 'success',
-              hideStatusBar: true
-            })
-
-            console.log('#####')
-            console.log(data)
-            console.log('#####')
-
-            navigation.navigate('BottomRoutes')
-          }
-        // }
-      }
-    } catch (error) {
-      Alert.alert(`An error has ocurred. Please try again`)
-      console.error('Error signing up:', error)
+          navigation.navigate(routes.BottomRoutes)
+        })
+        .catch((error) => {
+          Alert.alert('An error has occurred. Please try again')
+          console.error('Error updating user info:', error)
+        })
+      // })
+      // .catch(error => {
+      //   Alert.alert('An error has occurred while creating Stripe customer. Please try again')
+      //   console.error('Error creating Stripe customer:', error)
+      // })
     }
+  }
+
+  const handleDeleteImage = () => {
+    updateAUser({ img: '' }, user._id as string)
+      .then(() => {
+        setUser({ ...user, img: '' })
+        setModalVisible(false)
+        showMessage({
+          message: 'Image removed!',
+          type: 'success',
+          icon: 'success',
+          hideStatusBar: true
+        })
+      })
+      .catch((error) => {
+        Alert.alert('An error has occurred. Please try again')
+        console.error('Error removing image:', error)
+      })
   }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
+      <SheetModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        content="Delete Image?"
+        redBtn={true}
+        redContent="Close"
+        redAction={() => handleDeleteImage()}
+      />
       <Header title="Your Information" />
       <View style={authPagesStyles.container}>
         <Text>
