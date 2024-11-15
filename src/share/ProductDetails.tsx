@@ -1,10 +1,10 @@
 import { SafeAreaView, View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../styles/baseStyle'
 import { ScrollView } from 'react-native'
-import { ProductState, useProductStore } from '../../core/store/productStore.store'
+import { ProductState, useProductStore } from '../core/store/productStore.store'
 import { useEffect, useState } from 'react'
 import { showMessage } from 'react-native-flash-message'
-import { Product } from '../../core/database/GroceryData'
+import { Product } from '../core/database/GroceryData'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { RootStackParamList, useAppNavigation } from '../utils/useAppNavigation'
 

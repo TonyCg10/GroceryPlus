@@ -46,28 +46,6 @@ export const useGroceryData = () => {
         thumbnail: element.thumbnail,
         title: element.title
       }))
-
-      const unmatchedProducts = data.filter((d) => !products.some((p) => p.title === d.title))
-
-      if (unmatchedProducts.length === 0) {
-        console.log('====================================')
-        console.log('All products already fetched')
-        console.log('====================================')
-        return
-      } else {
-        console.log('====================================')
-        console.log('New Products', unmatchedProducts)
-        console.log('====================================')
-      }
-
-      for (const product of unmatchedProducts) {
-        try {
-          await createNewProduct(product)
-          console.log(`Product -- ${product.title} -- added`)
-        } catch (error) {
-          console.error(`Error checking product: ${error}`)
-        }
-      }
     } catch (error) {
       console.error('Error fetching data:', error)
     }

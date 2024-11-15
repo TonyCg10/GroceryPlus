@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native'
-import { Product } from '../../../core/database/GroceryData'
+import { Product } from '../../core/database/GroceryData'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { ProductState, useProductStore } from '../../../core/store/productStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { showMessage } from 'react-native-flash-message'
 
 import Feather from 'react-native-vector-icons/Feather'

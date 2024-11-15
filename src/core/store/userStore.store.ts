@@ -1,7 +1,8 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createUser, fetchUser, updateUser } from '../services/user.service'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export type User = {
   _id: string

@@ -1,6 +1,6 @@
 declare module '*.svg' {
+  import React from 'react'
   import { SvgProps } from 'react-native-svg'
-  //eslint-disable-next-line no-undef
   const content: React.FC<SvgProps>
   export default content
 }

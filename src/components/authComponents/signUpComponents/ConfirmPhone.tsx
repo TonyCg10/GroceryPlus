@@ -2,7 +2,7 @@ import { StyleSheet, SafeAreaView, TouchableOpacity, View, Text, Alert } from 'r
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../core/store/userStore.store'
+import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import React, { useState } from 'react'
 import {
   CodeField,

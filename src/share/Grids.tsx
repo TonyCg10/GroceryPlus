@@ -2,7 +2,7 @@ import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
 import { useEffect } from 'react'
-import { useProductStore, ProductState } from '../../core/store/productStore.store'
+import { useProductStore, ProductState } from '../core/store/productStore.store'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList, routes } from '../utils/useAppNavigation'
 

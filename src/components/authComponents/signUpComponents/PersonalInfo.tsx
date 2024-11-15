@@ -11,7 +11,7 @@ import { basePagesStyle } from '../../../styles/baseStyle'
 import { useState } from 'react'
 import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
-import { UserState, useUserStore } from '../../../../core/store/userStore.store'
+import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
 

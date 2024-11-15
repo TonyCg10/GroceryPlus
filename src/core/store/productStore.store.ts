@@ -1,9 +1,9 @@
 import { create } from 'zustand'
 import { createJSONStorage, devtools, persist } from 'zustand/middleware'
-
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createProduct, fetchProducts } from '../services/product.service'
 import { Product } from '../database/GroceryData'
+
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface ProductState {
   products: Product[]

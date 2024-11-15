@@ -1,9 +1,9 @@
 import { SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
 import { useState } from 'react'
-import { UserState, useUserStore } from '../../../core/store/userStore.store'
+import { UserState, useUserStore } from '../../core/store/userStore.store'
 import { AuthLogic, regexType, userInputType } from '../authComponents/utils/utils'
-import { ProductState, useProductStore } from '../../../core/store/productStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { showMessage } from 'react-native-flash-message'
 import { URL, USER } from '../../../express/utils'
 

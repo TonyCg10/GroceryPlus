@@ -1,6 +1,6 @@
 import * as ImagePicker from 'expo-image-picker'
 import { Image, TouchableOpacity, View, Text, StyleSheet, Alert } from 'react-native'
-import { UserState, useUserStore } from '../../../core/store/userStore.store'
+import { UserState, useUserStore } from '../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
 
 import AntDesign from 'react-native-vector-icons/AntDesign'

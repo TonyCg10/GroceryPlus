@@ -2,7 +2,7 @@ import { usePaymentSheet } from '@stripe/stripe-react-native'
 import { useEffect, useState } from 'react'
 import { Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { PAYMENT, URL } from '../../../../express/utils'
-import { UserState, useUserStore } from '../../../../core/store/userStore.store'
+import { UserState, useUserStore } from '../../../core/store/userStore.store'
 
 import axios from 'axios'
 import AntDesign from 'react-native-vector-icons/AntDesign'

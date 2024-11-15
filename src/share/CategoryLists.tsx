@@ -7,13 +7,13 @@ import {
   ScrollView,
   TouchableOpacity
 } from 'react-native'
-import { ProductState, useProductStore } from '../../core/store/productStore.store'
+import { ProductState, useProductStore } from '../core/store/productStore.store'
 import { basePagesStyle } from '../styles/baseStyle'
 import { showMessage } from 'react-native-flash-message'
 import { useState, useEffect } from 'react'
 import { RouteProp, useRoute } from '@react-navigation/native'
 import { RootStackParamList, useAppNavigation } from '../utils/useAppNavigation'
-import { Product } from '../../core/database/GroceryData'
+import { Product } from '../core/database/GroceryData'
 
 import Header from './utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'

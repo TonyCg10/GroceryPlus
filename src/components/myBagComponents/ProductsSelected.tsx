@@ -8,7 +8,7 @@ import {
   ScrollView,
   RefreshControl
 } from 'react-native'
-import { Product } from '../../../core/database/GroceryData'
+import { Product } from '../../core/database/GroceryData'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 

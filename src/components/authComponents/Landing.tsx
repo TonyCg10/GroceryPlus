@@ -1,18 +1,11 @@
-import React, { useEffect } from 'react'
 import { SafeAreaView, TouchableOpacity, View, Text, StyleSheet } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { useGroceryData } from '../../../core/database/GroceryData'
 import { routes, useAppNavigation } from '../../utils/useAppNavigation'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 
 const Landing = () => {
   const navigation = useAppNavigation()
-  const { fetched } = useGroceryData()
-
-  useEffect(() => {
-    fetched()
-  }, [])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>

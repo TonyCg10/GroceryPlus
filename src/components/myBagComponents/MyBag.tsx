@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { ProductState, useProductStore } from '../../../core/store/productStore.store'
-import { UserState, useUserStore } from '../../../core/store/userStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
+import { UserState, useUserStore } from '../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
-import { Product } from '../../../core/database/GroceryData'
+import { Product } from '../../core/database/GroceryData'
 
 import Feather from 'react-native-vector-icons/Feather'
 import Header from '../../share/utils/Header'
@@ -16,7 +16,7 @@ import NotFound from '../../../assets/AddtoBag-rafiki.svg'
 import axios from 'axios'
 import SheetModal from '../../share/utils/SheetModal'
 
-const MyBag = ({ navigation }) => {
+const MyBag = ({ navigation }: any) => {
   const { productId, removeProductId, clearFn } = useProductStore((state: ProductState) => state)
   const { user, setUser } = useUserStore((state: UserState) => state)
 

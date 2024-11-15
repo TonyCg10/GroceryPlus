@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
 import { AuthLogic, regexType, userInputType } from './utils/utils'
-import { UserState, useUserStore } from '../../../core/store/userStore.store'
-import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
+import { UserState, useUserStore } from '../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../utils/useAppNavigation'
+
+import InputUser, { authPagesStyles } from '../../share/utils/InputUser'
 
 import GroceryPlus from '../../../assets/GroceryPlus.svg'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -16,6 +17,7 @@ import SheetModal from '../../share/utils/SheetModal'
 
 const LoginPage = () => {
   const navigation = useAppNavigation()
+
   const { fetchUserData, user } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()

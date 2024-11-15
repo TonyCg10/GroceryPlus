@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { Product } from '../../../core/database/GroceryData'
+import { Product } from '../../core/database/GroceryData'
 
 import Feather from 'react-native-vector-icons/Feather'
 

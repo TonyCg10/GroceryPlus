@@ -1,7 +1,7 @@
 import { Image, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
-import { UserState, useUserStore } from '../../../core/store/userStore.store'
-import { ProductState, useProductStore } from '../../../core/store/productStore.store'
+import { UserState, useUserStore } from '../../core/store/userStore.store'
+import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { useState } from 'react'
 
 import Feather from 'react-native-vector-icons/Feather'

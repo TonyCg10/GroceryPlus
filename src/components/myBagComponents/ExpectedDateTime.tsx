@@ -14,12 +14,12 @@ type Props = {
 const ExpectedDateTime = ({ setDate, date, setHour, hourss }: Props) => {
   const [open, setOpen] = useState(false)
 
-  const handleDateConfirm = (selectedDate) => {
+  const handleDateConfirm = (selectedDate: Date) => {
     setDate(selectedDate)
     setOpen(false)
   }
 
-  const renderHours = (hours) => (
+  const renderHours = (hours: any) => (
     <TouchableOpacity
       key={hours}
       onPress={() => setHour(hours)}
