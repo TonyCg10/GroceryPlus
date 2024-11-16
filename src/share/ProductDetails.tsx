@@ -13,16 +13,15 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Feather from 'react-native-vector-icons/Feather'
 import StarRating from 'react-native-star-rating-widget'
-import React from 'react'
 
 const ProductDetails = () => {
-  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetails'>>()
-  const navigation = useAppNavigation()
-
-  const { _id } = route.params || {}
-
   const { setProductId, setWishes, removeWish, wishes, fetchProductsData, products } =
     useProductStore((state: ProductState) => state)
+
+  const route = useRoute<RouteProp<RootStackParamList, 'ProductDetails'>>()
+  const navigation = useAppNavigation()
+  const { _id } = route.params || {}
+
   const [isLoading, setIsLoading] = useState(true)
   const [selectedImageIndex, setSelectedImageIndex] = useState(0)
   const [product, setProduct] = useState<Product>()
@@ -87,7 +86,7 @@ const ProductDetails = () => {
       </View>
 
       {isLoading ? (
-        <></>
+        <View></View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <Image

@@ -1,16 +1,27 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {
+  RefreshControl,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native'
 import { basePagesStyle } from '../styles/baseStyle'
 import { useFocusEffect } from '@react-navigation/native'
 import { routes, useAppNavigation } from '../utils/useAppNavigation'
+
+import React, { useState } from 'react'
 
 import Header from '../share/utils/Header'
 import Grids from '../share/Grids'
 import Feather from 'react-native-vector-icons/Feather'
 import EvilIcons from 'react-native-vector-icons/EvilIcons'
-import React from 'react'
 
 const HomePage = () => {
   const navigation = useAppNavigation()
+
+  const [refreshing, setRefreshing] = useState(false)
 
   useFocusEffect(
     React.useCallback(() => {
@@ -32,6 +43,13 @@ const HomePage = () => {
       }
     }, [navigation])
   )
+
+  const onRefresh = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 1000)
+  }
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -65,7 +83,10 @@ const HomePage = () => {
         <Feather style={styles.searcherIcon} size={24} name="search" />
         <Text style={styles.searcherText}>Search Anything</Text>
       </TouchableOpacity>
-      <ScrollView showsVerticalScrollIndicator={false} style={basePagesStyle.gridsScroll}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={basePagesStyle.gridsScroll}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <Grids display={true} navigation={navigation} />
       </ScrollView>
     </SafeAreaView>

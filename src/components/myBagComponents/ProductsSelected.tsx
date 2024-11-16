@@ -1,32 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-  ScrollView,
-  RefreshControl
-} from 'react-native'
+import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import { Product } from '../../core/database/GroceryData'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
 type Props = {
   product: Product[]
-  isLoading: boolean
 
-  fetchProducts: () => void
   removeProductId: (id: string) => void
   setQuantitys: (q: any) => void
-  setProductsID: (IDs: any[]) => void
+  setProductsID: (ids: any[]) => void
 }
 
 const ProductsSelected = ({
   product,
-  isLoading,
 
-  fetchProducts,
   removeProductId,
   setQuantitys,
   setProductsID
@@ -38,7 +26,7 @@ const ProductsSelected = ({
   }, [quantities, setProductsID])
 
   useEffect(() => {
-    const initialQuantities = product?.map((data) => ({ productId: data._id, quantity: 1 }))
+    const initialQuantities = product.map((data) => ({ productId: data._id || '', quantity: 1 }))
     setQuantities(initialQuantities)
   }, [product])
 
@@ -69,8 +57,8 @@ const ProductsSelected = ({
   }
 
   useEffect(() => {
-    const totalPrice = product?.reduce((acc, data, key) => {
-      const quantity = quantities?.find((item) => item.productId === data._id)?.quantity || 1
+    const totalPrice = product.reduce((acc, data, key) => {
+      const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
       return acc + data.price * quantity
     }, 0)
 
@@ -78,12 +66,10 @@ const ProductsSelected = ({
   }, [product, quantities, setQuantitys])
 
   return (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      refreshControl={<RefreshControl refreshing={isLoading} onRefresh={fetchProducts} />}>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <Text style={styles.text1}>Products</Text>
-      {product?.map((data, key) => {
-        const quantity = quantities?.find((item) => item.productId === data._id)?.quantity || 1
+      {product.map((data, key) => {
+        const quantity = quantities.find((item) => item.productId === data._id)?.quantity || 1
         const price = data.price * quantities[key]?.quantity
 
         return (
@@ -94,11 +80,15 @@ const ProductsSelected = ({
               <View style={styles.info}>
                 <Text style={styles.price}>$ {price.toFixed(2)}</Text>
                 <View style={styles.btnContainer}>
-                  <TouchableOpacity style={styles.minus} onPress={() => handleOnDecrease(data._id)}>
+                  <TouchableOpacity
+                    style={styles.minus}
+                    onPress={() => handleOnDecrease(data._id || '')}>
                     <Entypo color="white" name="minus" />
                   </TouchableOpacity>
                   <Text style={styles.many}>{quantity}</Text>
-                  <TouchableOpacity style={styles.plus} onPress={() => handleOnIncrease(data._id)}>
+                  <TouchableOpacity
+                    style={styles.plus}
+                    onPress={() => handleOnIncrease(data._id || '')}>
                     <Entypo color="white" name="plus" />
                   </TouchableOpacity>
                 </View>

@@ -2,7 +2,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { View, StyleSheet, Platform } from 'react-native'
 import { routes } from '../utils/useAppNavigation'
 
-import React from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import HomePage from '../components/HomePage'
 import Category from '../components/Category'
@@ -19,13 +18,14 @@ const BottomRoutes = () => {
           tabBarIcon: ({ focused }) => {
             let iconName = ''
             const style = StyleSheet.create({
-              focuse: {
-                backgroundColor: '#5EC401',
-                height: 50,
-                width: 50,
-                borderRadius: 100,
+              container: {
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                width: 50,
+                height: 50,
+                borderRadius: 30,
+                marginTop: focused ? 20 : 30,
+                backgroundColor: focused ? '#5EC401' : 'transparent'
               }
             })
 
@@ -40,7 +40,7 @@ const BottomRoutes = () => {
             }
 
             return (
-              <View style={focused && style.focuse}>
+              <View style={style.container}>
                 <MaterialCommunityIcons
                   name={iconName}
                   color={focused ? 'white' : 'black'}
@@ -53,15 +53,15 @@ const BottomRoutes = () => {
           tabBarStyle: {
             borderTopLeftRadius: 30,
             borderTopRightRadius: 30,
-            position: 'absolute',
-            height: Platform.OS === 'android' ? 80 : 100
+            height: Platform.OS === 'android' ? 80 : 100,
+            position: 'absolute'
           },
           tabBarShowLabel: false
         })}>
         <Tab.Screen name={routes.HomePage} component={HomePage} />
         <Tab.Screen name={routes.Category} component={Category} />
-        {/* <Tab.Screen name={routes.MyBag} component={MyBag} /> */}
-        {/* <Tab.Screen name={routes.More} component={More} /> */}
+        <Tab.Screen name={routes.MyBag} component={MyBag} />
+        <Tab.Screen name={routes.More} component={More} />
       </Tab.Navigator>
     )
   } catch (error) {

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { SafeAreaView, TouchableOpacity, View, Text } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
-import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
+
+import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 
 import Header from '../../../share/utils/Header'
 import AntDesign from 'react-native-vector-icons/AntDesign'
@@ -32,7 +33,6 @@ const Phone = () => {
             icon: 'warning',
             hideStatusBar: true
           })
-
           navigation.navigate(routes.Preregistered)
         })
         .catch((error) => {
@@ -44,7 +44,6 @@ const Phone = () => {
               icon: 'info',
               hideStatusBar: true
             })
-
             navigation.navigate(routes.ConfirmPhone)
           } else {
             console.error('Error fetching user data:', error)

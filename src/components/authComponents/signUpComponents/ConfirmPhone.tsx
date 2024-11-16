@@ -3,7 +3,7 @@ import { basePagesStyle } from '../../../styles/baseStyle'
 import { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic } from '../utils/utils'
 import { UserState, useUserStore } from '../../../core/store/userStore.store'
-import React, { useState } from 'react'
+import { useState } from 'react'
 import {
   CodeField,
   Cursor,
@@ -18,12 +18,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign'
 import PhoneNumber from '../../../../assets/undraw_personalization_triu.svg'
 
 const ConfirmPhone = () => {
-  const navigation = useAppNavigation()
   const { user } = useUserStore((state: UserState) => state)
 
-  const isKeyboardVisible = AuthLogic()
-
   const [value, setValue] = useState('12345')
+
+  const navigation = useAppNavigation()
+  const isKeyboardVisible = AuthLogic()
 
   const ref = useBlurOnFulfill({ value, cellCount: 5 })
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -31,7 +31,7 @@ const ConfirmPhone = () => {
     setValue
   })
 
-  const handleOnSetPhone = async () => {
+  const handleOnSetPhone = () => {
     try {
       if (value.length === 5) {
         showMessage({

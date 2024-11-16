@@ -25,7 +25,7 @@
     "eslint": "^8.57.0",
     "expo": "~52.0.6",
     "expo-asset": "~11.0.1",
-    "expo-dev-client": "^5.0.1",
+    "expo-dev-client": "^5.0.2",
     "expo-image-picker": "^16.0.1",
     "expo-sqlite": "^15.0.3",
     "expo-status-bar": "~2.0.0",

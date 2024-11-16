@@ -18,7 +18,7 @@ import SheetModal from '../../share/utils/SheetModal'
 const LoginPage = () => {
   const navigation = useAppNavigation()
 
-  const { fetchUserData, user } = useUserStore((state: UserState) => state)
+  const { fetchUserData } = useUserStore((state: UserState) => state)
 
   const isKeyboardVisible = AuthLogic()
 
@@ -30,30 +30,28 @@ const LoginPage = () => {
   const [password, setPassword] = useState('123qwe&')
   // const [password, setPassword] = useState('923qwe%')
 
-  const handleOnLogin = async () => {
-    try {
-      await fetchUserData({
+  const handleOnLogin = () => {
+    if (email && password) {
+      fetchUserData({
         email,
         password
       })
+        .then((user) => {
+          showMessage({
+            message: `Successful Login! ${user.name}`,
+            type: 'success',
+            icon: 'success',
+            hideStatusBar: true
+          })
 
-      if (user) {
-        showMessage({
-          message: `Successful Login! ${user.name}`,
-          type: 'success',
-          icon: 'success',
-          hideStatusBar: true
+          navigation.navigate(routes.BottomRoutes)
         })
-
-        navigation.navigate(routes.BottomRoutes)
-      }
-    } catch (error) {
-      if (error instanceof Error && error.message.includes('404')) {
-        setModalVisible(true)
-      } else {
-        Alert.alert('An error has occurred. Please try again.')
-        console.error('Error logging in:', error)
-      }
+        .catch((error) => {
+          Alert.alert(`An error has occurred. Please try again`)
+          console.error('Error signing up:', error)
+        })
+    } else {
+      Alert.alert(`Please ensure all fields are filled correctly`)
     }
   }
 

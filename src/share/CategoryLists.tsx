@@ -5,7 +5,8 @@ import {
   Image,
   StyleSheet,
   ScrollView,
-  TouchableOpacity
+  TouchableOpacity,
+  RefreshControl
 } from 'react-native'
 import { ProductState, useProductStore } from '../core/store/productStore.store'
 import { basePagesStyle } from '../styles/baseStyle'
@@ -21,15 +22,15 @@ import Feather from 'react-native-vector-icons/Feather'
 import React from 'react'
 
 const CategoryLists = () => {
-  const route = useRoute<RouteProp<RootStackParamList, 'CategoryLists'>>()
-  const navigation = useAppNavigation()
-
-  const { category } = route.params || {}
-
   const { setProductId, productId, setWishes, removeWish, wishes, fetchProductsData, products } =
     useProductStore((state: ProductState) => state)
 
+  const route = useRoute<RouteProp<RootStackParamList, 'CategoryLists'>>()
+  const navigation = useAppNavigation()
+  const { category } = route.params || {}
+
   const [productsArray, setProductsArray] = useState<Product[]>([])
+  const [refreshing, setRefreshing] = useState(false)
 
   const productsFetch = async () => {
     await fetchProductsData().then(() => {
@@ -77,6 +78,13 @@ const CategoryLists = () => {
     }
   }
 
+  const onRefresh = () => {
+    setRefreshing(true)
+    setTimeout(() => {
+      setRefreshing(false)
+    }, 1000)
+  }
+
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
       <Header
@@ -84,7 +92,9 @@ const CategoryLists = () => {
         actionLeft={<AntDesign size={22} name="arrowleft" />}
         navigation={navigation}
       />
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={baseGridsStyle.gridsScreen}>
           {productsArray
             .filter((item) => item.category.toUpperCase().includes(category || ''))

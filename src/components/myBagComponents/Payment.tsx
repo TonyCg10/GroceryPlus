@@ -1,6 +1,8 @@
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native'
 
 import PaymentScreen from './payments/PaymentScreen'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import AntDesign from 'react-native-vector-icons/AntDesign'
 
 type Props = {
   quantity: number
@@ -24,19 +26,15 @@ const Payment = ({ quantity, handleOnPlaceOrder }: Props) => {
         <Text>$ {quantity + 10}</Text>
       </View>
       <View>
-        {/* <Text style={styles.method}>Payment Method</Text> */}
-        {/* <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            setModalVisible(true)
-          }}>
+        <Text style={styles.method}>Payment Method</Text>
+        <TouchableOpacity style={styles.btn} onPress={() => {}}>
           <View style={styles.signCon}>
             <FontAwesome style={styles.sign} color="white" size={20} name="dollar" />
           </View>
           <Text style={styles.text}>Tap Here to select your Payment Method</Text>
           <AntDesign name="right" size={20} style={styles.right} />
-        </TouchableOpacity> */}
-        <PaymentScreen quantity={quantity} handleOnPlaceOrder={handleOnPlaceOrder} />
+        </TouchableOpacity>
+        {/* <PaymentScreen quantity={quantity} handleOnPlaceOrder={handleOnPlaceOrder} /> */}
       </View>
     </View>
   )

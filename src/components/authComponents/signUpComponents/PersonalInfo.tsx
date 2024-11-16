@@ -9,31 +9,30 @@ import {
 } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { useState } from 'react'
-import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { AuthLogic, regexType, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../core/store/userStore.store'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
+import { useRoute } from '@react-navigation/native'
 
-import React from 'react'
+import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
+
 import Header from '../../../share/utils/Header'
 import Octicons from 'react-native-vector-icons/Octicons'
 import ImageComponent from '../../../share/utils/ImageComponent'
-import { useRoute } from '@react-navigation/native'
 import SheetModal from '../../../share/utils/SheetModal'
 
 const PersonalInfo = () => {
-  const route = useRoute()
-  const navigation = useAppNavigation()
   const { setUser, user, updateAUser } = useUserStore((state: UserState) => state)
 
-  console.log(user)
-
-  const isKeyboardVisible = AuthLogic()
-
   const [modalVisible, setModalVisible] = useState(false)
+  // const [name, setName] = useState('')
   const [name, setName] = useState('antonio corcoba')
   // const [name, setName] = useState('camila capella')
+
+  const route = useRoute()
+  const navigation = useAppNavigation()
+  const isKeyboardVisible = AuthLogic()
 
   const handleSetPersonalInfo = () => {
     const formatName = name.split(' ')

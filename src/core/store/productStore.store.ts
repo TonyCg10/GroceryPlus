@@ -11,7 +11,7 @@ export interface ProductState {
   wishes: string[]
 
   setProductId: (productId: string[]) => void
-  fetchProductsData: (filters?: { [key: string]: unknown }) => Promise<void>
+  fetchProductsData: (filters?: { [key: string]: unknown }) => Promise<Product>
   createNewProduct: (info: { [key: string]: unknown }) => Promise<Product>
   setWishes: (wishes: string[]) => void
   removeProductId: (productIdToRemove: string) => void
@@ -28,31 +28,16 @@ export const useProductStore = create<ProductState>()(
         productId: [],
         wishes: [],
 
-        setProductId(productId) {
-          set((state) => ({
-            productId: [...state.productId, ...productId]
-          }))
-          console.log('#####')
-          console.log('productStore ===== ', 'set product id')
-          console.log('#####')
-        },
-
-        fetchProductsData: async (filters?: { [key: string]: unknown }): Promise<void> => {
+        fetchProductsData: async (filters?: { [key: string]: unknown }): Promise<Product> => {
           const productData = await fetchProducts(filters)
 
           set({ products: productData })
 
-          console.log('#####')
-          console.log('productStore ===== ', 'fetchProductsData')
-          console.log('#####')
+          return productData
         },
 
         createNewProduct: async (info: { [key: string]: unknown }): Promise<Product> => {
           const create = await createProduct(info)
-
-          console.log('#####')
-          console.log('productStore ===== ', 'createNewProduct')
-          console.log('#####')
 
           return create
         },
@@ -63,6 +48,15 @@ export const useProductStore = create<ProductState>()(
           }))
           console.log('#####')
           console.log('productStore ===== ', 'set wishes')
+          console.log('#####')
+        },
+
+        setProductId(productId) {
+          set((state) => ({
+            productId: [...state.productId, ...productId]
+          }))
+          console.log('#####')
+          console.log('productStore ===== ', 'set product id')
           console.log('#####')
         },
 

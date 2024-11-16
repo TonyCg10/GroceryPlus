@@ -55,10 +55,6 @@ export const useUserStore = create<UserState>()(
 
           set({ user: userData })
 
-          console.log('#####')
-          console.log('userStore ===== ', 'fetchUserData', userData)
-          console.log('#####')
-
           return userData
         },
 
@@ -67,10 +63,6 @@ export const useUserStore = create<UserState>()(
 
           set({ user: create })
 
-          console.log('#####')
-          console.log('userStore ===== ', 'createNewUser', create)
-          console.log('#####')
-
           return create
         },
 
@@ -78,10 +70,6 @@ export const useUserStore = create<UserState>()(
           const create = await updateUser(data, id)
 
           set({ user: create })
-
-          console.log('#####')
-          console.log('userStore ===== ', 'updateAUser', create)
-          console.log('#####')
 
           return create
         },
@@ -98,10 +86,6 @@ export const useUserStore = create<UserState>()(
               stripeCustomerId: ''
             }
           })
-
-          console.log('#####')
-          console.log('userStore ===== ', 'store clear')
-          console.log('#####')
         }
       }),
       {

@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { AuthLogic, signUpNotValid, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../core/store/userStore.store'
-import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
+
+import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 
 import Password from '../../../../assets/Forgot password-rafiki.svg'
 import Header from '../../../share/utils/Header'

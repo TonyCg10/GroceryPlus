@@ -1,10 +1,11 @@
-import React from 'react'
 import { View, Image, Text, TouchableOpacity } from 'react-native'
 import { StyleSheet } from 'react-native'
-import { useEffect } from 'react'
 import { useProductStore, ProductState } from '../core/store/productStore.store'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RootStackParamList, routes } from '../utils/useAppNavigation'
+import { useFocusEffect } from '@react-navigation/native'
+
+import React from 'react'
 
 type Pops = {
   display: boolean
@@ -14,9 +15,11 @@ type Pops = {
 const Grids = ({ display, navigation }: Pops) => {
   const { fetchProductsData, products } = useProductStore((state: ProductState) => state)
 
-  useEffect(() => {
-    fetchProductsData()
-  }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchProductsData()
+    }, [])
+  )
 
   const uniqueCategories = [...new Set(products.map((item) => item.category.toLowerCase().trim()))]
 

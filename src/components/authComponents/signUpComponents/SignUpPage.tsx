@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { View, Text, SafeAreaView, TouchableOpacity, Alert, ScrollView } from 'react-native'
 import { basePagesStyle } from '../../../styles/baseStyle'
 import { AuthLogic, regexType, userInputType } from '../utils/utils'
 import { UserState, useUserStore } from '../../../core/store/userStore.store'
-import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 import { showMessage } from 'react-native-flash-message'
 import { routes, useAppNavigation } from '../../../utils/useAppNavigation'
+
+import InputUser, { authPagesStyles } from '../../../share/utils/InputUser'
 
 import SetPassw from '../../../../assets/Mobile login-pana.svg'
 import Header from '../../../share/utils/Header'
@@ -14,13 +15,14 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 const SignUpPage = () => {
-  const navigation = useAppNavigation()
   const { user, createNewUser } = useUserStore((state: UserState) => state)
 
+  const navigation = useAppNavigation()
   const isKeyboardVisible = AuthLogic()
 
   // const [email, setEmail] = useState('')
   // const [password, setPassword] = useState('')
+  // const [confirmPw, setConfirmPw] = useState('')
   const [email, setEmail] = useState('ac@gmail.com')
   // const [email, setEmail] = useState('cc@gmail.com')
   const [password, setPassword] = useState('123qwe&')

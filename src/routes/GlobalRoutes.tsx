@@ -8,7 +8,6 @@ import Search from '../components/searchComponents/Search'
 import MoreStack from '../components/moreComponents/MoreStack'
 import CategoryLists from '../share/CategoryLists'
 import AuthStack from '../components/authComponents/authStack'
-import React from 'react'
 
 const Stack = createStackNavigator()
 

@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { SafeAreaView, StyleSheet, ScrollView, TouchableOpacity, Text, View } from 'react-native'
+import {
+  SafeAreaView,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  View,
+  RefreshControl
+} from 'react-native'
 import { basePagesStyle } from '../../styles/baseStyle'
 import { ProductState, useProductStore } from '../../core/store/productStore.store'
 import { UserState, useUserStore } from '../../core/store/userStore.store'
@@ -13,74 +21,59 @@ import SelectLocation from './SelectLocation'
 import ProductsSelected from './ProductsSelected'
 import Payment from './Payment'
 import NotFound from '../../../assets/AddtoBag-rafiki.svg'
-import axios from 'axios'
 import SheetModal from '../../share/utils/SheetModal'
 
 const MyBag = ({ navigation }: any) => {
-  const { productId, removeProductId, clearFn } = useProductStore((state: ProductState) => state)
-  const { user, setUser } = useUserStore((state: UserState) => state)
+  const { fetchProductsData, productId, products, removeProductId, clearFn } = useProductStore(
+    (state: ProductState) => state
+  )
 
   const [quantity, setQuantity] = useState(0)
-  const [productsID, setProductsID] = useState([])
-  const [products, setProducts] = useState<Product[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const [productsID, setProductsID] = useState<any[]>([])
+  const [isLoading, setIsLoading] = useState(false)
   const [date, setDate] = useState(new Date())
   const [hour, setHour] = useState(null)
   const [modalVisible, setModalVisible] = useState(false)
 
-  const fetchData = async () => {
-    try {
-      if (productId.length !== 0) {
-        const productsArray = await axios.get(`${URL}/${PRODUCT}/get-products`)
+  useEffect(() => {
+    setIsLoading(true)
 
-        console.log('#####')
-        console.log(productsArray.data.product)
-        console.log('##### api')
-
-        if (productsArray.status === 200) {
-          setProducts(productsArray.data.product)
-          setIsLoading(false)
-        }
-      }
-    } catch (error) {
-      console.error(error)
-    }
-  }
+    fetchProductsData({
+      _id: productId[0]
+    }).then(() => {
+      setIsLoading(false)
+    })
+  }, [productId])
 
   const handleOnPlaceOrder = async () => {
-    try {
-      if (productId.length !== 0 && date.toLocaleDateString() !== new Date().toLocaleDateString()) {
-        const response = await axios.post(`${URL}/${ORDER}/create-orders`, {
-          userId: user._id,
-          products: productsID,
-          issuedDate: date,
-          hours: hour,
-          status: 'ongoing'
-        })
-
-        if (response.status === 201) {
-          showMessage({
-            message: 'Order Added!',
-            type: 'success',
-            icon: 'success',
-            hideStatusBar: true
-          })
-          console.log('Order Placed')
-          setHour(null)
-          clearFn()
-        }
-      } else {
-        setModalVisible(true)
-      }
-    } catch (error) {
-      console.log(error)
-      setModalVisible(true)
-    }
+    //   try {
+    //     if (productId.length !== 0 && date.toLocaleDateString() !== new Date().toLocaleDateString()) {
+    //       const response = await axios.post(`${URL}/${ORDER}/create-orders`, {
+    //         userId: user._id,
+    //         products: productsID,
+    //         issuedDate: date,
+    //         hours: hour,
+    //         status: 'ongoing'
+    //       })
+    //       if (response.status === 201) {
+    //         showMessage({
+    //           message: 'Order Added!',
+    //           type: 'success',
+    //           icon: 'success',
+    //           hideStatusBar: true
+    //         })
+    //         console.log('Order Placed')
+    //         setHour(null)
+    //         clearFn()
+    //       }
+    //     } else {
+    //       setModalVisible(true)
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //     setModalVisible(true)
+    //   }
   }
-
-  useEffect(() => {
-    fetchData()
-  }, [setUser, productId])
 
   return (
     <SafeAreaView style={basePagesStyle.containerPage}>
@@ -108,15 +101,18 @@ const MyBag = ({ navigation }: any) => {
         </View>
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll1}>
-            {/* <ProductsSelected
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={styles.scroll1}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={fetchProductsData} />
+            }>
+            <ProductsSelected
               product={products}
-              isLoading={isLoading}
-              fetchProducts={fetchData}
               removeProductId={removeProductId}
               setQuantitys={setQuantity}
               setProductsID={setProductsID}
-            /> */}
+            />
           </ScrollView>
 
           <View style={basePagesStyle.line} />
