@@ -37,9 +37,7 @@ export const useProductStore = create<ProductState>()(
         },
 
         createNewProduct: async (info: { [key: string]: unknown }): Promise<Product> => {
-          const create = await createProduct(info)
-
-          return create
+          return await createProduct(info)
         },
 
         setWishes(wishes) {
@@ -53,7 +51,7 @@ export const useProductStore = create<ProductState>()(
 
         setProductId(productId) {
           set((state) => ({
-            productId: [...state.productId, ...productId]
+            productId: Array.from(new Set([...state.productId, ...productId]))
           }))
           console.log('#####')
           console.log('productStore ===== ', 'set product id')

@@ -15,7 +15,8 @@
     "strictNullChecks": true,
     "resolveJsonModule": true,
     "noEmit": true,
-    "isolatedModules": true
+    "isolatedModules": true,
+    "forceConsistentCasingInFileNames": true,
   },
   "include": [
     "src/**/*",

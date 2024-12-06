@@ -57,6 +57,5 @@ export type RootStackParamList = {
 }
 
 export const useAppNavigation = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>()
-  return navigation
+  return useNavigation<StackNavigationProp<RootStackParamList>>()
 }

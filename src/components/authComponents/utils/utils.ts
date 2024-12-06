@@ -9,7 +9,7 @@ export const regexType = {
 
   passwordRegex: /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/,
 
-  phoneRegex: /^\d{10}$/,
+  phoneRegex: /^\d{10}$/
 }
 
 export const userInputType = {
@@ -21,25 +21,19 @@ export const userInputType = {
 
   confirmPw: 'Confirm Password',
 
-  phone: 'Phone',
+  phone: 'Phone'
 }
 
 export const AuthLogic = () => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false)
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
-      () => {
-        setKeyboardVisible(true)
-      },
-    )
-    const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        setKeyboardVisible(false)
-      },
-    )
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      setKeyboardVisible(true)
+    })
+    const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardVisible(false)
+    })
 
     return () => {
       keyboardDidHideListener.remove()
@@ -50,11 +44,16 @@ export const AuthLogic = () => {
   return isKeyboardVisible
 }
 
-export const signUpNotValid = (type: string ,data: string) => {
-  if (type === 'name')
-    if (data && regexType.nameRegex.test(data)) return true
-  if (type === 'phone')
-    if (data && regexType.phoneRegex.test(data)) return true
-  if (type === 'password')
-    if (data && regexType.passwordRegex.test(data)) return true
+export const signUpNotValid = (type: string, data: string) => {
+  if (type === 'name' && data && regexType.nameRegex.test(data)) {
+    return true
+  }
+
+  if (type === 'phone' && data && regexType.phoneRegex.test(data)) {
+    return true
+  }
+
+  if (type === 'password' && data && regexType.passwordRegex.test(data)) {
+    return true
+  }
 }

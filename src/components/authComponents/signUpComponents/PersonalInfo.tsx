@@ -34,6 +34,7 @@ const PersonalInfo = () => {
   const navigation = useAppNavigation()
   const isKeyboardVisible = AuthLogic()
 
+  //TODO:add stripe account
   const handleSetPersonalInfo = () => {
     const formatName = name.split(' ')
     const firstName = formatName[0].charAt(0).toUpperCase() + formatName[0].slice(1)

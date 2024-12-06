@@ -1,0 +1,87 @@
+{
+  "cli": {
+    "version": ">= 9.0.6",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENV": "development"
+      },
+      "android": {
+        "gradleCommand": ":app:assembleDebug",
+        "resourceClass": "medium"
+      },
+      "ios": {
+        "buildConfiguration": "Debug",
+        "scheme": "quill-mobile-dev",
+        "resourceClass": "medium"
+      }
+    },
+    "development-sim": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_ENV": "development"
+      },
+      "android": {
+        "gradleCommand": ":app:assembleDebug",
+        "resourceClass": "medium"
+      },
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Debug",
+        "scheme": "quill-mobile-dev",
+        "resourceClass": "medium"
+      }
+    },
+    "preview": {
+      "env": {
+        "EXPO_PUBLIC_ENV": "sandbox"
+      },
+      "distribution": "internal",
+      "android": {
+        "resourceClass": "medium",
+        "buildType": "apk"
+      },
+      "ios": {
+        "buildConfiguration": "Release",
+        "scheme": "quill-mobile-sandbox",
+        "resourceClass": "medium"
+      }
+    },
+    "preview-sim": {
+      "developmentClient": true,
+      "env": {
+        "EXPO_PUBLIC_ENV": "sandbox"
+      },
+      "distribution": "internal",
+      "android": {
+        "gradleCommand": ":app:assembleDebug",
+        "resourceClass": "medium"
+      },
+      "ios": {
+        "simulator": true,
+        "buildConfiguration": "Debug",
+        "scheme": "quill-mobile-sandbox",
+        "resourceClass": "medium"
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_ENV": "production"
+      },
+      "android": {
+        "resourceClass": "medium"
+      },
+      "ios": {
+        "buildConfiguration": "Release",
+        "scheme": "quill-mobile",
+        "resourceClass": "medium"
+      }
+    }
+  }
+}

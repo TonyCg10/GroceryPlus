@@ -56,7 +56,9 @@ const LoginPage = () => {
   }
 
   const logNotValid = () => {
-    if (regexType.emailRegex.test(email) && regexType.passwordRegex.test(password)) return true
+    if (regexType.emailRegex.test(email) && regexType.passwordRegex.test(password)) {
+      return true
+    }
   }
 
   return (
